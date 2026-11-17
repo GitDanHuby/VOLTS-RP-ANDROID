@@ -8,13 +8,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.21")
         classpath("com.joom.paranoid:paranoid-gradle-plugin:0.3.14")
     }
 }
 
 plugins {
-    alias(libs.plugins.android.application) apply false   
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose.compiler) apply false
     id("com.google.gms.google-services") version "4.6.0" apply false
 }
