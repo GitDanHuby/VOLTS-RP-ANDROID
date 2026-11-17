@@ -1,5 +1,5 @@
 [versions]
-agp = "9.3.1"
+agp = "8.13.2"
 kotlin = "2.3.21"
 coreKtx = "1.8.0"
 junit = "4.13.2"
@@ -36,3 +36,4 @@ kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", versio
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
