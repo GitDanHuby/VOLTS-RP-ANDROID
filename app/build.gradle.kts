@@ -154,7 +154,13 @@ kotlin {
 
 
 dependencies {
-    
+
+    // Dependências do cliente SA-MP
+    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("com.joom.paranoid:paranoid:0.3.7")
+    implementation("com.google.android.play:asset-delivery:2.3.0")
+
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation(platform(libs.androidx.compose.bom))
 
