@@ -6,10 +6,12 @@ import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.android.application)
-    id("com.joom.paranoid")
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     id("com.google.gms.google-services")
 }
+
+pluginManager.apply("com.joom.paranoid")
 
 
 val keystorePropsFile = rootProject.file("release.properties")
