@@ -9,6 +9,7 @@ buildscript {
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.21")
+        classpath("com.joom.paranoid:paranoid-gradle-plugin:0.3.14")
     }
 }
 
