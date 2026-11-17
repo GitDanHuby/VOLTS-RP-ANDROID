@@ -821,8 +821,8 @@ fun AccountMenu(
 fun LoadingScreen(onBack: () -> Unit) {
     val context = LocalContext.current
 
-    val mediaPlayer = remember(context) {
-        MediaPlayer.create(context, R.raw.cara_do_crime)
+    val mediaPlayer: android.media.MediaPlayer? = remember(context) {
+    android.media.MediaPlayer.create(context, R.raw.cara_do_crime)
     }
 
     var isPlaying by remember { mutableStateOf(false) }
