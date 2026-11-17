@@ -3,12 +3,14 @@ import java.util.Properties
 import java.io.FileInputStream
 
 
+
 plugins {
     alias(libs.plugins.android.application)
+    id("com.joom.paranoid")
     alias(libs.plugins.compose.compiler)
     id("com.google.gms.google-services")
-    apply(plugin = "com.joom.paranoid")
 }
+
 
 val keystorePropsFile = rootProject.file("release.properties")
 val keystoreProps = Properties()
