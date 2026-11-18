@@ -1,4 +1,4 @@
-package com.gta.game.ui.dialog;
+package com.voltsrp.mobile.ui.dialog;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.joom.paranoid.Obfuscate;
-import com.gta.game.R;
+import com.voltsrp.mobile.R;
 import com.gta.launcher.util.CustomRecyclerView;
 import com.gta.launcher.util.Util;
 
