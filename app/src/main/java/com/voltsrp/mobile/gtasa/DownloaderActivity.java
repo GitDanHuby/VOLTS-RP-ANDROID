@@ -1,10 +1,10 @@
-package com.rockstargames.gtasa;
+package com.voltsrp.mobile.gtasa;
 
-import com.gta.game.R;
-import com.rockstargames.oswrapper.DownloaderActivityBase;
-import com.rockstargames.oswrapper.DownloaderConfig;
-import com.rockstargames.oswrapper.DownloaderPackConfig;
-import com.rockstargames.oswrapper.DownloaderPackType;
+import com.voltsrp.mobile.R;
+import com.voltsrp.oswrapper.DownloaderActivityBase;
+import com.voltsrp.oswrapper.DownloaderConfig;
+import com.voltsrp.oswrapper.DownloaderPackConfig;
+import com.voltsrp.oswrapper.DownloaderPackType;
 
 import kotlin.collections.CollectionsKt;
 
@@ -25,7 +25,7 @@ public final class DownloaderActivity extends DownloaderActivityBase {
     public DownloaderActivity() throws Exception {
     }
 
-    @Override // com.rockstargames.oswrapper.DownloaderActivityBase
+    @Override // com.voltsrp.oswrapper.DownloaderActivityBase
     protected DownloaderConfig getConfig() {
         return this.config;
     }
