@@ -24,4 +24,8 @@
     <string name="downloaderStatusPercentage">%d%%</string>
     <string name="downloaderStatusSize">%1$d MB / %2$d MB</string>
     <string name="downloaderWifiSettings">Wi-Fi settings</string>
+    <string name="asset_pack_main">Game data</string>
+    <string name="asset_pack_sfx1">Audio (part 1)</string>
+    <string name="asset_pack_sfx2">Audio (part 2)</string>
+    <string name="asset_pack_streams">Audio (part 3)</string>
 </resources>
