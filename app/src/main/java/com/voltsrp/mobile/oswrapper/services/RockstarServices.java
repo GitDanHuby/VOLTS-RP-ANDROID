@@ -1,7 +1,7 @@
-package com.rockstargames.oswrapper.services;
+package com.voltsrp.mobile.oswrapper.services
 
-import com.rockstargames.oswrapper.GameActivityBase;
-import com.rockstargames.oswrapper.GameThread;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameThread;
 
 /**
  * ئەم کلاسە بە تەواوی پەکخراوە.
