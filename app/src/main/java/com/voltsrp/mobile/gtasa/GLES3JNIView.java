@@ -1,4 +1,4 @@
-package com.rockstargames.gtasa;
+package com/voltsrp/mobile;
 import android.opengl.GLSurfaceView;
 import android.content.Context;
 import android.graphics.PixelFormat;
