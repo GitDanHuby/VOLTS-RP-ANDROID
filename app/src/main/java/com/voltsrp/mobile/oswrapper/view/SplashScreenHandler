@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper.view;
+package com.voltsrp.mobile.oswrapper.view;
 
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gta.game.R;
-import com.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.R;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
 import java.io.InputStream;
 
 import kotlin.jvm.internal.Intrinsics;
