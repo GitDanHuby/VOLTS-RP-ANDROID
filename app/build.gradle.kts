@@ -34,7 +34,7 @@ val hasValidSigningProps = keystorePropsFile.exists().also { exists ->
 
 
 android {
-    namespace = "com.gta.game"
+    namespace = "com.voltsrp.mobile"
     compileSdk = 36    
     ndkVersion = "26.2.11394342"
 
