@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper.view;
+package com.voltsrp.mobile.oswrapper.view;
 
 import android.content.ContentUris;
 import android.database.Cursor;
@@ -8,8 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
-import com.rockstargames.oswrapper.GameActivityBase;
-import com.rockstargames.oswrapper.GameThread;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameThread;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
