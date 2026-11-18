@@ -1,6 +1,6 @@
-package com.rockstargames.oswrapper.services;
+package com.voltsrp.mobile.oswrapper.services;
 
-import com.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
 import kotlin.jvm.internal.Intrinsics;
 
 public class LanguageServices implements ILanguageServices {
