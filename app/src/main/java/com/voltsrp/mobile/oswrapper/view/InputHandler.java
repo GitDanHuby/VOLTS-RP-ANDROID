@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper.view;
+package com.voltsrp.mobile.oswrapper.view;
 
 import android.graphics.PointF;
 import android.util.Log;
@@ -7,9 +7,9 @@ import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.rockstargames.oswrapper.GameActivityBase;
-import com.rockstargames.oswrapper.GameThread;
-import com.rockstargames.oswrapper.UtilsKt;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameThread;
+import com.voltsrp.mobile.oswrapper.UtilsKt;
 
 import java.util.ArrayList;
 import java.util.Collection;
