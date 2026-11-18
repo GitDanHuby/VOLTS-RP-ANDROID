@@ -1,7 +1,7 @@
-package com.rockstargames.oswrapper.services;
+package com.voltsrp.mobile.oswrapper.services
 
 import android.util.Log;
-import com.rockstargames.oswrapper.GameView;
+import com.voltsrp.mobile.oswrapper.GameView;
 
 import kotlin.jvm.internal.Intrinsics;
 
