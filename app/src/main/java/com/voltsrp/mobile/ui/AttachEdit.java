@@ -1,4 +1,4 @@
-package com.gta.game.ui;
+package com.voltsrp.mobile.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -10,7 +10,7 @@ import android.widget.Button;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.joom.paranoid.Obfuscate;
-import com.gta.game.R;
+import com.voltsrp.mobile.R;
 import com.gta.launcher.util.Util;
 @Obfuscate
 public class AttachEdit {
