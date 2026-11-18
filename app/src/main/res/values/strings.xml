@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">VOLTS RP</string>
+    <string name="play_bth">START!</string>
+    <string name="samp_ver">SA:MP 0.3.7</string>
+    <string name="client_name">SA:MP 2.11</string>
+    <string name="bug_info">Found a bug? Report it, and I'll fix it!</string>
+    <string name="authors">thanks to bkuzn and afobazl</string>
+    <string name="downloaderAssetsHeader">Preparing assets:</string>
+    <string name="downloaderPausedCellular">Would you like to enable downloading over cellular connections? Depending on your data plan, this may cost you money.</string>
+    <string name="downloaderPausedCellular2">If you choose not to enable downloading over cellular connections, the download will automatically resume when wi-fi is available.</string>
 </resources>
