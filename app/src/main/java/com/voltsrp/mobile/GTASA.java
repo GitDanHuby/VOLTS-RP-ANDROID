@@ -1,4 +1,4 @@
-package com.gta.game;
+package com.voltsrp.mobile;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -8,7 +8,7 @@ import android.view.KeyEvent;
 
 import com.joom.paranoid.Obfuscate;
 
-import com.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.rockstargames.oswrapper.GameActivityBase;
 
 @Obfuscate
 public abstract class GTASA extends GameActivityBase {
