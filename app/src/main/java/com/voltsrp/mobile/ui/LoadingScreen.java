@@ -1,4 +1,4 @@
-package com.gta.game.ui;
+package com.voltsrp.mobile.ui.dialog;
 
 import android.app.Activity;
 import android.os.Handler;
@@ -10,7 +10,7 @@ import android.widget.ProgressBar;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.gta.game.R;
+import com.voltsrp.mobile.R;
 
 public class LoadingScreen {
 
