@@ -1,6 +1,6 @@
-package com.rockstargames.oswrapper.view;
+package com.voltsrp.mobile.oswrapper.view;
 
-import com.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
 
 public interface GameViewHandler  {
     void onPause();
