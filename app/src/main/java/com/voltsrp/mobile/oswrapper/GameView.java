@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -9,12 +9,12 @@ import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import com.rockstargames.oswrapper.view.GameViewHandler;
-import com.rockstargames.oswrapper.view.InputHandler;
-import com.rockstargames.oswrapper.view.MovieHandler;
-import com.rockstargames.oswrapper.view.PlaylistHandler;
-import com.rockstargames.oswrapper.view.SensorHandler;
-import com.rockstargames.oswrapper.view.SplashScreenHandler;
+import com.voltsrp.mobile.oswrapper.view.GameViewHandler;
+import com.voltsrp.mobile.oswrapper.view.InputHandler;
+import com.voltsrp.mobile.oswrapper.view.MovieHandler;
+import com.voltsrp.mobile.oswrapper.view.PlaylistHandler;
+import com.voltsrp.mobile.oswrapper.view.SensorHandler;
+import com.voltsrp.mobile.oswrapper.view.SplashScreenHandler;
 import java.util.Iterator;
 import java.util.List;
 import kotlin.jvm.internal.Intrinsics;
