@@ -1,4 +1,4 @@
-package com.rockstargames.gtasa;
+package com.voltsrp.mobile.gtasa;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -13,7 +13,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.view.WindowManager;
-import com.rockstargames.gtasa.GLES3JNIView;
+import com.voltsrp.mobile.gtasa.GLES3JNIView;
 import java.io.InputStream;
 import android.view.WindowManager.LayoutParams;
 import android.view.Display;
