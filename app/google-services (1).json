@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "708827743870",
+    "project_id": "volts-rp",
+    "storage_bucket": "volts-rp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708827743870:android:91ea84d4b322ad28a73a2f",
+        "android_client_info": {
+          "package_name": "com.voltsrp.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708827743870-6j7g9hlc6pduccs3cltck3fg6lu9r5b8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.voltsrp.mobile",
+            "certificate_hash": "2762e09692957ee7415728c68bc3e08dc32f69fe"
+          }
+        },
+        {
+          "client_id": "708827743870-p5853a8poggsimfnemqaf40vneh9nfdi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.voltsrp.mobile",
+            "certificate_hash": "73ad43ae65f30f336ea1174f46fe3e667664d27c"
+          }
+        },
+        {
+          "client_id": "708827743870-5urnd9hen577aqdjjt9i9vlv1n3e6b6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8UygbrFgK7HUCy0WGIcp4SW6q9cJDLVw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "708827743870-5urnd9hen577aqdjjt9i9vlv1n3e6b6g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
