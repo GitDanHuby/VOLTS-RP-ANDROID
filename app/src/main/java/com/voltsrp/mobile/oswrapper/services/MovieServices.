@@ -1,6 +1,6 @@
-package com.rockstargames.oswrapper.services;
+package com.voltsrp.mobile.oswrapper.services
 
-import com.rockstargames.oswrapper.GameView;
+import com.voltsrp.mobile.oswrapper.GameView;
 
 public final class MovieServices implements IMovieServices {
     private final GameView view;
