@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper.view;
+package com.voltsrp.mobile.oswrapper.view;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -9,9 +9,9 @@ import android.os.Build;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
-import com.rockstargames.oswrapper.GameActivityBase;
-import com.rockstargames.oswrapper.GameThread;
-import com.rockstargames.oswrapper.GameView;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameThread;
+import com.voltsrp.mobile.oswrapper.GameView;
 
 public final class SensorHandler implements SensorEventListener, GameViewHandler {
 
