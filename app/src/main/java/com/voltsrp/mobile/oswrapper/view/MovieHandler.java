@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper.view;
+package com.voltsrp.mobile.oswrapper.view;
 
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Canvas;
@@ -13,8 +13,8 @@ import android.view.SurfaceView;
 import androidx.core.view.ViewCompat;
 
 
-import com.gta.game.R;
-import com.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.R;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
