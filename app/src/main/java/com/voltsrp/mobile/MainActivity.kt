@@ -40,6 +40,7 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.compose.ui.draw.clip
 import coil.compose.AsyncImage
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -104,13 +105,9 @@ fun VoltsApp() {
             try {
                 val credentialManager = CredentialManager.create(context)
 
-                val googleOption = GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId(
-                        context.getString(R.string.default_web_client_id)
-                    )
-                    .setAutoSelectEnabled(false)
-                    .build()
+                val googleOption = GetSignInWithGoogleOption.Builder(
+    context.getString(R.string.default_web_client_id)
+).build()
 
                 val request = GetCredentialRequest.Builder()
                     .addCredentialOption(googleOption)
