@@ -1,4 +1,4 @@
-package com.gta.game;
+package com.voltsrp.mobile;
 
 import android.app.Activity;
 import android.graphics.Rect;
