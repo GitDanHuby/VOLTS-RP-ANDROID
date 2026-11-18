@@ -33,6 +33,11 @@ jobs:
       - name: Build APK
         run: bash ./gradlew :app:assembleDebug
 
+      - name: Check APK certificate
+        run: |
+          APK=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          $ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs "$APK"
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
