@@ -1,4 +1,4 @@
-package com.gta.launcher.util;
+package com.voltsrp.mobile.util;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
