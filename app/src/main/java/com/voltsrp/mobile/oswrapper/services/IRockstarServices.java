@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper.services;
+package com.voltsrp.mobile.oswrapper.services;
 
 public interface IRockstarServices {
     void httpCancel(int id);
