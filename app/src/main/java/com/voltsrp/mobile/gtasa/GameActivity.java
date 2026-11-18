@@ -1,4 +1,4 @@
-package com.rockstargames.gtasa;
+package com.voltsrp.mobile.gtasa;
 
 import com.rockstargames.oswrapper.GameActivityBase;
 
