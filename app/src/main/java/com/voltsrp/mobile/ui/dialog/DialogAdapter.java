@@ -1,4 +1,4 @@
-package com.gta.game.ui.dialog;
+package com.voltsrp.mobile.ui.dialog;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.joom.paranoid.Obfuscate;
-import com.gta.game.R;
+import com.voltsrp.mobile.R;
 import com.gta.launcher.util.Util;
 
 import java.util.ArrayList;
