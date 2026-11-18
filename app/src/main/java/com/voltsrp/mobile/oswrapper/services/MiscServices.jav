@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper.services;
+package com.voltsrp.mobile.oswrapper.services;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import com.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
 
 public final class MiscServices implements IMiscServices {
     private static final String TAG = "MiscServices";
