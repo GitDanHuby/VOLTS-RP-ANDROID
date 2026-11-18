@@ -1,8 +1,8 @@
-package com.rockstargames.gtasa;
+package com.voltsrp.mobile.gtasa;
 
 /* JADX INFO: loaded from: classes.dex */
 public final class BuildConfig {
-    public static final String APPLICATION_ID = "com.rockstargames.gtasa";
+    public static final String APPLICATION_ID = "com.voltsrp.mobile";
     public static final String BUILD_TYPE = "release";
     public static final boolean DEBUG = false;
     public static final int VERSION_CODE = 3782367;
