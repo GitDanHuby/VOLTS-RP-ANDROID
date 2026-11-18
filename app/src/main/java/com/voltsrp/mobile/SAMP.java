@@ -1,13 +1,13 @@
-package com.gta.game;
+package com.voltsrp.mobile;
 
 import android.os.Bundle;
 import android.util.Log;
 
 //import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.joom.paranoid.Obfuscate;
-import com.gta.game.ui.AttachEdit;
-import com.gta.game.ui.LoadingScreen;
-import com.gta.game.ui.dialog.DialogManager;
+import com.voltsrp.mobile.ui.AttachEdit;
+import com.voltsrp.mobile.ui.LoadingScreen;
+import com.voltsrp.mobile.ui.dialog.DialogManager;
 
 @Obfuscate
 public class SAMP extends GTASA implements HeightProvider.HeightListener {
