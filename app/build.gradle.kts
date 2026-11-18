@@ -197,6 +197,8 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib-jdk8")
     }
 
+    implementation("com.intuit.sdp:sdp-android:1.1.1")
+    implementation("com.google.android.material:material:1.12.0")
     testImplementation(libs.junit)
 }
 
