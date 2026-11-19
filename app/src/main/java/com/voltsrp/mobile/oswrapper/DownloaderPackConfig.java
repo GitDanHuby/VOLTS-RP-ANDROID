@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 public final class DownloaderPackConfig {
 
