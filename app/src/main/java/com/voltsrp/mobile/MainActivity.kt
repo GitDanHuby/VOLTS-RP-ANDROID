@@ -104,9 +104,13 @@ fun VoltsApp() {
             try {
                 val credentialManager = CredentialManager.create(context)
 
-                val googleOption = GetSignInWithGoogleOption.Builder(
-    context.getString(R.string.default_web_client_id)
-).build()
+                val googleOption = GetGoogleIdOption.Builder()
+    .setFilterByAuthorizedAccounts(false)
+    .setServerClientId(
+        context.getString(R.string.default_web_client_id)
+    )
+    .setAutoSelectEnabled(false)
+    .build()
 
                 val request = GetCredentialRequest.Builder()
                     .addCredentialOption(googleOption)
