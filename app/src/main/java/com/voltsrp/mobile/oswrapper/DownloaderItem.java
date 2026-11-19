@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 import android.content.Context;
 import android.util.Log;
@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.gta.game.R;
+import com.voltsro.mobile.R;
 
 import kotlin.jvm.internal.Intrinsics;
 
