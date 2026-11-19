@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.voltsro.mobile.R;
+import com.voltsrp.mobile.R;
 
 import kotlin.jvm.internal.Intrinsics;
 
