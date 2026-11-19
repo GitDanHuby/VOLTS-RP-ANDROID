@@ -47,6 +47,13 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.voltsrp.mobile.ui.theme.MyComposeApplicationTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import java.net.InetAddress
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -83,6 +90,77 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
+private data class OpenMpServerStatus(
+    val playersOnline: Int,
+    val maxPlayers: Int
+)
+
+/**
+ * Consulta as informações públicas do servidor usando o protocolo UDP
+ * de query do SA-MP/Open.MP (opcode "i").
+ */
+private suspend fun consultarServidorOpenMp(): OpenMpServerStatus? =
+    withContext(Dispatchers.IO) {
+        try {
+            val host = "179.198.105.167"
+            val port = 8081
+            val ipBytes = InetAddress.getByName(host).address
+
+            // Cabeçalho: "SAMP" + IP (4 bytes) + porta little-endian + opcode "i".
+            val request = byteArrayOf(
+                0x53, 0x41, 0x4D, 0x50,
+                ipBytes[0], ipBytes[1], ipBytes[2], ipBytes[3],
+                (port and 0xFF).toByte(),
+                ((port shr 8) and 0xFF).toByte(),
+                0x69
+            )
+
+            DatagramSocket().use { socket ->
+                socket.soTimeout = 2500
+
+                val destination = InetAddress.getByName(host)
+                socket.send(
+                    DatagramPacket(request, request.size, destination, port)
+                )
+
+                val buffer = ByteArray(2048)
+                val response = DatagramPacket(buffer, buffer.size)
+                socket.receive(response)
+
+                // A resposta tem o mesmo cabeçalho de 11 bytes.
+                if (response.length < 16) return@withContext null
+                if (buffer[0] != 0x53.toByte() ||
+                    buffer[1] != 0x41.toByte() ||
+                    buffer[2] != 0x4D.toByte() ||
+                    buffer[3] != 0x50.toByte() ||
+                    buffer[10] != 0x69.toByte()
+                ) {
+                    return@withContext null
+                }
+
+                val values = ByteBuffer
+                    .wrap(buffer, 12, 4)
+                    .order(ByteOrder.LITTLE_ENDIAN)
+
+                val players = values.short.toInt() and 0xFFFF
+                val maximum = values.short.toInt() and 0xFFFF
+
+                if (maximum <= 0 || players > maximum) {
+                    return@withContext null
+                }
+
+                OpenMpServerStatus(
+                    playersOnline = players,
+                    maxPlayers = maximum
+                )
+            }
+        } catch (_: Exception) {
+            // Sem resposta UDP ou servidor indisponível: a interface mostrará OFFLINE.
+            null
+        }
+    }
+
 
 @Composable
 fun VoltsApp() {
@@ -488,9 +566,19 @@ fun VoltsHome(
 ) {
     val context = LocalContext.current
 
-    val playersOnline = 0
-    val maxPlayers = 100
-    val occupancy = playersOnline.toFloat() / maxPlayers
+    var serverStatus by remember { mutableStateOf<OpenMpServerStatus?>(null) }
+
+    // Atualiza os dados públicos do servidor enquanto a tela inicial está aberta.
+    LaunchedEffect(Unit) {
+        while (true) {
+            serverStatus = consultarServidorOpenMp()
+            delay(20_000)
+        }
+    }
+
+    val playersOnline = serverStatus?.playersOnline
+    val maxPlayers = serverStatus?.maxPlayers ?: 50
+    val serverOnline = serverStatus != null
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val screenW = maxWidth
@@ -563,13 +651,16 @@ Row(
     Box(
         Modifier
             .size(7.dp)
-            .background(Color(0xFF38E58C), CircleShape)
+            .background(
+                if (serverOnline) Color(0xFF38E58C) else Color(0xFFFF5A5A),
+                CircleShape
+            )
     )
 
     Spacer(Modifier.width(7.dp))
 
     Text(
-        "$playersOnline ONLINE",
+        if (serverOnline) "${playersOnline ?: 0} ONLINE" else "SERVIDOR OFFLINE",
         color = Color.White,
         fontSize = 11.sp,
         fontWeight = FontWeight.Bold
@@ -676,7 +767,11 @@ Card(
             Spacer(Modifier.height(7.dp))
 
             Text(
-                "$playersOnline / $maxPlayers jogadores",
+                if (serverOnline) {
+                    "${playersOnline ?: 0} / $maxPlayers jogadores"
+                } else {
+                    "OFFLINE • 50 vagas"
+                },
                 color = Color(0xFFBDB7C8),
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold
