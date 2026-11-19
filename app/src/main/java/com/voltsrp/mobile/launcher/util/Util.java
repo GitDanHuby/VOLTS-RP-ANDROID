@@ -1,4 +1,4 @@
-package com.voltsrp.mobile.util;
+package com.voltsrp.mobile.launcher.util;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
