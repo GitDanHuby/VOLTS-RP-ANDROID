@@ -1,4 +1,4 @@
-package com/voltsrp/mobile;
+package package com.voltsrp.mobile.gtasa;
 import android.opengl.GLSurfaceView;
 import android.content.Context;
 import android.graphics.PixelFormat;
