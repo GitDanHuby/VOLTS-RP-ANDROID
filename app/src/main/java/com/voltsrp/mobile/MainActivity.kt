@@ -148,9 +148,10 @@ fun VoltsApp() {
                 }
 
             } catch (e: GetCredentialException) {
-                signingIn = false
-                loginError = e.localizedMessage
-                    ?: "Não foi possível abrir as contas Google."
+    android.util.Log.e("VOLTS_AUTH", "Erro no Google Credential Manager", e)
+    signingIn = false
+    loginError = "${e.javaClass.simpleName}: ${e.localizedMessage}"
+}
             } catch (e: Exception) {
                 signingIn = false
                 loginError = e.localizedMessage
