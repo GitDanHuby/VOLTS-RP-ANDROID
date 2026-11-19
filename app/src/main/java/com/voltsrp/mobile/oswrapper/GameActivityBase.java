@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -14,10 +14,10 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.nvidia.devtech.NvAPKFile;
-import com.nvidia.devtech.NvAPKFileHelper;
-import com.nvidia.devtech.NvUtil;
-import com.gta.game.R;
+import com.voltsrp.mobile.nvidia.devtech.NvAPKFile;
+import com.voltsrp.mobile.nvidia.devtech.NvAPKFileHelper;
+import com.voltsrp.mobile.nvidia.devtech.NvUtil;
+import com.voltsrp.mobile.R;
 
 
 import java.io.File;
