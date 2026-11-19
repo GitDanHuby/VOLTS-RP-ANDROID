@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +22,7 @@ import com.google.android.play.core.assetpacks.AssetPackState;
 import com.google.android.play.core.assetpacks.AssetPackStateUpdateListener;
 import com.google.android.play.core.assetpacks.model.AssetPackStatus;
 import com.google.android.play.core.assetpacks.model.AssetPackStorageMethod;
-import com.gta.game.R;
+import com.voltsrp.mobile.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
