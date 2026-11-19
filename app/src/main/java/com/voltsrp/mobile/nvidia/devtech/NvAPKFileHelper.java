@@ -1,4 +1,4 @@
-package com.nvidia.devtech;
+package com.voltsrp.mobile.nvidia.devtech;
 
 import android.content.Context;
 import android.content.res.AssetManager;
