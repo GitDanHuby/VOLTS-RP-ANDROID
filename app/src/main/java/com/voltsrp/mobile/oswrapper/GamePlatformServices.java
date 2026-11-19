@@ -1,17 +1,17 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
-import com.rockstargames.oswrapper.services.ILanguageServices;
-import com.rockstargames.oswrapper.services.IMiscServices;
-import com.rockstargames.oswrapper.services.IMovieServices;
-import com.rockstargames.oswrapper.services.IPlaylistServices;
-import com.rockstargames.oswrapper.services.IRockstarServices;
-import com.rockstargames.oswrapper.services.ISplashScreenServices;
-import com.rockstargames.oswrapper.services.LanguageServices;
-import com.rockstargames.oswrapper.services.MiscServices;
-import com.rockstargames.oswrapper.services.MovieServices;
-import com.rockstargames.oswrapper.services.PlaylistServices;
-import com.rockstargames.oswrapper.services.RockstarServices;
-import com.rockstargames.oswrapper.services.SplashScreenServices;
+import com.voltsrp.mobile.oswrapper.services.ILanguageServices;
+import com.voltsrp.mobile.oswrapper.services.IMiscServices;
+import com.voltsrp.mobile.oswrapper.services.IMovieServices;
+import com.voltsrp.mobile.oswrapper.services.IPlaylistServices;
+import com.voltsrp.mobile.oswrapper.services.IRockstarServices;
+import com.voltsrp.mobile.oswrapper.services.ISplashScreenServices;
+import com.voltsrp.mobile.oswrapper.services.LanguageServices;
+import com.voltsrp.mobile.oswrapper.services.MiscServices;
+import com.voltsrp.mobile.oswrapper.services.MovieServices;
+import com.voltsrp.mobile.oswrapper.services.PlaylistServices;
+import com.voltsrp.mobile.oswrapper.services.RockstarServices;
+import com.voltsrp.mobile.oswrapper.services.SplashScreenServices;
 
 public final class GamePlatformServices implements
         ILanguageServices,
