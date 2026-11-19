@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 import android.app.UiModeManager;
 import android.content.Context;
