@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.joom.paranoid.Obfuscate;
 import com.voltsrp.mobile.R;
-import com.gta.launcher.util.Util;
+import com.voltsrp.mobile.launcher.util.Util;
 
 import java.util.ArrayList;
 @Obfuscate
