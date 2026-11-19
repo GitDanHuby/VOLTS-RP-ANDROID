@@ -30,18 +30,36 @@ jobs:
         run: |
           sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;26.2.11394342" "cmake;3.22.1"
 
+      - name: Configure release signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.RELEASE_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.RELEASE_KEY_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE_BASE64"
+          test -n "$STORE_PASSWORD"
+          test -n "$KEY_ALIAS"
+          test -n "$KEY_PASSWORD"
+
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > release.keystore
+
+          printf 'storeFile=release.keystore\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+            "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" > release.properties
+
       - name: Build APK
-        run: bash ./gradlew :app:assembleDebug
+        run: bash ./gradlew :app:assembleRelease
 
       - name: Check APK certificate
         run: |
-          APK=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          test -n "$APK"
           $ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs "$APK"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: VOLTS-RP-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/release/*.apk
           if-no-files-found: error
           
