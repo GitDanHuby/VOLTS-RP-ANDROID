@@ -1,4 +1,4 @@
-package com.voltsrp.mobile.ui.dialog;
+package com.voltsrp.mobile.ui;
 
 import android.app.Activity;
 import android.os.Handler;
