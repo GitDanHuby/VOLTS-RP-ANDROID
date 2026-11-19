@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 import android.content.Context;
 import android.content.res.AssetManager;
