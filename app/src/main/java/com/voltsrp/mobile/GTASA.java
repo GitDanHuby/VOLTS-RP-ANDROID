@@ -8,7 +8,7 @@ import android.view.KeyEvent;
 
 import com.joom.paranoid.Obfuscate;
 
-import com.voltsrp.mobile.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
 
 @Obfuscate
 public abstract class GTASA extends GameActivityBase {
