@@ -1,4 +1,4 @@
-package com.voltsrp.mobile.oswrapper.services
+package com.voltsrp.mobile.oswrapper.services;
 
 import android.util.Log;
 import com.voltsrp.mobile.oswrapper.GameView;
