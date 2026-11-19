@@ -38,6 +38,14 @@
           }
         },
         {
+          "client_id": "708827743870-ltqgdolorvl2gm0v0m284nf7jpa1qrnu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.voltsrp.mobile",
+            "certificate_hash": "0b096f1926fa5db6ecdd846fc8e14b4e6b512d72"
+          }
+        },
+        {
           "client_id": "708827743870-p5853a8poggsimfnemqaf40vneh9nfdi.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
