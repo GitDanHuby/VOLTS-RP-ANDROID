@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "708827743870-12nnjt4q05rk7fimdsfu089ln06i4kb1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.voltsrp.mobile",
+            "certificate_hash": "0489a06536093904fceee9d8925f2c3b0565b8da"
+          }
+        },
+        {
           "client_id": "708827743870-6j7g9hlc6pduccs3cltck3fg6lu9r5b8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
