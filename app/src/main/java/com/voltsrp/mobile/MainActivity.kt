@@ -147,11 +147,10 @@ fun VoltsApp() {
                     loginError = "Tipo de conta Google não reconhecido."
                 }
 
-            } catch (e: GetCredentialException) {
-    android.util.Log.e("VOLTS_AUTH", "Erro no Google Credential Manager", e)
-    signingIn = false
-    loginError = "${e.javaClass.simpleName}: ${e.localizedMessage}"
-}
+                        } catch (e: GetCredentialException) {
+                android.util.Log.e("VOLTS_AUTH", "Erro no Google Credential Manager", e)
+                signingIn = false
+                loginError = "${e.javaClass.simpleName}: ${e.localizedMessage}"
             } catch (e: Exception) {
                 signingIn = false
                 loginError = e.localizedMessage
