@@ -1,10 +1,10 @@
 package com.voltsrp.mobile.gtasa;
 
 import com.voltsrp.mobile.R;
-import com.voltsrp.oswrapper.DownloaderActivityBase;
-import com.voltsrp.oswrapper.DownloaderConfig;
-import com.voltsrp.oswrapper.DownloaderPackConfig;
-import com.voltsrp.oswrapper.DownloaderPackType;
+import com.voltsrp.mobile.oswrapper.DownloaderActivityBase;
+import com.voltsrp.mobile.oswrapper.DownloaderConfig;
+import com.voltsrp.mobile.oswrapper.DownloaderPackConfig;
+import com.voltsrp.mobile.oswrapper.DownloaderPackType;
 
 import kotlin.collections.CollectionsKt;
 
@@ -25,7 +25,7 @@ public final class DownloaderActivity extends DownloaderActivityBase {
     public DownloaderActivity() throws Exception {
     }
 
-    @Override // com.voltsrp.oswrapper.DownloaderActivityBase
+    @Override // com.voltsrp.mobile.oswrapper.DownloaderActivityBase
     protected DownloaderConfig getConfig() {
         return this.config;
     }

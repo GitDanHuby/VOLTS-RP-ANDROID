@@ -1,6 +1,6 @@
 package com.voltsrp.mobile.gtasa;
 
-import com.rockstargames.oswrapper.GameActivityBase;
+import com.voltsrp.mobile.oswrapper.GameActivityBase;
 
 
 public class GameActivity extends GameActivityBase {
