@@ -36,6 +36,7 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
 import androidx.compose.ui.draw.clip
 import coil.compose.AsyncImage
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -103,25 +104,47 @@ fun VoltsApp() {
 
             try {
                 val credentialManager = CredentialManager.create(context)
+                val serverClientId = context.getString(R.string.default_web_client_id)
 
-                val googleOption = GetGoogleIdOption.Builder()
-    .setFilterByAuthorizedAccounts(false)
-    .setServerClientId(
-        context.getString(R.string.default_web_client_id)
-    )
-    .setAutoSelectEnabled(false)
-    .build()
+                // Primeira tentativa: Credential Manager com a opção de Google ID.
+                val credential = try {
+                    val googleOption = GetGoogleIdOption.Builder()
+                        .setFilterByAuthorizedAccounts(false)
+                        .setServerClientId(serverClientId)
+                        .setAutoSelectEnabled(false)
+                        .build()
 
-                val request = GetCredentialRequest.Builder()
-                    .addCredentialOption(googleOption)
-                    .build()
+                    val request = GetCredentialRequest.Builder()
+                        .addCredentialOption(googleOption)
+                        .build()
 
-                val result = credentialManager.getCredential(
-                    context = context,
-                    request = request
-                )
+                    credentialManager.getCredential(
+                        context = context,
+                        request = request
+                    ).credential
+                } catch (e: GetCredentialException) {
+                    // Sem credenciais disponíveis? Abre o fluxo explícito de login Google.
+                    if (e !is NoCredentialException) {
+                        throw e
+                    }
 
-                val credential = result.credential
+                    android.util.Log.i(
+                        "VOLTS_AUTH",
+                        "Nenhuma credencial salva; iniciando seleção explícita da conta Google."
+                    )
+
+                    val signInOption = GetSignInWithGoogleOption.Builder(serverClientId)
+                        .build()
+
+                    val signInRequest = GetCredentialRequest.Builder()
+                        .addCredentialOption(signInOption)
+                        .build()
+
+                    credentialManager.getCredential(
+                        context = context,
+                        request = signInRequest
+                    ).credential
+                }
 
                 if (credential is CustomCredential &&
                     credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
@@ -142,30 +165,34 @@ fun VoltsApp() {
                                 user = auth.currentUser
                                 loginError = ""
                             } else {
+                                android.util.Log.e(
+                                    "VOLTS_AUTH",
+                                    "Firebase recusou o token Google",
+                                    task.exception
+                                )
                                 loginError = task.exception?.localizedMessage
-                                    ?: "Não foi possível conectar sua conta."
+                                    ?: "O Firebase não conseguiu autenticar a conta Google."
                             }
                         }
                 } else {
                     signingIn = false
-                    loginError = "Tipo de conta Google não reconhecido."
+                    loginError = "O Google retornou um tipo de credencial inesperado."
                 }
 
-                        } catch (e: GetCredentialException) {
-    android.util.Log.e(
-        "VOLTS_AUTH",
-        "TIPO: ${e.type} | CLASSE: ${e.javaClass.name}",
-        e
-    )
-
-    signingIn = false
-    loginError = "${e.javaClass.simpleName}: ${e.type}: ${e.message}"
-
-} catch (e: Exception) {
-    signingIn = false
-    loginError = e.localizedMessage
-        ?: "Erro ao conectar com Google."
-}
+            } catch (e: GetCredentialException) {
+                android.util.Log.e(
+                    "VOLTS_AUTH",
+                    "Falha no Credential Manager: ${e.type} | ${e.javaClass.name}",
+                    e
+                )
+                signingIn = false
+                loginError = "${e.javaClass.simpleName}: ${e.type}: ${e.message}"
+            } catch (e: Exception) {
+                android.util.Log.e("VOLTS_AUTH", "Falha no login Google", e)
+                signingIn = false
+                loginError = e.localizedMessage
+                    ?: "Erro ao conectar com Google."
+            }
         }
     }
 
