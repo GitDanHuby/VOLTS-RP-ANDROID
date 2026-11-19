@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.joom.paranoid.Obfuscate;
 import com.voltsrp.mobile.R;
-import com.gta.launcher.util.CustomRecyclerView;
-import com.gta.launcher.util.Util;
+import com.voltsrp.mobile.launcher.util.CustomRecyclerView;
+import com.voltsrp.mobile.launcher.util.Util;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
