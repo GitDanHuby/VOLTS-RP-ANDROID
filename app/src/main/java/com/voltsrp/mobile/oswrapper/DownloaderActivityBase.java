@@ -70,9 +70,9 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
         @Override
         public void run() {
             // Call the outer class method
-            if (com.rockstargames.oswrapper.DownloaderActivityBase.this.onTick()) {
+            if (com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this.onTick()) {
                 // Access the handler from the outer class
-                Handler handler = com.rockstargames.oswrapper.DownloaderActivityBase.this.handler;
+                Handler handler = com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this.handler;
 
                 if (handler != null) {
                     // Schedule the next tick
@@ -92,7 +92,7 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
         }
 
         public final List<Integer> getPACK_VIEWS$oswrapper_release() {
-            return com.rockstargames.oswrapper.DownloaderActivityBase.PACK_VIEWS;
+            return com.voltsrp.mobile.oswrapper.DownloaderActivityBase.PACK_VIEWS;
         }
     }
 
@@ -126,7 +126,7 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
 
     }
 
-    static /* synthetic */ void downloadAssetPacks$default(com.rockstargames.oswrapper.DownloaderActivityBase downloaderActivityBase, List list, int i, int i2, Object obj) {
+    static /* synthetic */ void downloadAssetPacks$default(com.voltsrp.mobile.oswrapper.DownloaderActivityBase downloaderActivityBase, List list, int i, int i2, Object obj) {
         if (obj != null) {
             throw new UnsupportedOperationException("Super calls with default arguments not supported in this target, function: downloadAssetPacks");
         }
@@ -143,7 +143,7 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public final void downloadAssetPacks$lambda$5(final int i, final com.rockstargames.oswrapper.DownloaderActivityBase this$0, final List packs, Exception it) {
+    public final void downloadAssetPacks$lambda$5(final int i, final com.voltsrp.mobile.oswrapper.DownloaderActivityBase this$0, final List packs, Exception it) {
         Intrinsics.checkNotNullParameter(this$0, "this$0");
         Intrinsics.checkNotNullParameter(packs, "$packs");
         Intrinsics.checkNotNullParameter(it, "it");
@@ -154,17 +154,17 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
                 Intrinsics.throwUninitializedPropertyAccessException("handler");
                 handler = null;
             }
-            handler.postDelayed(new Runnable() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda5
+            handler.postDelayed(new Runnable() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda5
                 @Override // java.lang.Runnable
                 public final void run() {
-                    com.rockstargames.oswrapper.DownloaderActivityBase.downloadAssetPacks$lambda$5$lambda$4(com.rockstargames.oswrapper.DownloaderActivityBase.this, packs, i);
+                    com.voltsrp.mobile.oswrapper.DownloaderActivityBase.downloadAssetPacks$lambda$5$lambda$4(com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this, packs, i);
                 }
             }, 1000L);
         }
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static final void downloadAssetPacks$lambda$5$lambda$4(com.rockstargames.oswrapper.DownloaderActivityBase this$0, List packs, int i) {
+    public static final void downloadAssetPacks$lambda$5$lambda$4(com.voltsrp.mobile.oswrapper.DownloaderActivityBase this$0, List packs, int i) {
         Intrinsics.checkNotNullParameter(this$0, "this$0");
         Intrinsics.checkNotNullParameter(packs, "$packs");
         Log.i(LOG_TAG, "downloadAssetPack: retrying download");
@@ -194,7 +194,7 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
         for (Integer viewId : PACK_VIEWS) {
             findViewById(viewId).setVisibility(View.GONE);
         }
-        getConfig().forEachRuntimePack(new Function2<Integer, DownloaderPackConfig, Unit>() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase.initializeDownload.2
+        getConfig().forEachRuntimePack(new Function2<Integer, DownloaderPackConfig, Unit>() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase.initializeDownload.2
 
 
             @Override // kotlin.jvm.functions.Function2
@@ -205,21 +205,21 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
 
             public final void invoke(int i, DownloaderPackConfig pack) {
                 Intrinsics.checkNotNullParameter(pack, "pack");
-                View viewFindViewById = com.rockstargames.oswrapper.DownloaderActivityBase.this.findViewById(INSTANCE.getPACK_VIEWS$oswrapper_release().get(i).intValue());
-                com.rockstargames.oswrapper.DownloaderActivityBase downloaderActivityBase = com.rockstargames.oswrapper.DownloaderActivityBase.this;
+                View viewFindViewById = com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this.findViewById(INSTANCE.getPACK_VIEWS$oswrapper_release().get(i).intValue());
+                com.voltsrp.mobile.oswrapper.DownloaderActivityBase downloaderActivityBase = com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this;
                 Intrinsics.checkNotNull(viewFindViewById);
-                String string = com.rockstargames.oswrapper.DownloaderActivityBase.this.getString(pack.getLabelId());
+                String string = com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this.getString(pack.getLabelId());
                 Intrinsics.checkNotNullExpressionValue(string, "getString(...)");
                 DownloaderItem downloaderItem = new DownloaderItem(downloaderActivityBase, viewFindViewById, string);
-                if (com.rockstargames.oswrapper.DownloaderActivityBase.this.hasAssetPack(pack.getId())) {
-                    Log.i(com.rockstargames.oswrapper.DownloaderActivityBase.LOG_TAG, "[!!] Pack already downloaded: " + pack.getId());
+                if (com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this.hasAssetPack(pack.getId())) {
+                    Log.i(com.voltsrp.mobile.oswrapper.DownloaderActivityBase.LOG_TAG, "[!!] Pack already downloaded: " + pack.getId());
                     downloaderItem.update(4, -1, 0L, 0L);
                 } else {
-                    Log.i(com.rockstargames.oswrapper.DownloaderActivityBase.LOG_TAG, "[!!] Requesting download: " + pack.getId());
+                    Log.i(com.voltsrp.mobile.oswrapper.DownloaderActivityBase.LOG_TAG, "[!!] Requesting download: " + pack.getId());
                     arrayList.add(pack.getId());
                 }
                 viewFindViewById.setVisibility(View.VISIBLE);
-                com.rockstargames.oswrapper.DownloaderActivityBase.this.packs.put(pack.getId(), downloaderItem);
+                com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this.packs.put(pack.getId(), downloaderItem);
             }
         });
         if (arrayList.size() != 0) {
@@ -231,14 +231,14 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static final void onCreate$lambda$0(com.rockstargames.oswrapper.DownloaderActivityBase this$0, View view) {
+    public static final void onCreate$lambda$0(com.voltsrp.mobile.oswrapper.DownloaderActivityBase this$0, View view) {
         Intrinsics.checkNotNullParameter(this$0, "this$0");
         Log.i(LOG_TAG, "[!!] Intent(Settings.ACTION_WIFI_SETTINGS)");
         this$0.startActivity(new Intent("android.settings.WIFI_SETTINGS"));
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static final void onCreate$lambda$2(final com.rockstargames.oswrapper.DownloaderActivityBase this$0, com.rockstargames.oswrapper.DownloaderActivityBase activity, View view) {
+    public static final void onCreate$lambda$2(final com.voltsrp.mobile.oswrapper.DownloaderActivityBase this$0, com.voltsrp.mobile.oswrapper.DownloaderActivityBase activity, View view) {
         Intrinsics.checkNotNullParameter(this$0, "this$0");
         Intrinsics.checkNotNullParameter(activity, "$activity");
         Log.i(LOG_TAG, "[!!] showCellularDataConfirmation");
@@ -248,7 +248,7 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
             assetPackManager = null;
         }
         Task<Integer> taskShowCellularDataConfirmation = assetPackManager.showCellularDataConfirmation(activity);
-        final Function1<Integer, Unit> function1 = new Function1<Integer, Unit>() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase$onCreate$2$1
+        final Function1<Integer, Unit> function1 = new Function1<Integer, Unit>() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase$onCreate$2$1
             @Override // kotlin.jvm.functions.Function1
             public /* bridge */ /* synthetic */ Unit invoke(Integer num) {
                 invoke2(num);
@@ -261,10 +261,10 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
                 this$0.setShowWifiButtons(num == null || num.intValue() != -1);
             }
         };
-        taskShowCellularDataConfirmation.addOnSuccessListener(new OnSuccessListener() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda3
+        taskShowCellularDataConfirmation.addOnSuccessListener(new OnSuccessListener() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda3
             @Override // com.google.android.gms.tasks.OnSuccessListener
             public final void onSuccess(Object obj) {
-                com.rockstargames.oswrapper.DownloaderActivityBase.onCreate$lambda$2$lambda$1(function1, obj);
+                com.voltsrp.mobile.oswrapper.DownloaderActivityBase.onCreate$lambda$2$lambda$1(function1, obj);
             }
         });
     }
@@ -284,7 +284,7 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
         final ArrayList arrayList = new ArrayList();
         final ArrayList arrayList2 = new ArrayList();
         AssetPackManager assetPackManager2 = this.assetPackManager;
-        getConfig().forEachPack(new Function2<Integer, DownloaderPackConfig, Unit>() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase.onDownloadComplete.1
+        getConfig().forEachPack(new Function2<Integer, DownloaderPackConfig, Unit>() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase.onDownloadComplete.1
 
 
             @Override // kotlin.jvm.functions.Function2
@@ -306,7 +306,7 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
                 if (packLocation == null) {
                     throw new RuntimeException("onDownloadComplete: getPackLocation(" + pack.getId() + ") returned null");
                 }
-                Log.i(com.rockstargames.oswrapper.DownloaderActivityBase.LOG_TAG, "Pack " + pack.getId() + "\nstorageMethod = " + packLocation.packStorageMethod() + "\npath = " + packLocation.path() + "\nassetsPath = " + packLocation.assetsPath());
+                Log.i(com.voltsrp.mobile.oswrapper.DownloaderActivityBase.LOG_TAG, "Pack " + pack.getId() + "\nstorageMethod = " + packLocation.packStorageMethod() + "\npath = " + packLocation.path() + "\nassetsPath = " + packLocation.assetsPath());
                 List<String> list = arrayList2;
                 if (packLocation.packStorageMethod() == AssetPackStorageMethod.STORAGE_FILES && (strPath = packLocation.path()) == null) {
                     throw new RuntimeException("onDownloadComplete: getPackLocation(" + pack.getId() + ").path returned null for STORAGE_FILES pack");
@@ -325,23 +325,23 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
     private final void onDownloadFailed() {
         Log.i(LOG_TAG, "onDownloadFailed: showing the error");
         this.complete.set(true);
-        new AlertDialog.Builder(this).setTitle(R.string.downloaderError).setMessage(R.string.downloaderNoData).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda4
+        new AlertDialog.Builder(this).setTitle(R.string.downloaderError).setMessage(R.string.downloaderNoData).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda4
             @Override // android.content.DialogInterface.OnClickListener
             public final void onClick(DialogInterface dialogInterface, int i) {
-                com.rockstargames.oswrapper.DownloaderActivityBase.onDownloadFailed$lambda$9(com.rockstargames.oswrapper.DownloaderActivityBase.this, dialogInterface, i);
+                com.voltsrp.mobile.oswrapper.DownloaderActivityBase.onDownloadFailed$lambda$9(com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this, dialogInterface, i);
             }
         }).setIcon(android.R.drawable.ic_dialog_alert).show();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static final void onDownloadFailed$lambda$9(com.rockstargames.oswrapper.DownloaderActivityBase this$0, DialogInterface dialogInterface, int i) {
+    public static final void onDownloadFailed$lambda$9(com.voltsrp.mobile.oswrapper.DownloaderActivityBase this$0, DialogInterface dialogInterface, int i) {
         Intrinsics.checkNotNullParameter(this$0, "this$0");
         dialogInterface.dismiss();
         this$0.finish();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static final void onStateUpdate$lambda$7(AssetPackState state, com.rockstargames.oswrapper.DownloaderActivityBase this$0) {
+    public static final void onStateUpdate$lambda$7(AssetPackState state, com.voltsrp.mobile.oswrapper.DownloaderActivityBase this$0) {
         Intrinsics.checkNotNullParameter(state, "$state");
         Intrinsics.checkNotNullParameter(this$0, "this$0");
         StringBuilder sb = new StringBuilder("[!!] onStateUpdate: ");
@@ -423,16 +423,16 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
         View viewFindViewById2 = findViewById(R.id.layoutWifi);
         Intrinsics.checkNotNullExpressionValue(viewFindViewById2, "findViewById(...)");
         this.layoutWifi = (ViewGroup) viewFindViewById2;
-        button2.setOnClickListener(new View.OnClickListener() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda0
+        button2.setOnClickListener(new View.OnClickListener() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda0
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
-                com.rockstargames.oswrapper.DownloaderActivityBase.onCreate$lambda$0(com.rockstargames.oswrapper.DownloaderActivityBase.this, view);
+                com.voltsrp.mobile.oswrapper.DownloaderActivityBase.onCreate$lambda$0(com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this, view);
             }
         });
-        button.setOnClickListener(new View.OnClickListener() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda1
+        button.setOnClickListener(new View.OnClickListener() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda1
             @Override // android.view.View.OnClickListener
             public final void onClick(View view) {
-                com.rockstargames.oswrapper.DownloaderActivityBase.onCreate$lambda$2(com.rockstargames.oswrapper.DownloaderActivityBase.this, com.rockstargames.oswrapper.DownloaderActivityBase.this, view);
+                com.voltsrp.mobile.oswrapper.DownloaderActivityBase.onCreate$lambda$2(com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this, com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this, view);
             }
         });
         AssetPackManager assetPackManager = this.assetPackManager;
@@ -484,10 +484,10 @@ public abstract class DownloaderActivityBase extends AppCompatActivity implement
             Intrinsics.throwUninitializedPropertyAccessException("handler");
             handler = null;
         }
-        handler.post(new Runnable() { // from class: com.rockstargames.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda2
+        handler.post(new Runnable() { // from class: com.voltsrp.mobile.oswrapper.DownloaderActivityBase$$ExternalSyntheticLambda2
             @Override // java.lang.Runnable
             public final void run() {
-                com.rockstargames.oswrapper.DownloaderActivityBase.onStateUpdate$lambda$7(state, com.rockstargames.oswrapper.DownloaderActivityBase.this);
+                com.voltsrp.mobile.oswrapper.DownloaderActivityBase.onStateUpdate$lambda$7(state, com.voltsrp.mobile.oswrapper.DownloaderActivityBase.this);
             }
         });
     }
