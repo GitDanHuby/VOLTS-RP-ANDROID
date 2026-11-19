@@ -152,14 +152,20 @@ fun VoltsApp() {
                 }
 
                         } catch (e: GetCredentialException) {
-                android.util.Log.e("VOLTS_AUTH", "Erro no Google Credential Manager", e)
-                signingIn = false
-                loginError = "${e.javaClass.simpleName}: ${e.localizedMessage}"
-            } catch (e: Exception) {
-                signingIn = false
-                loginError = e.localizedMessage
-                    ?: "Erro ao conectar com Google."
-            }
+    android.util.Log.e(
+        "VOLTS_AUTH",
+        "TIPO: ${e.type} | CLASSE: ${e.javaClass.name}",
+        e
+    )
+
+    signingIn = false
+    loginError = "${e.javaClass.simpleName}: ${e.type}: ${e.message}"
+
+} catch (e: Exception) {
+    signingIn = false
+    loginError = e.localizedMessage
+        ?: "Erro ao conectar com Google."
+}
         }
     }
 
