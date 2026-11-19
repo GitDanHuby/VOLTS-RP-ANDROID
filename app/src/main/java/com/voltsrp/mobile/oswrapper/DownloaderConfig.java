@@ -1,4 +1,4 @@
-package com.rockstargames.oswrapper;
+package com.voltsrp.mobile.oswrapper;
 
 import java.util.ArrayList;
 import java.util.List;
