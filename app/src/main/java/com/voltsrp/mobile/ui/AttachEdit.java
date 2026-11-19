@@ -1,4 +1,4 @@
-package com.voltsrp.mobile.ui.dialog;
+package com.voltsrp.mobile.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
