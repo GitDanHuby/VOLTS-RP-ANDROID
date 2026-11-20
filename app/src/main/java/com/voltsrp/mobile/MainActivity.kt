@@ -301,10 +301,9 @@ fun VoltsApp() {
             onLogin = { signInGoogle() }
         )
     } else if (loading) {
-        LoadingScreen(
-    onBack = { loading = false },
-    onReady = { loading = false }
-)
+    LoadingScreen(
+        onBack = { loading = false }
+    )
     } else {
         VoltsHome(
             userName = user?.displayName ?: "Conta Google",
@@ -956,7 +955,7 @@ fun AccountMenu(
 }
 
 @Composable
-fun LoadingScreen(onBack = { loading = false })
+fun LoadingScreen(onBack: () -> Unit) {
     val context = LocalContext.current
 
     val mediaPlayer: android.media.MediaPlayer? = remember(context) {
@@ -1077,6 +1076,22 @@ var downloadError by remember {
 
             Spacer(Modifier.height(8.dp))
 
+            
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 18.dp, bottom = 14.dp)
+                .width(280.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                "A Cara do Crime",
+                color = Color.White,
+                fontSize = 12.sp,
+                maxLines = 1
+            )
+
             if (downloadComplete) {
     Button(
         onClick = {
@@ -1098,8 +1113,6 @@ var downloadError by remember {
     }
 }
 
-Spacer(Modifier.height(8.dp))
-
 OutlinedButton(
     onClick = onBack,
     border = BorderStroke(1.dp, Color.White.copy(alpha = 0.7f)),
@@ -1110,19 +1123,7 @@ OutlinedButton(
     Text("VOLTAR")
 }
 
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 18.dp, bottom = 14.dp)
-                .width(280.dp),
-            horizontalAlignment = Alignment.End
-        ) {
-            Text(
-                "A Cara do Crime",
-                color = Color.White,
-                fontSize = 12.sp,
-                maxLines = 1
-            )
+Spacer(Modifier.height(8.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
