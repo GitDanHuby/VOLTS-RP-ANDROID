@@ -33,9 +33,11 @@ object GameCacheDownloader {
 
 if (
     marker.exists() &&
-    File(destination, "gta3.img").exists() &&
-    File(destination, "gta_int.img").exists() &&
-    File(destination, "main.scm").exists()
+    marker.readText().trim() == "VOLTS_CACHE_OK" &&
+    File(destination, "textdb/gta3.img").exists() &&
+    File(destination, "textdb/gta_int.img").exists() &&
+    File(destination, "textdb/player.img").exists() &&
+    File(destination, "textdb/cutscene.img").exists()
 ) {
     onProgress(100, "ARQUIVOS JÁ INSTALADOS!")
     return@withContext
