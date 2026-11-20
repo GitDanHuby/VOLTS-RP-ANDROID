@@ -1094,11 +1094,17 @@ var downloadError by remember {
             if (downloadComplete) {
     Button(
         onClick = {
-            android.widget.Toast.makeText(
-                context,
-                "Arquivos prontos! Vamos conectar a inicialização do jogo.",
-                android.widget.Toast.LENGTH_LONG
-            ).show()
+            try {
+                context.startActivity(
+                    Intent(context, com.voltsrp.mobile.gtasa.GameActivity::class.java)
+                )
+            } catch (error: Exception) {
+                Toast.makeText(
+                    context,
+                    "Não foi possível iniciar o jogo: ${error.message ?: "erro desconhecido"}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = Color(0xFF168CFF)

@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Preserve Java classes and method names referenced directly by exported JNI symbols.
+-keep class com.voltsrp.mobile.SAMP { *; }
+-keep class com.voltsrp.mobile.ui.AttachEdit { *; }
+-keep class com.voltsrp.mobile.ui.dialog.DialogManager { *; }
+-keep class com.voltsrp.mobile.oswrapper.GameNative { *; }
+-keep class com.voltsrp.mobile.gtasa.GameActivity { *; }

@@ -26,9 +26,9 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
     }
 
 
-    private void showLoadingScreen() { }
+    public void showLoadingScreen() { }
 
-    private void hideLoadingScreen() {
+    public void hideLoadingScreen() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -67,11 +67,11 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         final String rightBtnText = new String(bArr4);
         runOnUiThread(() -> { this.mDialog.show(dialogId, dialogTypeId, caption, content, leftBtnText, rightBtnText); });
     }
-    private void showEditObject() {
+    public void showEditObject() {
         runOnUiThread(() -> mAttachEdit.show());
     }
 
-    private void hideEditObject() {
+    public void hideEditObject() {
         runOnUiThread(() -> mAttachEdit.hide());
     }
 
@@ -93,7 +93,7 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
         }
     }
 
-    private native void initializeSAMP();
+    public native void initializeSAMP();
 
     @Override
     public void onStart() {
