@@ -144,20 +144,14 @@ public abstract class GameActivityBase extends AppCompatActivity {
     private String baseDirectoryRoot;
 
     public String GetGameBaseDirectory() {
-        // Standard path: /storage/emulated/0/Documents/SampMobile/
-        File documentsDir = new File("/storage/emulated/0/");
-        File gameDir = new File(documentsDir, "VICE");
+    File gameDir = new File(getExternalFilesDir(null), "VICE");
 
-        try {
-            if (!gameDir.exists()) {
-                boolean created = gameDir.mkdirs();
+    if (!gameDir.exists() && !gameDir.mkdirs()) {
+        Log.e(TAG, "Não foi possível criar a pasta: " + gameDir);
+        return "";
+    }
 
-            }
-            return gameDir.getAbsolutePath() + "/";
-        } catch (Exception e) {
-
-            return "";
-        }
+    return gameDir.getAbsolutePath() + "/";
     }
     public static GameActivityBase getInstance() {
         return instance;
