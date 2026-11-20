@@ -956,10 +956,7 @@ fun AccountMenu(
 }
 
 @Composable
-fun LoadingScreen(
-    onBack: () -> Unit,
-    onReady: () -> Unit
-) {
+fun LoadingScreen(onBack = { loading = false })
     val context = LocalContext.current
 
     val mediaPlayer: android.media.MediaPlayer? = remember(context) {
@@ -976,7 +973,8 @@ fun LoadingScreen(
 var downloadError by remember {
     mutableStateOf<String?>(null)
 }
-
+ var downloadComplete by remember { mutableStateOf(false) }
+ 
     DisposableEffect(mediaPlayer) {
         mediaPlayer?.setOnCompletionListener {
             isPlaying = false
@@ -997,7 +995,7 @@ var downloadError by remember {
             downloadStatus = message
         }
 
-        onReady()
+        downloadComplete = true
 
     } catch (e: Exception) {
         downloadError = e.message ?: "Erro ao baixar os arquivos."
@@ -1079,19 +1077,38 @@ var downloadError by remember {
 
             Spacer(Modifier.height(8.dp))
 
-            OutlinedButton(
-                onClick = onBack,
-                border = BorderStroke(
-                    1.dp,
-                    Color.White.copy(alpha = 0.7f)
-                ),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = Color.White
-                )
-            ) {
-                Text("VOLTAR")
-            }
-        }
+            if (downloadComplete) {
+    Button(
+        onClick = {
+            android.widget.Toast.makeText(
+                context,
+                "Arquivos prontos! Vamos conectar a inicialização do jogo.",
+                android.widget.Toast.LENGTH_LONG
+            ).show()
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF168CFF)
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            "ENTRAR NA CIDADE",
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+Spacer(Modifier.height(8.dp))
+
+OutlinedButton(
+    onClick = onBack,
+    border = BorderStroke(1.dp, Color.White.copy(alpha = 0.7f)),
+    colors = ButtonDefaults.outlinedButtonColors(
+        contentColor = Color.White
+    )
+) {
+    Text("VOLTAR")
+}
 
         Column(
             modifier = Modifier
