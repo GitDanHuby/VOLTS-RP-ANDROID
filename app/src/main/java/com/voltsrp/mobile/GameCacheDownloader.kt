@@ -51,6 +51,10 @@ if (
     return@withContext
 }
 
+// Se a instalação anterior não foi concluída, invalida o marcador antigo.
+// Assim, uma extração interrompida nunca será considerada pronta.
+marker.delete()
+
         try {
             onProgress(0, "CONECTANDO AO SERVIDOR...")
 
