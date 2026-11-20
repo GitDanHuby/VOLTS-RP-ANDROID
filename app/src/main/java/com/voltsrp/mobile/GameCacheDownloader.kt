@@ -29,6 +29,18 @@ object GameCacheDownloader {
 
         destination.mkdirs()
 
+        val marker = File(destination, ".volts_cache_complete")
+
+if (
+    marker.exists() &&
+    File(destination, "gta3.img").exists() &&
+    File(destination, "gta_int.img").exists() &&
+    File(destination, "main.scm").exists()
+) {
+    onProgress(100, "ARQUIVOS JÁ INSTALADOS!")
+    return@withContext
+}
+
         try {
             onProgress(0, "CONECTANDO AO SERVIDOR...")
 
@@ -173,6 +185,8 @@ object GameCacheDownloader {
             }
 
             onProgress(100, "ARQUIVOS EXTRAÍDOS!")
+
+            marker.writeText("VOLTS_CACHE_OK")
 
         } catch (error: Exception) {
             zipFile.delete()
