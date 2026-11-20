@@ -559,8 +559,7 @@ var selectedLanguage by remember {
             }
         }
     }
-                    }
-
+}
 @Composable
 fun VoltsHome(
     userName: String,
