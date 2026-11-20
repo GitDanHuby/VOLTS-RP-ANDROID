@@ -324,15 +324,19 @@ fun GoogleLoginScreen(
 ) {
     var acceptedTerms by remember { mutableStateOf(false) }
     var languageMenu by remember { mutableStateOf(false) }
-    var selectedLanguage by remember { mutableStateOf("PORTUGUÊS BRASIL") }
+    val context = LocalContext.current
+
+var selectedLanguage by remember {
+    mutableStateOf(LanguageManager.getLanguage(context))
+}
 
     val uriHandler = LocalUriHandler.current
 
     val languages = listOf(
-        "🇧🇷" to "PORTUGUÊS BRASIL",
-        "🇺🇸" to "ENGLISH",
-        "🇪🇸" to "ESPAÑOL"
-    )
+    "🇧🇷" to ("pt" to "PORTUGUÊS BRASIL"),
+    "🇺🇸" to ("en" to "ENGLISH"),
+    "🇪🇸" to ("es" to "ESPAÑOL")
+)
 
     Box(Modifier.fillMaxSize()) {
         Image(
@@ -505,11 +509,11 @@ fun GoogleLoginScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        languages.firstOrNull {
-                            it.second == selectedLanguage
-                        }?.first ?: "🇧🇷",
-                        fontSize = 17.sp
-                    )
+    languages.firstOrNull {
+        it.second.first == selectedLanguage
+    }?.first ?: "🇧🇷",
+    fontSize = 17.sp
+)
 
                     Spacer(Modifier.width(9.dp))
 
@@ -541,8 +545,13 @@ fun GoogleLoginScreen(
                                 Text("${language.first}  ${language.second}")
                             },
                             onClick = {
-                                selectedLanguage = language.second
-                                languageMenu = false
+    selectedLanguage = language.second.first
+    LanguageManager.setLanguage(
+        context,
+        language.second.first
+    )
+    languageMenu = false
+                            }
                             }
                         )
                     }
