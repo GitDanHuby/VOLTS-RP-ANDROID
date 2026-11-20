@@ -73,6 +73,16 @@ bool bDebug = false;
 bool bGameInited = false;
 bool bNetworkInited = false;
 
+// JNI bridge expected by GameNative.implIsInitialized().
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_voltsrp_mobile_oswrapper_GameNative_implIsInitialized(
+    JNIEnv* env,
+    jclass clazz
+) {
+    return bGameInited ? JNI_TRUE : JNI_FALSE;
+}
+
 uintptr_t g_libGTASA = 0x00;
 uintptr_t g_libSAMP = 0x00;
 
