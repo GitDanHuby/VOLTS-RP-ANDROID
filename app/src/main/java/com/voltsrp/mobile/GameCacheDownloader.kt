@@ -31,6 +31,11 @@ object GameCacheDownloader {
 
         val marker = File(destination, ".volts_cache_complete")
 
+        android.util.Log.d("VOLTS_CACHE", "BASE: ${base.absolutePath}")
+        android.util.Log.d("VOLTS_CACHE", "DESTINO: ${destination.absolutePath}")
+        android.util.Log.d("VOLTS_CACHE", "MARCADOR: ${marker.exists()}")
+        android.util.Log.d("VOLTS_CACHE", "GTA3: ${File(destination, "textdb/gta3.img").exists()}")
+
 if (
     marker.exists() &&
     marker.readText().trim() == "VOLTS_CACHE_OK" &&
