@@ -537,21 +537,21 @@ var selectedLanguage by remember {
                     expanded = languageMenu,
                     onDismissRequest = {
                         languageMenu = false
-                    }
-                ) {
+                                    ) {
                     languages.forEach { language ->
                         DropdownMenuItem(
                             text = {
-                                Text("${language.first}  ${language.second}")
+                                Text("${language.first}  ${language.second.second}")
                             },
                             onClick = {
-    selectedLanguage = language.second.first
-    LanguageManager.setLanguage(
-        context,
-        language.second.first
-    )
-    languageMenu = false
-                            }
+                                selectedLanguage = language.second.first
+
+                                LanguageManager.setLanguage(
+                                    context,
+                                    language.second.first
+                                )
+
+                                languageMenu = false
                             }
                         )
                     }
@@ -559,11 +559,7 @@ var selectedLanguage by remember {
             }
         }
     }
-}
-
-
-
-
+                    }
 
 @Composable
 fun VoltsHome(
