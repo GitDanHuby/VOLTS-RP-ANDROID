@@ -301,7 +301,10 @@ fun VoltsApp() {
             onLogin = { signInGoogle() }
         )
     } else if (loading) {
-        LoadingScreen(onBack = { loading = false })
+        LoadingScreen(
+    onBack = { loading = false },
+    onReady = { loading = false }
+)
     } else {
         VoltsHome(
             userName = user?.displayName ?: "Conta Google",
@@ -953,7 +956,10 @@ fun AccountMenu(
 }
 
 @Composable
-fun LoadingScreen(onBack: () -> Unit) {
+fun LoadingScreen(
+    onBack: () -> Unit,
+    onReady: () -> Unit
+) {
     val context = LocalContext.current
 
     val mediaPlayer: android.media.MediaPlayer? = remember(context) {
@@ -990,6 +996,9 @@ var downloadError by remember {
             progress = value / 100f
             downloadStatus = message
         }
+
+        onReady()
+
     } catch (e: Exception) {
         downloadError = e.message ?: "Erro ao baixar os arquivos."
         downloadStatus = "FALHA NO DOWNLOAD"
