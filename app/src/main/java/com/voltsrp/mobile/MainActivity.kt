@@ -370,7 +370,7 @@ var selectedLanguage by remember {
             Spacer(Modifier.height(8.dp))
 
             Text(
-                "CONECTE-SE E ENTRE NA CIDADE",
+                LanguageManager.text(context, "connect_city"),
                 color = Color(0xFFD5B8FF),
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
@@ -404,7 +404,7 @@ var selectedLanguage by remember {
                     )
 
                     Spacer(Modifier.width(12.dp))
-                    Text("CONECTANDO...")
+                    Text(LanguageManager.text(context, "connecting"))
                 } else {
                     Text(
                         "G",
@@ -459,13 +459,13 @@ var selectedLanguage by remember {
 
             Column {
                 Text(
-                    "Eu concordo com os",
+                    LanguageManager.text(context, "terms_agreement"),
                     color = Color.White,
                     fontSize = 11.sp
                 )
 
                 Text(
-                    "Termos de Uso",
+                    LanguageManager.text(context, "terms"),
                     color = Color(0xFFD5B8FF),
                     fontSize = 11.sp,
                     textDecoration = TextDecoration.Underline,
@@ -477,7 +477,7 @@ var selectedLanguage by remember {
                 )
 
                 Text(
-                    "Política de Privacidade",
+                    LanguageManager.text(context, "privacy"),
                     color = Color(0xFFD5B8FF),
                     fontSize = 11.sp,
                     textDecoration = TextDecoration.Underline,
