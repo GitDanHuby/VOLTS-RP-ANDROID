@@ -45,15 +45,15 @@ File(base, "volts_debug.txt").writeText(debugInfo)
 
 if (
     marker.exists() &&
-    marker.readText().trim() == "VOLTS_CACHE_OK" &&
-    File(destination, "texdb/gta3.img").exists() &&
-    File(destination, "texdb/gta_int.img").exists() &&
-    File(destination, "texdb/player.img").exists() &&
-    File(destination, "texdb/cutscene.img").exists()
+    marker.readText().trim() == "VOLTS_CACHE_OK"
 ) {
     onProgress(100, "ARQUIVOS JÁ INSTALADOS!")
     return@withContext
 }
+
+// Se a instalação anterior não foi concluída, invalida o marcador antigo.
+// Assim, uma extração interrompida nunca será considerada pronta.
+marker.delete()
 
         try {
             onProgress(0, "CONECTANDO AO SERVIDOR...")
@@ -198,9 +198,10 @@ if (
                 }
             }
 
-            onProgress(100, "ARQUIVOS EXTRAÍDOS!")
-
+            // Só sinaliza conclusão depois que todos os arquivos foram extraídos.
             marker.writeText("VOLTS_CACHE_OK")
+
+            onProgress(100, "ARQUIVOS EXTRAÍDOS!")
 
         } catch (error: Exception) {
             zipFile.delete()
