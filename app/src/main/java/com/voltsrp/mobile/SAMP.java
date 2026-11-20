@@ -77,20 +77,28 @@ public class SAMP extends GTASA implements HeightProvider.HeightListener {
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "**** onCreate");
-        super.onCreate(savedInstanceState);
+    protected void onActivitySetup() {
+        super.onActivitySetup();
 
-        mDialog     = new DialogManager(this);
-        mAttachEdit = new AttachEdit(this);
-        mLoadingScreen = new LoadingScreen(this);
-        instance = this;
-
+        // O GameActivityBase já carregou as bibliotecas nativas neste ponto,
+        // mas ainda não iniciou a thread principal do jogo.
         try {
             initializeSAMP();
-        } catch (UnsatisfiedLinkError e5) {
-            Log.e(TAG, e5.getMessage());
+        } catch (UnsatisfiedLinkError error) {
+            Log.e(TAG, "Falha ao inicializar a ponte JNI do SA-MP", error);
+            throw error;
         }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "**** onCreate");
+        instance = this;
+        super.onCreate(savedInstanceState);
+
+        mDialog = new DialogManager(this);
+        mAttachEdit = new AttachEdit(this);
+        mLoadingScreen = new LoadingScreen(this);
     }
 
     public native void initializeSAMP();
