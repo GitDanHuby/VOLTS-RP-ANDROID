@@ -1,5 +1,6 @@
 
 name: Build VOLTS RP APK
+# Build integration branch after native JNI bridge updates
 
 on:
   workflow_dispatch:
