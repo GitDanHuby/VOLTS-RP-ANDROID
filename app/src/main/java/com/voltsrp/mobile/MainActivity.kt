@@ -533,11 +533,12 @@ var selectedLanguage by remember {
                     )
                 }
 
-                DropdownMenu(
+                                DropdownMenu(
                     expanded = languageMenu,
                     onDismissRequest = {
                         languageMenu = false
-                                    ) {
+                    }
+                ) {
                     languages.forEach { language ->
                         DropdownMenuItem(
                             text = {
@@ -560,6 +561,7 @@ var selectedLanguage by remember {
         }
     }
 }
+
 @Composable
 fun VoltsHome(
     userName: String,
