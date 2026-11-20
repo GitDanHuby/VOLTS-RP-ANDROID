@@ -31,14 +31,14 @@ object GameCacheDownloader {
 
         val marker = File(destination, ".volts_cache_complete")
 
-        val debugInfo = """
+        val textdbDir = File(destination, "textdb")
+
+val debugInfo = """
 BASE: ${base.absolutePath}
-DESTINO: ${destination.absolutePath}
-MARCADOR: ${marker.exists()}
-GTA3: ${File(destination, "textdb/gta3.img").exists()}
-GTA_INT: ${File(destination, "textdb/gta_int.img").exists()}
-PLAYER: ${File(destination, "textdb/player.img").exists()}
-CUTSCENE: ${File(destination, "textdb/cutscene.img").exists()}
+VICE: ${destination.exists()}
+TEXTDB: ${textdbDir.exists()}
+ARQUIVOS TEXTDB:
+${textdbDir.list()?.joinToString("\n") ?: "PASTA VAZIA OU NÃO ENCONTRADA"}
 """.trimIndent()
 
 File(base, "volts_debug.txt").writeText(debugInfo)
