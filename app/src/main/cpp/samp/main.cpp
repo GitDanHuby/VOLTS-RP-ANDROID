@@ -41,7 +41,7 @@ static std::string g_storagePath;
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_rockstargames_oswrapper_GameNative_setStoragePath(
+Java_com_voltsrp_mobile_oswrapper_GameNative_setStoragePath(
     JNIEnv* env,
     jclass clazz,
     jstring path
