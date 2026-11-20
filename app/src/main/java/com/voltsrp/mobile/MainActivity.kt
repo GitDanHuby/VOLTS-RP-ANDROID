@@ -963,6 +963,13 @@ fun LoadingScreen(onBack: () -> Unit) {
     var isPlaying by remember { mutableStateOf(false) }
     var volume by remember { mutableStateOf(0.7f) }
     var progress by remember { mutableStateOf(0f) }
+    var downloadStatus by remember {
+    mutableStateOf("INICIANDO DOWNLOAD...")
+}
+
+var downloadError by remember {
+    mutableStateOf<String?>(null)
+}
 
     DisposableEffect(mediaPlayer) {
         mediaPlayer?.setOnCompletionListener {
@@ -978,20 +985,18 @@ fun LoadingScreen(onBack: () -> Unit) {
     }
 
     LaunchedEffect(Unit) {
-        while (progress < 1f) {
-            delay(120)
-            progress = (progress + 0.01f).coerceAtMost(1f)
+    try {
+        GameCacheDownloader.downloadAndExtract(context) { value, message ->
+            progress = value / 100f
+            downloadStatus = message
         }
+    } catch (e: Exception) {
+        downloadError = e.message ?: "Erro ao baixar os arquivos."
+        downloadStatus = "FALHA NO DOWNLOAD"
+    }
     }
 
-    val status = when {
-        progress < 0.20f -> "INICIALIZANDO VOLTS RP..."
-        progress < 0.40f -> "PREPARANDO AMBIENTE..."
-        progress < 0.60f -> "VERIFICANDO ARQUIVOS..."
-        progress < 0.80f -> "PREPARANDO CONEXÃO..."
-        progress < 1f -> "FINALIZANDO PREPARAÇÃO..."
-        else -> "DEMONSTRAÇÃO CONCLUÍDA!"
-    }
+    val status = downloadStatus
 
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black)
@@ -1052,6 +1057,15 @@ fun LoadingScreen(onBack: () -> Unit) {
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Black
                 )
+            }
+
+            downloadError?.let { error ->
+    Text(
+        text = error,
+        color = Color.Red,
+        fontSize = 12.sp,
+        textAlign = TextAlign.Center
+    )
             }
 
             Spacer(Modifier.height(8.dp))
