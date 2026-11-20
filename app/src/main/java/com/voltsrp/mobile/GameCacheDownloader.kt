@@ -31,14 +31,14 @@ object GameCacheDownloader {
 
         val marker = File(destination, ".volts_cache_complete")
 
-        val textdbDir = File(destination, "textdb")
+        val texdbDir = File(destination, "texdb")
 
 val debugInfo = """
 BASE: ${base.absolutePath}
 VICE: ${destination.exists()}
-TEXTDB: ${textdbDir.exists()}
-ARQUIVOS TEXTDB:
-${textdbDir.list()?.joinToString("\n") ?: "PASTA VAZIA OU NÃO ENCONTRADA"}
+TEXDB: ${texdbDir.exists()}
+ARQUIVOS TEXDB:
+${texdbDir.list()?.joinToString("\n") ?: "PASTA VAZIA OU NÃO ENCONTRADA"}
 """.trimIndent()
 
 File(base, "volts_debug.txt").writeText(debugInfo)
@@ -46,10 +46,10 @@ File(base, "volts_debug.txt").writeText(debugInfo)
 if (
     marker.exists() &&
     marker.readText().trim() == "VOLTS_CACHE_OK" &&
-    File(destination, "textdb/gta3.img").exists() &&
-    File(destination, "textdb/gta_int.img").exists() &&
-    File(destination, "textdb/player.img").exists() &&
-    File(destination, "textdb/cutscene.img").exists()
+    File(destination, "texdb/gta3.img").exists() &&
+    File(destination, "texdb/gta_int.img").exists() &&
+    File(destination, "texdb/player.img").exists() &&
+    File(destination, "texdb/cutscene.img").exists()
 ) {
     onProgress(100, "ARQUIVOS JÁ INSTALADOS!")
     return@withContext
