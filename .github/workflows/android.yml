@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - integracao-samp-voltsrp
 
 jobs:
   build:
