@@ -1102,9 +1102,13 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
-                GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_CHANGED");
-                GameNative.implOnSurfaceChanged(surface, width, height);
-                GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_CHANGED");
+                // Diagnostic isolation: temporarily skip the native surface-changed callback.
+                // The latest complete trace stopped inside implOnSurfaceChanged().
+                GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED");
+                Log.i(TAG, "[JNI-TEST] Skipping native implOnSurfaceChanged; surface="
+                        + surface + " valid=" + surface.isValid()
+                        + " size=" + width + "x" + height);
+                GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED_DONE");
             }
         });
 
