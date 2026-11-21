@@ -35,6 +35,9 @@ public final class GameNative {
 
     public static native void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths);
 
+    /** JNI-only probe used to compare FindClass behavior with libGame.so. */
+    public static native String diagnosticFindClass();
+
     public static native void implOnLowMemory();
 
     public static native void implOnNetworkChanged(int network);
