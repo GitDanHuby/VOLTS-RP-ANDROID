@@ -37,7 +37,7 @@ public class GameNative {
 
     public static native void setStoragePath(String path);
 
-    public static native void setJniTraceEnabled(boolean enabled, String path);
+    public static native void setJniTraceEnabled(boolean enabled, int fileDescriptor);
 
     public static native void initializeSAMP();
 
@@ -174,6 +174,61 @@ public class GameNative {
         }
     }
 
+    /*
+     * Creates the trace directly in the public Downloads collection and returns
+     * a detached file descriptor owned by native code. This avoids Android/data
+     * access restrictions and keeps the file writable during a native abort.
+     */
+    private static int openJniTraceFileDescriptor(Context context) throws Exception {
+        if (context == null) throw new IllegalStateException("No Activity context for JNI trace");
+        if (Build.VERSION.SDK_INT < 29) {
+            throw new IllegalStateException("Public Downloads trace requires Android 10 or newer");
+        }
+
+        Uri collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+        String fileName = "VOLTS-JNI-TRACE.txt";
+        String relativePath = Environment.DIRECTORY_DOWNLOADS + "/";
+        String selection = MediaStore.MediaColumns.DISPLAY_NAME + "=? AND "
+                + MediaStore.MediaColumns.RELATIVE_PATH + "=?";
+        try (Cursor cursor = context.getContentResolver().query(
+                collection,
+                new String[]{MediaStore.MediaColumns._ID},
+                selection,
+                new String[]{fileName, relativePath},
+                null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                long id = cursor.getLong(0);
+                Uri oldFile = ContentUris.withAppendedId(collection, id);
+                context.getContentResolver().delete(oldFile, null, null);
+            }
+        }
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+        values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
+        values.put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath);
+        values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+        Uri fileUri = context.getContentResolver().insert(collection, values);
+        if (fileUri == null) throw new IllegalStateException("Could not create JNI trace in Downloads");
+
+        android.os.ParcelFileDescriptor descriptor = null;
+        try {
+            descriptor = context.getContentResolver().openFileDescriptor(fileUri, "w");
+            if (descriptor == null) throw new IllegalStateException("Could not open JNI trace descriptor");
+
+            ContentValues ready = new ContentValues();
+            ready.put(MediaStore.MediaColumns.IS_PENDING, 0);
+            int updated = context.getContentResolver().update(fileUri, ready, null, null);
+            if (updated <= 0) throw new IllegalStateException("Could not publish JNI trace in Downloads");
+
+            int rawFd = descriptor.detachFd();
+            Log.i("VOLTS-JNI-DIAG", "JNI trace opened in Downloads: " + fileName);
+            return rawFd;
+        } finally {
+            if (descriptor != null) descriptor.close();
+        }
+    }
+
     public static void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths) {
         final String tag = "VOLTS-JNI-DIAG";
         final ClassLoader nativeLoader =
@@ -243,16 +298,13 @@ public class GameNative {
             saveJniDiagnostic(report.toString());
             Log.i(tag, "Calling libGame initial setup; diagnostic exported");
             Context traceContext = GameActivityBase.getInstance();
-            File traceDirectory = traceContext == null ? null : traceContext.getExternalFilesDir(null);
-            if (traceDirectory == null && traceContext != null) traceDirectory = traceContext.getFilesDir();
-            if (traceDirectory == null) throw new IllegalStateException("No app directory available for JNI trace");
-            File traceFile = new File(traceDirectory, "VOLTS-JNI-TRACE.txt");
-            setJniTraceEnabled(true, traceFile.getAbsolutePath());
+            int traceFd = openJniTraceFileDescriptor(traceContext);
+            setJniTraceEnabled(true, traceFd);
             try {
                 com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
                         legacyDevice, assets, assetPackNames, assetPackPaths);
             } finally {
-                setJniTraceEnabled(false, traceFile.getAbsolutePath());
+                setJniTraceEnabled(false, -1);
             }
             report.append("LIBGAME_INITIAL_SETUP_RETURNED\n");
             saveJniDiagnostic(report.toString());
