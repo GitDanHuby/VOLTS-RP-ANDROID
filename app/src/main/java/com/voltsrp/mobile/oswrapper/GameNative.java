@@ -2,6 +2,7 @@ package com.voltsrp.mobile.oswrapper;
 
 import android.content.res.AssetManager;
 import android.view.Surface;
+import android.util.Log;
 
 import com.bytedance.shadowhook.ShadowHook;
 
@@ -93,17 +94,40 @@ public class GameNative {
 
      
     public static void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths) {
-        // Resolve the legacy service class with the same ClassLoader used by the
-        // native GameNative declaration before libGame.so calls JNI FindClass.
+        final String tag = "VOLTS-JNI-DIAG";
+        final ClassLoader nativeLoader =
+                com.rockstargames.oswrapper.GameNative.class.getClassLoader();
         try {
-            Class.forName("com.rockstargames.oswrapper.GamePlatformServices", true,
-                    com.rockstargames.oswrapper.GameNative.class.getClassLoader());
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Legacy GamePlatformServices class is not loadable", e);
+            Log.i(tag, "INITIAL_SETUP_BEGIN mobileLoader=" + GameNative.class.getClassLoader()
+                    + " nativeLoader=" + nativeLoader);
+
+            Class<?> servicesClass = Class.forName(
+                    "com.rockstargames.oswrapper.GamePlatformServices", true, nativeLoader);
+            java.lang.reflect.Method quitMethod = servicesClass.getMethod("quit");
+            Log.i(tag, "SERVICE_CLASS_OK name=" + servicesClass.getName()
+                    + " loader=" + servicesClass.getClassLoader()
+                    + " quit=" + quitMethod.toGenericString());
+
+            Class<?> deviceClass = Class.forName(
+                    "com.rockstargames.oswrapper.DeviceInfo", true, nativeLoader);
+            Log.i(tag, "DEVICE_CLASS_OK name=" + deviceClass.getName()
+                    + " loader=" + deviceClass.getClassLoader());
+
+            com.rockstargames.oswrapper.DeviceInfo legacyDevice =
+                    new com.rockstargames.oswrapper.DeviceInfo(deviceInfo);
+            Log.i(tag, "DEVICE_ADAPTER_OK value=" + legacyDevice
+                    + " assets=" + (assets != null)
+                    + " assetPackNames=" + (assetPackNames == null ? "null" : assetPackNames.length)
+                    + " assetPackPaths=" + (assetPackPaths == null ? "null" : assetPackPaths.length));
+
+            Log.i(tag, "CALLING_LIBGAME_INITIAL_SETUP");
+            com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
+                    legacyDevice, assets, assetPackNames, assetPackPaths);
+            Log.i(tag, "LIBGAME_INITIAL_SETUP_RETURNED");
+        } catch (Throwable error) {
+            Log.e(tag, "INITIAL_SETUP_PREFLIGHT_FAILED", error);
+            throw new IllegalStateException("JNI initial setup diagnostic failed", error);
         }
-        com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
-                new com.rockstargames.oswrapper.DeviceInfo(deviceInfo),
-                assets, assetPackNames, assetPackPaths);
     }
 
      
