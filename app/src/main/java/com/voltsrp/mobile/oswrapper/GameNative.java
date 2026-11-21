@@ -1,8 +1,22 @@
 package com.voltsrp.mobile.oswrapper;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Surface;
 import android.util.Log;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import com.bytedance.shadowhook.ShadowHook;
 
@@ -93,38 +107,115 @@ public class GameNative {
     }
 
      
+    /*
+     * Saves a tiny diagnostic directly in Downloads on Android 10+.
+     * It deliberately runs before entering libGame.so because a fatal JNI
+     * abort cannot be caught by Java.
+     */
+    private static void saveJniDiagnostic(String details) {
+        final String fileName = "VOLTS-JNI-DIAG.txt";
+        Context context = GameActivityBase.getInstance();
+        if (context == null) {
+            Log.e("VOLTS-JNI-DIAG", "No Activity context; diagnostic was not exported");
+            return;
+        }
+
+        try {
+            if (Build.VERSION.SDK_INT >= 29) {
+                Uri collection = MediaStore.Downloads.EXTERNAL_CONTENT_URI;
+                Uri fileUri = null;
+                String relativePath = Environment.DIRECTORY_DOWNLOADS + "/";
+                String[] projection = { MediaStore.MediaColumns._ID };
+                String selection = MediaStore.MediaColumns.DISPLAY_NAME + "=? AND "
+                        + MediaStore.MediaColumns.RELATIVE_PATH + "=?";
+                try (Cursor cursor = context.getContentResolver().query(
+                        collection, projection, selection,
+                        new String[]{fileName, relativePath}, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        long id = cursor.getLong(0);
+                        fileUri = ContentUris.withAppendedId(collection, id);
+                    }
+                }
+
+                if (fileUri == null) {
+                    ContentValues values = new ContentValues();
+                    values.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+                    values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
+                    values.put(MediaStore.MediaColumns.RELATIVE_PATH, relativePath);
+                    values.put(MediaStore.MediaColumns.IS_PENDING, 1);
+                    fileUri = context.getContentResolver().insert(collection, values);
+                }
+                if (fileUri == null) throw new IllegalStateException("Downloads insert returned null");
+
+                try (OutputStream out = context.getContentResolver().openOutputStream(fileUri, "wt")) {
+                    if (out == null) throw new IllegalStateException("Could not open diagnostic output");
+                    out.write(details.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    out.flush();
+                }
+
+                ContentValues ready = new ContentValues();
+                ready.put(MediaStore.MediaColumns.IS_PENDING, 0);
+                context.getContentResolver().update(fileUri, ready, null, null);
+            } else {
+                File directory = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+                if (directory == null) throw new IllegalStateException("External files directory unavailable");
+                File file = new File(directory, fileName);
+                try (FileOutputStream out = new FileOutputStream(file, false)) {
+                    out.write(details.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                    out.flush();
+                }
+                Log.i("VOLTS-JNI-DIAG", "Android 9 fallback path=" + file.getAbsolutePath());
+            }
+            Log.i("VOLTS-JNI-DIAG", "Diagnostic saved: " + fileName);
+        } catch (Throwable error) {
+            Log.e("VOLTS-JNI-DIAG", "Could not save diagnostic file", error);
+        }
+    }
+
     public static void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths) {
         final String tag = "VOLTS-JNI-DIAG";
         final ClassLoader nativeLoader =
                 com.rockstargames.oswrapper.GameNative.class.getClassLoader();
-        try {
-            Log.i(tag, "INITIAL_SETUP_BEGIN mobileLoader=" + GameNative.class.getClassLoader()
-                    + " nativeLoader=" + nativeLoader);
+        StringBuilder report = new StringBuilder();
+        report.append("VOLTS RP - JNI diagnostic\\n")
+                .append("timeMillis=").append(System.currentTimeMillis()).append('\\n')
+                .append("thread=").append(Thread.currentThread().getName()).append('\\n')
+                .append("sdk=").append(Build.VERSION.SDK_INT).append('\\n')
+                .append("mobileLoader=").append(GameNative.class.getClassLoader()).append('\\n')
+                .append("nativeLoader=").append(nativeLoader).append('\\n')
+                .append("threadContextLoader=").append(Thread.currentThread().getContextClassLoader()).append('\\n');
 
+        try {
             Class<?> servicesClass = Class.forName(
                     "com.rockstargames.oswrapper.GamePlatformServices", true, nativeLoader);
             java.lang.reflect.Method quitMethod = servicesClass.getMethod("quit");
-            Log.i(tag, "SERVICE_CLASS_OK name=" + servicesClass.getName()
-                    + " loader=" + servicesClass.getClassLoader()
-                    + " quit=" + quitMethod.toGenericString());
+            report.append("SERVICE_CLASS_OK name=").append(servicesClass.getName())
+                    .append(" loader=").append(servicesClass.getClassLoader())
+                    .append(" quit=").append(quitMethod.toGenericString()).append('\\n');
 
             Class<?> deviceClass = Class.forName(
                     "com.rockstargames.oswrapper.DeviceInfo", true, nativeLoader);
-            Log.i(tag, "DEVICE_CLASS_OK name=" + deviceClass.getName()
-                    + " loader=" + deviceClass.getClassLoader());
+            report.append("DEVICE_CLASS_OK name=").append(deviceClass.getName())
+                    .append(" loader=").append(deviceClass.getClassLoader()).append('\\n');
 
             com.rockstargames.oswrapper.DeviceInfo legacyDevice =
                     new com.rockstargames.oswrapper.DeviceInfo(deviceInfo);
-            Log.i(tag, "DEVICE_ADAPTER_OK value=" + legacyDevice
-                    + " assets=" + (assets != null)
-                    + " assetPackNames=" + (assetPackNames == null ? "null" : assetPackNames.length)
-                    + " assetPackPaths=" + (assetPackPaths == null ? "null" : assetPackPaths.length));
+            report.append("DEVICE_ADAPTER_OK assets=").append(assets != null)
+                    .append(" assetPackNames=").append(assetPackNames == null ? "null" : assetPackNames.length)
+                    .append(" assetPackPaths=").append(assetPackPaths == null ? "null" : assetPackPaths.length).append('\\n');
 
-            Log.i(tag, "CALLING_LIBGAME_INITIAL_SETUP");
+            report.append("CALLING_LIBGAME_INITIAL_SETUP\\n");
+            saveJniDiagnostic(report.toString());
+            Log.i(tag, "Calling libGame initial setup; diagnostic exported");
             com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
                     legacyDevice, assets, assetPackNames, assetPackPaths);
-            Log.i(tag, "LIBGAME_INITIAL_SETUP_RETURNED");
+            report.append("LIBGAME_INITIAL_SETUP_RETURNED\\n");
+            saveJniDiagnostic(report.toString());
         } catch (Throwable error) {
+            StringWriter trace = new StringWriter();
+            error.printStackTrace(new PrintWriter(trace));
+            report.append("INITIAL_SETUP_PREFLIGHT_FAILED\\n").append(trace);
+            saveJniDiagnostic(report.toString());
             Log.e(tag, "INITIAL_SETUP_PREFLIGHT_FAILED", error);
             throw new IllegalStateException("JNI initial setup diagnostic failed", error);
         }
