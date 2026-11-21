@@ -164,6 +164,13 @@ public   class GameView extends SurfaceView implements SurfaceHolder.Callback2 {
         Intrinsics.checkNotNullParameter(holder, "holder");
         Surface surface = holder.getSurface();
         Log.i(TAG, "[!!] surfaceChanged: " + width + 'x' + height + ": " + surface);
+        Log.i(TAG, "[SURFACE-DIAG] GameView callback"
+                + " thread=" + Thread.currentThread().getName()
+                + " format=" + format
+                + " valid=" + surface.isValid()
+                + " holder=" + holder
+                + " holderSurface=" + holder.getSurface()
+                + " size=" + width + "x" + height);
         GameThread gameThread = GameThread.INSTANCE;
         Intrinsics.checkNotNull(surface);
         gameThread.onSurfaceChanged(surface, width, height);
