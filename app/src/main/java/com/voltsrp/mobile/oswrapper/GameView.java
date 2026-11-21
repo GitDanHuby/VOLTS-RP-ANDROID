@@ -148,7 +148,7 @@ public   class GameView extends SurfaceView implements SurfaceHolder.Callback2 {
     public void setup(GameActivityBase activity) {
         Intrinsics.checkNotNullParameter(activity, "activity");
         getHolder().setFormat(3);
-        getHolder().addCallback(this);
+        // Callback is registered once in the constructor.
         setKeepScreenOn(true);
         setFocusableInTouchMode(true);
         requestFocus();

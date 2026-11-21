@@ -12,16 +12,16 @@ CSettings::CSettings()
 {
 	Log("Loading settings..");	
 
-	char buff[0x7F];
-	snprintf(buff, sizeof(buff), "%sSAMP/settings.ini", g_pszStorage);
+	char buff[PATH_MAX];
+	snprintf(buff, sizeof(buff), "%sSAMP/settings.ini", g_pszStorage ? g_pszStorage : "");
 
 	INIReader reader(buff);
 
-	if(reader.ParseError() < 0)
+	// A missing optional settings file must not terminate the whole game.
+	// INIReader's Get* methods below supply safe defaults for absent keys.
+	if (reader.ParseError() < 0)
 	{
-		Log("Error: can't load %s", buff);
-		std::terminate();
-		return;
+		Log("Warning: can't load %s; continuing with built-in defaults", buff);
 	}
 
 	// client

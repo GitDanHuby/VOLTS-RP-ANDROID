@@ -26,3 +26,6 @@
 -keep class com.voltsrp.mobile.ui.dialog.DialogManager { *; }
 -keep class com.voltsrp.mobile.oswrapper.GameNative { *; }
 -keep class com.voltsrp.mobile.gtasa.GameActivity { *; }
+
+# Keep the legacy-package JNI facade and its native method names.
+-keep class com.rockstargames.oswrapper.GameNative { *; }

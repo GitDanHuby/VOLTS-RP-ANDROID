@@ -27,107 +27,177 @@ public class GameNative {
     public static native boolean implIsInitialized();
 
 
-    public static   native void implOnAccelerometerChanged(float x, float y, float z);
+    public static void implOnAccelerometerChanged(float x, float y, float z) {
+        com.rockstargames.oswrapper.GameNative.implOnAccelerometerChanged(x, y, z);
+    }
 
      
-    public static   native void implOnActivityCreated(GamePlatformServices services, boolean firstInit);
+    public static void implOnActivityCreated(GamePlatformServices services, boolean firstInit) {
+        com.rockstargames.oswrapper.GameNative.implOnActivityCreated(services, firstInit);
+    }
 
      
-    public static   native void implOnActivityDestroyed();
+    public static void implOnActivityDestroyed() {
+        com.rockstargames.oswrapper.GameNative.implOnActivityDestroyed();
+    }
 
      
-    public static   native void implOnBackButtonPressed();
+    public static void implOnBackButtonPressed() {
+        com.rockstargames.oswrapper.GameNative.implOnBackButtonPressed();
+    }
 
      
-    public static   native void implOnDrawFrame(float dt);
+    public static void implOnDrawFrame(float dt) {
+        com.rockstargames.oswrapper.GameNative.implOnDrawFrame(dt);
+    }
 
      
-    public static   native void implOnGamepadAxesChanged(int controllerId, float x, float y, float z, float rz, float triggerL, float triggerR);
+    public static void implOnGamepadAxesChanged(int controllerId, float x, float y, float z, float rz, float triggerL, float triggerR) {
+        com.rockstargames.oswrapper.GameNative.implOnGamepadAxesChanged(controllerId, x, y, z, rz, triggerL, triggerR);
+    }
 
      
-    public static   native void implOnGamepadButtonDown(int controllerId, int buttonId);
+    public static void implOnGamepadButtonDown(int controllerId, int buttonId) {
+        com.rockstargames.oswrapper.GameNative.implOnGamepadButtonDown(controllerId, buttonId);
+    }
 
      
-    public static   native void implOnGamepadButtonUp(int controllerId, int buttonId);
+    public static void implOnGamepadButtonUp(int controllerId, int buttonId) {
+        com.rockstargames.oswrapper.GameNative.implOnGamepadButtonUp(controllerId, buttonId);
+    }
 
      
-    public static   native void implOnGamepadCountChanged(int count);
+    public static void implOnGamepadCountChanged(int count) {
+        com.rockstargames.oswrapper.GameNative.implOnGamepadCountChanged(count);
+    }
 
      
-    public static   native void implOnHttpRequestData(int id, byte[] data);
+    public static void implOnHttpRequestData(int id, byte[] data) {
+        com.rockstargames.oswrapper.GameNative.implOnHttpRequestData(id, data);
+    }
 
      
-    public static   native void implOnHttpRequestError(int id, int statusCode);
+    public static void implOnHttpRequestError(int id, int statusCode) {
+        com.rockstargames.oswrapper.GameNative.implOnHttpRequestError(id, statusCode);
+    }
 
      
-    public static   native void implOnHttpRequestFinished(int id);
+    public static void implOnHttpRequestFinished(int id) {
+        com.rockstargames.oswrapper.GameNative.implOnHttpRequestFinished(id);
+    }
 
      
-    public static   native void implOnHttpRequestResponse(int id, int statusCode, String statusLine, String[] headerNames, String[] headerValues);
+    public static void implOnHttpRequestResponse(int id, int statusCode, String statusLine, String[] headerNames, String[] headerValues) {
+        com.rockstargames.oswrapper.GameNative.implOnHttpRequestResponse(id, statusCode, statusLine, headerNames, headerValues);
+    }
 
      
-    public static   native void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths);
+    public static void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths) {
+        com.rockstargames.oswrapper.GameNative.implOnInitialSetup(deviceInfo, assets, assetPackNames, assetPackPaths);
+    }
 
      
-    public static   native void implOnLowMemory();
+    public static void implOnLowMemory() {
+        com.rockstargames.oswrapper.GameNative.implOnLowMemory();
+    }
 
      
-    public static   native void implOnNetworkChanged(int network);
+    public static void implOnNetworkChanged(int network) {
+        com.rockstargames.oswrapper.GameNative.implOnNetworkChanged(network);
+    }
 
      
-    public static   native void implOnPause();
+    public static void implOnPause() {
+        com.rockstargames.oswrapper.GameNative.implOnPause();
+    }
 
      
-    public static   native void implOnPlaylistOpenComplete(boolean available, int count);
+    public static void implOnPlaylistOpenComplete(boolean available, int count) {
+        com.rockstargames.oswrapper.GameNative.implOnPlaylistOpenComplete(available, count);
+    }
 
      
-    public static   native void implOnResume();
+    public static void implOnResume() {
+        com.rockstargames.oswrapper.GameNative.implOnResume();
+    }
 
      
-    public static   native void implOnRockstarAccountDeletionComplete();
+    public static void implOnRockstarAccountDeletionComplete() {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarAccountDeletionComplete();
+    }
 
      
-    public static   native void implOnRockstarCloudDisabledComplete();
+    public static void implOnRockstarCloudDisabledComplete() {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarCloudDisabledComplete();
+    }
 
      
-    public static   native void implOnRockstarGateComplete(int id, boolean pass);
+    public static void implOnRockstarGateComplete(int id, boolean pass) {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarGateComplete(id, pass);
+    }
 
      
-    public static   native void implOnRockstarIdChanged(String id);
+    public static void implOnRockstarIdChanged(String id) {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarIdChanged(id);
+    }
 
      
-    public static   native void implOnRockstarInitialComplete();
+    public static void implOnRockstarInitialComplete() {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarInitialComplete();
+    }
 
      
-    public static   native void implOnRockstarSetup(String environment, String rockstarId);
+    public static void implOnRockstarSetup(String environment, String rockstarId) {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarSetup(environment, rockstarId);
+    }
 
      
-    public static   native void implOnRockstarSignInComplete();
+    public static void implOnRockstarSignInComplete() {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarSignInComplete();
+    }
 
      
-    public static   native void implOnRockstarSignOutComplete();
+    public static void implOnRockstarSignOutComplete() {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarSignOutComplete();
+    }
 
      
-    public static   native void implOnRockstarStateChanged(boolean pauseGameplay);
+    public static void implOnRockstarStateChanged(boolean pauseGameplay) {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarStateChanged(pauseGameplay);
+    }
 
      
-    public static   native void implOnRockstarTicketChanged(String ticket);
+    public static void implOnRockstarTicketChanged(String ticket) {
+        com.rockstargames.oswrapper.GameNative.implOnRockstarTicketChanged(ticket);
+    }
 
      
-    public static   native void implOnSurfaceChanged(Surface surface, int width, int height);
+    public static void implOnSurfaceChanged(Surface surface, int width, int height) {
+        com.rockstargames.oswrapper.GameNative.implOnSurfaceChanged(surface, width, height);
+    }
 
      
-    public static   native void implOnSurfaceCreated();
+    public static void implOnSurfaceCreated() {
+        com.rockstargames.oswrapper.GameNative.implOnSurfaceCreated();
+    }
 
      
-    public static   native void implOnSurfaceDestroyed();
+    public static void implOnSurfaceDestroyed() {
+        com.rockstargames.oswrapper.GameNative.implOnSurfaceDestroyed();
+    }
 
      
-    public static   native void implOnTouchEnd(int pointerId, float x, float y);
+    public static void implOnTouchEnd(int pointerId, float x, float y) {
+        com.rockstargames.oswrapper.GameNative.implOnTouchEnd(pointerId, x, y);
+    }
 
      
-    public static   native void implOnTouchMove(int pointerId, float x, float y);
+    public static void implOnTouchMove(int pointerId, float x, float y) {
+        com.rockstargames.oswrapper.GameNative.implOnTouchMove(pointerId, x, y);
+    }
 
      
-    public static   native void implOnTouchStart(int pointerId, float x, float y);
+    public static void implOnTouchStart(int pointerId, float x, float y) {
+        com.rockstargames.oswrapper.GameNative.implOnTouchStart(pointerId, x, y);
+    }
 }
