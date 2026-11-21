@@ -204,7 +204,17 @@ public class GameNative {
                     .append(" assetPackNames=").append(assetPackNames == null ? "null" : assetPackNames.length)
                     .append(" assetPackPaths=").append(assetPackPaths == null ? "null" : assetPackPaths.length).append('\n');
 
-            report.append("CALLING_LIBGAME_INITIAL_SETUP\n");
+            try {
+                String nativeProbe = com.rockstargames.oswrapper.GameNative.diagnosticFindClass();
+                report.append("SAMP_NATIVE_PROBE=").append(nativeProbe).append('\\n');
+            } catch (Throwable probeError) {
+                report.append("SAMP_NATIVE_PROBE_FAILED=")
+                        .append(probeError.getClass().getName()).append(": ")
+                        .append(probeError.getMessage()).append('\\n');
+                Log.e(tag, "Independent libsamp JNI probe failed; continuing to libGame", probeError);
+            }
+
+            report.append("CALLING_LIBGAME_INITIAL_SETUP\\n");
             saveJniDiagnostic(report.toString());
             Log.i(tag, "Calling libGame initial setup; diagnostic exported");
             com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
