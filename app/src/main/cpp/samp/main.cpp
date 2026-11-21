@@ -34,6 +34,51 @@ Peerapol Unarak
 
 JavaVM* javaVM;
 
+// Independent JNI class-lookup probe. This runs from libsamp.so on the same
+// Java-created GameThread immediately before libGame.so is entered.
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_rockstargames_oswrapper_GameNative_diagnosticFindClass(
+    JNIEnv* env,
+    jclass clazz
+) {
+    std::string result;
+    jclass services = env->FindClass("com/rockstargames/oswrapper/GamePlatformServices");
+    if (services == nullptr) {
+        result = "SAMP_FINDCLASS_SERVICE_FAILED";
+        if (env->ExceptionCheck()) {
+            env->ExceptionDescribe();
+            env->ExceptionClear();
+            result += " (Java exception described in logcat)";
+        }
+        return env->NewStringUTF(result.c_str());
+    }
+
+    jmethodID quit = env->GetMethodID(services, "quit", "()V");
+    if (quit == nullptr) {
+        result = "SAMP_GETMETHODID_QUIT_FAILED";
+        if (env->ExceptionCheck()) {
+            env->ExceptionDescribe();
+            env->ExceptionClear();
+            result += " (Java exception described in logcat)";
+        }
+        return env->NewStringUTF(result.c_str());
+    }
+
+    jclass device = env->FindClass("com/rockstargames/oswrapper/DeviceInfo");
+    if (device == nullptr) {
+        result = "SAMP_FINDCLASS_DEVICE_FAILED";
+        if (env->ExceptionCheck()) {
+            env->ExceptionDescribe();
+            env->ExceptionClear();
+            result += " (Java exception described in logcat)";
+        }
+        return env->NewStringUTF(result.c_str());
+    }
+
+    return env->NewStringUTF("SAMP_FINDCLASS_OK; SAMP_GETMETHODID_QUIT_OK; DEVICE_OK");
+}
+
 
 char* g_pszStorage = "/storage/emulated/0/GTA/";
 
