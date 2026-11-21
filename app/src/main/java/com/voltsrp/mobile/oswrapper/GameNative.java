@@ -93,7 +93,7 @@ public class GameNative {
 
      
     public static void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths) {
-        com.rockstargames.oswrapper.GameNative.implOnInitialSetup(deviceInfo, assets, assetPackNames, assetPackPaths);
+        com.rockstargames.oswrapper.GameNative.implOnInitialSetup(new com.rockstargames.oswrapper.DeviceInfo(deviceInfo), assets, assetPackNames, assetPackPaths);
     }
 
      
