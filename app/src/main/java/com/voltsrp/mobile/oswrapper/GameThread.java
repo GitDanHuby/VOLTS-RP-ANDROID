@@ -341,6 +341,10 @@ public final class GameThread {
         private AtomicBoolean exitRequested = new AtomicBoolean(false);
         private Runnable finishDrawingRunnable;
         private long lastFrameTime;
+        private boolean loggedThreadStarted = false;
+        private boolean loggedFirstLoop = false;
+        private boolean loggedViewNull = false;
+        private boolean loggedNoFocus = false;
         private boolean loggedFirstInitCheck = false;
         private boolean loggedFirstInitResult = false;
         private boolean loggedFirstInitTrue = false;
@@ -367,6 +371,14 @@ public final class GameThread {
                 }
                 GamePlatformServices gamePlatformServices = this.servicesWeak.get();
                 GameView gameView = gamePlatformServices != null ? gamePlatformServices.view : null;
+                if (!loggedFirstLoop) {
+                    loggedFirstLoop = GameNative.writeJniTraceMarker("GAME_THREAD_FIRST_LOOP");
+                }
+                if (gameView == null && !loggedViewNull) {
+                    loggedViewNull = GameNative.writeJniTraceMarker("GAME_THREAD_GAME_VIEW_NULL");
+                } else if (gameView != null && !gameView.getHasFocus() && !loggedNoFocus) {
+                    loggedNoFocus = GameNative.writeJniTraceMarker("GAME_THREAD_VIEW_NO_FOCUS");
+                }
                 long jElapsedRealtime = SystemClock.elapsedRealtime();
                 float f = (jElapsedRealtime - this.lastFrameTime) / 1000.0f;
                 this.lastFrameTime = SystemClock.elapsedRealtime();
@@ -408,6 +420,8 @@ public final class GameThread {
 
         @Override
         public void run() {
+            // Diagnostic only: identify whether the executor thread starts at all.
+            loggedThreadStarted = GameNative.writeJniTraceMarker("GAME_THREAD_RUN_ENTER");
             // FIX #2: removed useless try/catch InterruptedException — guardedRun() doesn't throw it
             guardedRun();
         }
