@@ -277,7 +277,11 @@ public abstract class GameActivityBase extends AppCompatActivity {
                 if (GameThread.INSTANCE.fixedWidth > 0) {
                     holder.setFixedSize(GameThread.INSTANCE.fixedWidth, GameThread.INSTANCE.fixedHeight);
                 }
-                GameThread.INSTANCE.InitEGLAndGLES2(3);
+                GameNative.writeJniTraceMarker("GAME_SURFACE_CREATED_ENTER");
+                GameNative.writeJniTraceMarker("BEFORE_INIT_EGL");
+                boolean eglReady = GameThread.INSTANCE.InitEGLAndGLES2(3);
+                GameNative.writeJniTraceMarker(eglReady
+                        ? "AFTER_INIT_EGL_SUCCESS" : "AFTER_INIT_EGL_FAILURE");
                 // Trigger the native engine initialization
                 // Note: Ensure ResumeEventDone logic is handled safely
             }
@@ -372,9 +376,11 @@ public abstract class GameActivityBase extends AppCompatActivity {
     @Override
     protected void onResume() {
         Log.i(TAG, "[!!] onResume");
+        GameNative.writeJniTraceMarker("ACTIVITY_ON_RESUME_ENTER");
         super.onResume();
         hideSystemUI();
         getView().onResume();
+        GameNative.writeJniTraceMarker("ACTIVITY_ON_RESUME_EXIT");
     }
 
     @Override
