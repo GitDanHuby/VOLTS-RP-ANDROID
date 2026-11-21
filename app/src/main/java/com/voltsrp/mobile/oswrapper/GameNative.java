@@ -177,13 +177,13 @@ public class GameNative {
         final ClassLoader nativeLoader =
                 com.rockstargames.oswrapper.GameNative.class.getClassLoader();
         StringBuilder report = new StringBuilder();
-        report.append("VOLTS RP - JNI diagnostic\\n")
-                .append("timeMillis=").append(System.currentTimeMillis()).append('\\n')
-                .append("thread=").append(Thread.currentThread().getName()).append('\\n')
-                .append("sdk=").append(Build.VERSION.SDK_INT).append('\\n')
-                .append("mobileLoader=").append(GameNative.class.getClassLoader()).append('\\n')
-                .append("nativeLoader=").append(nativeLoader).append('\\n')
-                .append("threadContextLoader=").append(Thread.currentThread().getContextClassLoader()).append('\\n');
+        report.append("VOLTS RP - JNI diagnostic\n")
+                .append("timeMillis=").append(System.currentTimeMillis()).append('\n')
+                .append("thread=").append(Thread.currentThread().getName()).append('\n')
+                .append("sdk=").append(Build.VERSION.SDK_INT).append('\n')
+                .append("mobileLoader=").append(GameNative.class.getClassLoader()).append('\n')
+                .append("nativeLoader=").append(nativeLoader).append('\n')
+                .append("threadContextLoader=").append(Thread.currentThread().getContextClassLoader()).append('\n');
 
         try {
             Class<?> servicesClass = Class.forName(
@@ -191,30 +191,30 @@ public class GameNative {
             java.lang.reflect.Method quitMethod = servicesClass.getMethod("quit");
             report.append("SERVICE_CLASS_OK name=").append(servicesClass.getName())
                     .append(" loader=").append(servicesClass.getClassLoader())
-                    .append(" quit=").append(quitMethod.toGenericString()).append('\\n');
+                    .append(" quit=").append(quitMethod.toGenericString()).append('\n');
 
             Class<?> deviceClass = Class.forName(
                     "com.rockstargames.oswrapper.DeviceInfo", true, nativeLoader);
             report.append("DEVICE_CLASS_OK name=").append(deviceClass.getName())
-                    .append(" loader=").append(deviceClass.getClassLoader()).append('\\n');
+                    .append(" loader=").append(deviceClass.getClassLoader()).append('\n');
 
             com.rockstargames.oswrapper.DeviceInfo legacyDevice =
                     new com.rockstargames.oswrapper.DeviceInfo(deviceInfo);
             report.append("DEVICE_ADAPTER_OK assets=").append(assets != null)
                     .append(" assetPackNames=").append(assetPackNames == null ? "null" : assetPackNames.length)
-                    .append(" assetPackPaths=").append(assetPackPaths == null ? "null" : assetPackPaths.length).append('\\n');
+                    .append(" assetPackPaths=").append(assetPackPaths == null ? "null" : assetPackPaths.length).append('\n');
 
-            report.append("CALLING_LIBGAME_INITIAL_SETUP\\n");
+            report.append("CALLING_LIBGAME_INITIAL_SETUP\n");
             saveJniDiagnostic(report.toString());
             Log.i(tag, "Calling libGame initial setup; diagnostic exported");
             com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
                     legacyDevice, assets, assetPackNames, assetPackPaths);
-            report.append("LIBGAME_INITIAL_SETUP_RETURNED\\n");
+            report.append("LIBGAME_INITIAL_SETUP_RETURNED\n");
             saveJniDiagnostic(report.toString());
         } catch (Throwable error) {
             StringWriter trace = new StringWriter();
             error.printStackTrace(new PrintWriter(trace));
-            report.append("INITIAL_SETUP_PREFLIGHT_FAILED\\n").append(trace);
+            report.append("INITIAL_SETUP_PREFLIGHT_FAILED\n").append(trace);
             saveJniDiagnostic(report.toString());
             Log.e(tag, "INITIAL_SETUP_PREFLIGHT_FAILED", error);
             throw new IllegalStateException("JNI initial setup diagnostic failed", error);
