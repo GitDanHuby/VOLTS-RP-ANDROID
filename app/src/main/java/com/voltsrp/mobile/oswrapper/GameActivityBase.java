@@ -270,7 +270,8 @@ public abstract class GameActivityBase extends AppCompatActivity {
 
                 // Update the thread's reference immediately
                 GameThread.INSTANCE.cachedSurfaceHolder = holder;
-                GameThread.INSTANCE.viewIsActive = true;
+                // InitEGLAndGLES2 creates the EGL surface while viewIsActive is false.
+                // Do not mark it active before that initialization has completed.
 
                 // Dynamic Resolution Scaling for Speed
                 if (GameThread.INSTANCE.fixedWidth > 0) {
