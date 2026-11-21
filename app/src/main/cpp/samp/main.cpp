@@ -190,6 +190,22 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_setJniTraceEnabled(
     }
 }
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_voltsrp_mobile_oswrapper_GameNative_writeJniTraceMarker(
+    JNIEnv* env, jclass clazz, jstring marker)
+{
+    if (g_jniTraceFd < 0 || marker == nullptr) return JNI_FALSE;
+    const char* value = env->GetStringUTFChars(marker, nullptr);
+    if (value == nullptr) {
+        JniTraceWrite("MARKER_STRING_UNAVAILABLE");
+        return JNI_FALSE;
+    }
+    JniTraceWrite("MARKER %s", value);
+    env->ReleaseStringUTFChars(marker, value);
+    return JNI_TRUE;
+}
+
 
 // Independent JNI class-lookup probe. This runs from libsamp.so on the same
 // Java-created GameThread immediately before libGame.so is entered.
