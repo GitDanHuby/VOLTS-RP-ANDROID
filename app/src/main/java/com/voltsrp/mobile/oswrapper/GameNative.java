@@ -45,6 +45,10 @@ public class GameNative {
 
     public static native boolean implIsInitialized();
 
+    // Separate the SAMP initialization state from permission to start rendering.
+    public static native void setFrameLoopReady(boolean ready);
+    public static native boolean isFrameLoopReady();
+
 
     public static void implOnAccelerometerChanged(float x, float y, float z) {
         com.rockstargames.oswrapper.GameNative.implOnAccelerometerChanged(x, y, z);
