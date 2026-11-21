@@ -201,8 +201,31 @@ public class GameNative {
             com.rockstargames.oswrapper.DeviceInfo legacyDevice =
                     new com.rockstargames.oswrapper.DeviceInfo(deviceInfo);
             report.append("DEVICE_ADAPTER_OK assets=").append(assets != null)
+                    .append(" assetManagerClass=").append(assets == null ? "null" : assets.getClass().getName())
                     .append(" assetPackNames=").append(assetPackNames == null ? "null" : assetPackNames.length)
                     .append(" assetPackPaths=").append(assetPackPaths == null ? "null" : assetPackPaths.length).append('\n');
+
+            if (assetPackNames == null || assetPackPaths == null) {
+                report.append("ASSET_PACK_ARRAY_ERROR namesOrPathsNull=true\n");
+            } else {
+                int count = Math.min(assetPackNames.length, assetPackPaths.length);
+                report.append("ASSET_PACK_ARRAYS_MATCH=").append(assetPackNames.length == assetPackPaths.length)
+                        .append(" inspected=").append(count).append('\n');
+                for (int i = 0; i < count; i++) {
+                    String packName = assetPackNames[i];
+                    String packPath = assetPackPaths[i];
+                    report.append("ASSET_PACK[").append(i).append("] name=")
+                            .append(packName == null ? "null" : packName)
+                            .append(" path=").append(packPath == null ? "null" : packPath);
+                    if (packPath != null) {
+                        File pathFile = new File(packPath);
+                        report.append(" exists=").append(pathFile.exists())
+                                .append(" directory=").append(pathFile.isDirectory())
+                                .append(" readable=").append(pathFile.canRead());
+                    }
+                    report.append('\n');
+                }
+            }
 
             try {
                 String nativeProbe = com.rockstargames.oswrapper.GameNative.diagnosticFindClass();
