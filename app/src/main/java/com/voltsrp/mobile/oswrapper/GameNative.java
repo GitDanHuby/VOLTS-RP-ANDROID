@@ -300,14 +300,14 @@ public class GameNative {
             Context traceContext = GameActivityBase.getInstance();
             int traceFd = openJniTraceFileDescriptor(traceContext);
             setJniTraceEnabled(true, traceFd);
-            try {
-                com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
-                        legacyDevice, assets, assetPackNames, assetPackPaths);
-            } finally {
-                setJniTraceEnabled(false, -1);
-            }
+            // Keep the JNI table tracer installed on this GameThread. The same
+            // thread processes later native callbacks and frames; disabling it
+            // here would hide failures that happen after initial setup returns.
+            com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
+                    legacyDevice, assets, assetPackNames, assetPackPaths);
             report.append("LIBGAME_INITIAL_SETUP_RETURNED\n");
             saveJniDiagnostic(report.toString());
+            Log.i(tag, "JNI trace remains active for subsequent GameThread callbacks");
         } catch (Throwable error) {
             StringWriter trace = new StringWriter();
             error.printStackTrace(new PrintWriter(trace));
