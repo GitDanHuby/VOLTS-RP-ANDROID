@@ -1211,6 +1211,7 @@ public final class GameThread {
 
     public void start(final GamePlatformServices services) {
 
+        GameNative.writeJniTraceMarker("GAME_THREAD_START_ENTER");
         WeakReference<GamePlatformServices> servicesWeak;
         GamePlatformServices gamePlatformServices;
         Intrinsics.checkNotNullParameter(services, "services");
@@ -1220,7 +1221,9 @@ public final class GameThread {
             ExecutorThread executorThread2 = new ExecutorThread(new WeakReference(services));
             current = executorThread2;
             Intrinsics.checkNotNull(executorThread2);
+            GameNative.writeJniTraceMarker("GAME_THREAD_BEFORE_THREAD_START");
             executorThread2.start();
+            GameNative.writeJniTraceMarker("GAME_THREAD_AFTER_THREAD_START");
         }
 
 
@@ -1235,9 +1238,12 @@ public final class GameThread {
             stop();
             ExecutorThread newThread = new ExecutorThread(new WeakReference<>(services));
             current = newThread;
+            GameNative.writeJniTraceMarker("GAME_THREAD_BEFORE_SECOND_THREAD_START");
             newThread.start();
+            GameNative.writeJniTraceMarker("GAME_THREAD_AFTER_SECOND_THREAD_START");
         }
 
+        GameNative.writeJniTraceMarker("GAME_THREAD_START_EXIT");
         queueEvent(new Function0<Unit>() { // from class: com.rockstargames.oswrapper.GameThread.start.1
             @Override // kotlin.jvm.functions.Function0
             public /* bridge */ /* synthetic */ Unit invoke() {
