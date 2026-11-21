@@ -14,7 +14,8 @@
         <activity
             android:name="com.voltsrp.mobile.gtasa.GameActivity"
             android:exported="false"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            android:theme="@style/GameActivity" />
 
         <activity
             android:name="com.voltsrp.mobile.MainActivity"
