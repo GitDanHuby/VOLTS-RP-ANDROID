@@ -386,7 +386,7 @@ public final class GameThread {
                     if (!loggedFirstInitCheck) {
                         loggedFirstInitCheck = GameNative.writeJniTraceMarker("BEFORE_FIRST_IMPL_IS_INITIALIZED");
                     }
-                    boolean initialized = GameNative.implIsInitialized();
+                    boolean initialized = GameNative.isFrameLoopReady();
                     if (!loggedFirstInitResult && GameNative.writeJniTraceMarker(
                             initialized ? "FIRST_IMPL_IS_INITIALIZED_TRUE" : "FIRST_IMPL_IS_INITIALIZED_FALSE")) {
                         loggedFirstInitResult = true;
@@ -621,6 +621,8 @@ public final class GameThread {
 
 
                 GameNative.implOnActivityCreated(new GamePlatformServices(activity, view), firstInit);
+                // The first frame may run only after the native ActivityCreated callback completes.
+                GameNative.setFrameLoopReady(true);
             }
         });
 
@@ -816,6 +818,8 @@ public final class GameThread {
     }
 
     public void onInitialSetup(final GameActivityBase activity) {
+        // Reset the render gate for every Activity/game startup.
+        GameNative.setFrameLoopReady(false);
         // ناوی ئەو فۆڵدەرەی داتاکانی تێدایە
         String dataPath = activity.GetGameBaseDirectory();
 
