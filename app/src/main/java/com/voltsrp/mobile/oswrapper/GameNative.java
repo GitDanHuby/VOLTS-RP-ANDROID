@@ -33,7 +33,7 @@ public class GameNative {
 
      
     public static void implOnActivityCreated(GamePlatformServices services, boolean firstInit) {
-        com.rockstargames.oswrapper.GameNative.implOnActivityCreated(services, firstInit);
+        com.rockstargames.oswrapper.GameNative.implOnActivityCreated(new com.rockstargames.oswrapper.GamePlatformServices(services.activity, services.view), firstInit);
     }
 
      
