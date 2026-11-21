@@ -383,11 +383,15 @@ public final class GameThread {
                         if (!loggedFirstInitTrue && GameNative.writeJniTraceMarker("IMPL_IS_INITIALIZED_TRUE")) {
                             loggedFirstInitTrue = true;
                         }
-                        if (!loggedFirstDraw && GameNative.writeJniTraceMarker("BEFORE_FIRST_DRAW")) {
+                        if (!loggedFirstDraw) {
+                            boolean traceMarkerWritten =
+                                    GameNative.writeJniTraceMarker("BEFORE_FIRST_DRAW");
                             GameNative.implOnDrawFrame(f);
-                            GameNative.writeJniTraceMarker("AFTER_FIRST_DRAW");
-                            loggedFirstDraw = true;
-                        } else if (loggedFirstDraw) {
+                            if (traceMarkerWritten) {
+                                GameNative.writeJniTraceMarker("AFTER_FIRST_DRAW");
+                                loggedFirstDraw = true;
+                            }
+                        } else {
                             GameNative.implOnDrawFrame(f);
                         }
                     }
