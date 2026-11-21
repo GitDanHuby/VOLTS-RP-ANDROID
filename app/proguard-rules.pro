@@ -38,3 +38,7 @@
 
 # JNI in libGame.so resolves these inherited methods by their original names.
 -keep class com.voltsrp.mobile.oswrapper.GamePlatformServices { *; }
+
+# libGame.so resolves this NVIDIA compatibility bridge dynamically through JNI.
+-keep class com.nvidia.devtech.NvUtil { *; }
+-keep class com.voltsrp.mobile.nvidia.devtech.NvUtil { *; }
