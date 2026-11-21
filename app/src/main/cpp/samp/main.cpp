@@ -42,41 +42,111 @@ Java_com_rockstargames_oswrapper_GameNative_diagnosticFindClass(
     JNIEnv* env,
     jclass clazz
 ) {
-    std::string result;
-    jclass services = env->FindClass("com/rockstargames/oswrapper/GamePlatformServices");
-    if (services == nullptr) {
-        result = "SAMP_FINDCLASS_SERVICE_FAILED";
-        if (env->ExceptionCheck()) {
-            env->ExceptionDescribe();
-            env->ExceptionClear();
-            result += " (Java exception described in logcat)";
-        }
-        return env->NewStringUTF(result.c_str());
+    if (env->ExceptionCheck()) {
+        env->ExceptionDescribe();
+        env->ExceptionClear();
+        return env->NewStringUTF("SAMP_PROBE_ENTERED_WITH_PENDING_EXCEPTION");
     }
 
-    jmethodID quit = env->GetMethodID(services, "quit", "()V");
-    if (quit == nullptr) {
-        result = "SAMP_GETMETHODID_QUIT_FAILED";
-        if (env->ExceptionCheck()) {
+    jclass services = env->FindClass("com/rockstargames/oswrapper/GamePlatformServices");
+    if (services == nullptr) {
+        bool pending = env->ExceptionCheck();
+        if (pending) {
             env->ExceptionDescribe();
             env->ExceptionClear();
-            result += " (Java exception described in logcat)";
         }
-        return env->NewStringUTF(result.c_str());
+        return env->NewStringUTF(pending
+            ? "SAMP_FINDCLASS_SERVICE_FAILED_WITH_EXCEPTION"
+            : "SAMP_FINDCLASS_SERVICE_FAILED_WITHOUT_EXCEPTION");
+    }
+
+    struct MethodSpec {
+        const char* name;
+        const char* signature;
+    };
+    static const MethodSpec methods[] = {
+        {"showSplashScreen", "()V"},
+        {"hideSplashScreen", "()V"},
+        {"isSplashScreenVisible", "()Z"},
+        {"setSplashImage", "(Ljava/lang/String;)V"},
+        {"setSplashText", "(Ljava/lang/String;)V"},
+        {"playMovie", "(Ljava/lang/String;Z)V"},
+        {"stopMovie", "()V"},
+        {"setMovieText", "(Ljava/lang/String;)V"},
+        {"isMoviePlaying", "()Z"},
+        {"setMovieTextScale", "(I)V"},
+        {"rockstarShowGate", "(I)V"},
+        {"rockstarShowInitial", "()V"},
+        {"rockstarSignIn", "()V"},
+        {"rockstarSignOut", "()V"},
+        {"rockstarSetLocalePriority", "(Ljava/lang/String;)V"},
+        {"rockstarInTrial", "()Z"},
+        {"rockstarShowCloudDisabled", "()V"},
+        {"rockstarRequestReview", "()V"},
+        {"rockstarAccountDeletion", "()V"},
+        {"httpHead", "(ILjava/lang/String;)V"},
+        {"httpGet", "(ILjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;)V"},
+        {"httpPost", "(ILjava/lang/String;[Ljava/lang/String;[Ljava/lang/String;[B)V"},
+        {"httpCancel", "(I)V"},
+        {"getDeviceLocale", "()I"},
+        {"playlistOpen", "(Ljava/lang/String;)V"},
+        {"playlistPlay", "()V"},
+        {"playlistPause", "()V"},
+        {"playlistStop", "()V"},
+        {"playlistIsPlaying", "()Z"},
+        {"playlistCount", "()I"},
+        {"playlistSetVolume", "(F)V"},
+        {"openLink", "(Ljava/lang/String;)V"},
+        {"getAppVersion", "()Ljava/lang/String;"},
+        {"quit", "()V"}
+    };
+
+    for (const MethodSpec& method : methods) {
+        jmethodID id = env->GetMethodID(services, method.name, method.signature);
+        if (id == nullptr || env->ExceptionCheck()) {
+            bool pending = env->ExceptionCheck();
+            if (pending) {
+                env->ExceptionDescribe();
+                env->ExceptionClear();
+            }
+            std::string result = "SAMP_GETMETHODID_FAILED method=";
+            result += method.name;
+            result += " signature=";
+            result += method.signature;
+            result += pending ? " pending_exception" : " no_exception";
+            return env->NewStringUTF(result.c_str());
+        }
     }
 
     jclass device = env->FindClass("com/rockstargames/oswrapper/DeviceInfo");
-    if (device == nullptr) {
-        result = "SAMP_FINDCLASS_DEVICE_FAILED";
-        if (env->ExceptionCheck()) {
+    if (device == nullptr || env->ExceptionCheck()) {
+        bool pending = env->ExceptionCheck();
+        if (pending) {
             env->ExceptionDescribe();
             env->ExceptionClear();
-            result += " (Java exception described in logcat)";
         }
-        return env->NewStringUTF(result.c_str());
+        return env->NewStringUTF(pending
+            ? "SAMP_FINDCLASS_DEVICE_FAILED_WITH_EXCEPTION"
+            : "SAMP_FINDCLASS_DEVICE_FAILED_WITHOUT_EXCEPTION");
     }
 
-    return env->NewStringUTF("SAMP_FINDCLASS_OK; SAMP_GETMETHODID_QUIT_OK; DEVICE_OK");
+    const char* fields[] = {"isPhone", "hasTouchScreen"};
+    for (const char* field : fields) {
+        jfieldID id = env->GetFieldID(device, field, "Z");
+        if (id == nullptr || env->ExceptionCheck()) {
+            bool pending = env->ExceptionCheck();
+            if (pending) {
+                env->ExceptionDescribe();
+                env->ExceptionClear();
+            }
+            std::string result = "SAMP_GETFIELDID_FAILED field=";
+            result += field;
+            result += pending ? " pending_exception" : " no_exception";
+            return env->NewStringUTF(result.c_str());
+        }
+    }
+
+    return env->NewStringUTF("SAMP_ALL_NATIVE_LOOKUPS_OK methods=34 device_fields=2");
 }
 
 
