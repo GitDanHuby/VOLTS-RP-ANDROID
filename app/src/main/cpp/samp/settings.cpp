@@ -1,4 +1,5 @@
 #include "main.h"
+#include <limits.h>
 #include "settings.h"
 #include "vendor/inih/cpp/INIReader.h"
 
