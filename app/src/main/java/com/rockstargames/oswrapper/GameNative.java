@@ -2,7 +2,6 @@ package com.rockstargames.oswrapper;
 
 import android.content.res.AssetManager;
 import android.view.Surface;
-import com.voltsrp.mobile.oswrapper.GamePlatformServices;
 
 /** JNI compatibility facade for the original Rockstar Game library package. */
 public final class GameNative {
