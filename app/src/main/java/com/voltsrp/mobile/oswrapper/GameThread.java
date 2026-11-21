@@ -618,11 +618,19 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
+                // Pinpoint the native lifecycle callback: the previous trace ended
+                // after initial setup, before the first render-loop marker.
+                GameNative.writeJniTraceMarker("BEFORE_CREATE_GAME_PLATFORM_SERVICES");
+                GamePlatformServices platformServices = new GamePlatformServices(activity, view);
+                GameNative.writeJniTraceMarker("AFTER_CREATE_GAME_PLATFORM_SERVICES");
 
+                GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_ACTIVITY_CREATED");
+                GameNative.implOnActivityCreated(platformServices, firstInit);
+                GameNative.writeJniTraceMarker("AFTER_IMPL_ON_ACTIVITY_CREATED");
 
-                GameNative.implOnActivityCreated(new GamePlatformServices(activity, view), firstInit);
                 // The first frame may run only after the native ActivityCreated callback completes.
                 GameNative.setFrameLoopReady(true);
+                GameNative.writeJniTraceMarker("FRAME_LOOP_READY_TRUE");
             }
         });
 
