@@ -33,6 +33,7 @@
 #include "CServerManager.h"
 #include <string>
 #include <cstdlib>
+#include <atomic>
 /*
 Peerapol Unarak
 */
@@ -359,6 +360,9 @@ MaterialTextGenerator* pMaterialTextGenerator = nullptr;
 
 bool bDebug = false;
 bool bGameInited = false;
+// The renderer must be allowed to produce its first frame before MainLoop can
+// set bGameInited. Keep this lifecycle gate separate to avoid a startup cycle.
+static std::atomic<bool> g_frameLoopReady{false};
 bool bNetworkInited = false;
 
 // JNI bridge expected by GameNative.implIsInitialized().
@@ -369,6 +373,22 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_implIsInitialized(
     jclass clazz
 ) {
     return bGameInited ? JNI_TRUE : JNI_FALSE;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_voltsrp_mobile_oswrapper_GameNative_setFrameLoopReady(
+    JNIEnv* env, jclass clazz, jboolean ready)
+{
+    g_frameLoopReady.store(ready == JNI_TRUE, std::memory_order_release);
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_com_voltsrp_mobile_oswrapper_GameNative_isFrameLoopReady(
+    JNIEnv* env, jclass clazz)
+{
+    return g_frameLoopReady.load(std::memory_order_acquire) ? JNI_TRUE : JNI_FALSE;
 }
 
 uintptr_t g_libGTASA = 0x00;
