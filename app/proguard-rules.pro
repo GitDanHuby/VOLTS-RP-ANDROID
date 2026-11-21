@@ -35,3 +35,6 @@
 
 # Preserve the exact legacy class/method names looked up by libGame.so.
 -keep class com.rockstargames.oswrapper.GamePlatformServices { *; }
+
+# JNI in libGame.so resolves these inherited methods by their original names.
+-keep class com.voltsrp.mobile.oswrapper.GamePlatformServices { *; }
