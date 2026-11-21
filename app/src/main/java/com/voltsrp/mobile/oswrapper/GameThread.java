@@ -341,6 +341,10 @@ public final class GameThread {
         private AtomicBoolean exitRequested = new AtomicBoolean(false);
         private Runnable finishDrawingRunnable;
         private long lastFrameTime;
+        private boolean loggedFirstInitCheck = false;
+        private boolean loggedFirstInitResult = false;
+        private boolean loggedFirstInitTrue = false;
+        private boolean loggedFirstDraw = false;
         private final WeakReference<GamePlatformServices> servicesWeak;
 
         public ExecutorThread(WeakReference<GamePlatformServices> servicesWeak) {
@@ -366,8 +370,27 @@ public final class GameThread {
                 long jElapsedRealtime = SystemClock.elapsedRealtime();
                 float f = (jElapsedRealtime - this.lastFrameTime) / 1000.0f;
                 this.lastFrameTime = SystemClock.elapsedRealtime();
-                if (gameView != null && gameView.getHasFocus() && GameNative.implIsInitialized()) {
-                    GameNative.implOnDrawFrame(f);
+                if (gameView != null && gameView.getHasFocus()) {
+                    if (!loggedFirstInitCheck) {
+                        loggedFirstInitCheck = GameNative.writeJniTraceMarker("BEFORE_FIRST_IMPL_IS_INITIALIZED");
+                    }
+                    boolean initialized = GameNative.implIsInitialized();
+                    if (!loggedFirstInitResult && GameNative.writeJniTraceMarker(
+                            initialized ? "FIRST_IMPL_IS_INITIALIZED_TRUE" : "FIRST_IMPL_IS_INITIALIZED_FALSE")) {
+                        loggedFirstInitResult = true;
+                    }
+                    if (initialized) {
+                        if (!loggedFirstInitTrue && GameNative.writeJniTraceMarker("IMPL_IS_INITIALIZED_TRUE")) {
+                            loggedFirstInitTrue = true;
+                        }
+                        if (!loggedFirstDraw && GameNative.writeJniTraceMarker("BEFORE_FIRST_DRAW")) {
+                            GameNative.implOnDrawFrame(f);
+                            GameNative.writeJniTraceMarker("AFTER_FIRST_DRAW");
+                            loggedFirstDraw = true;
+                        } else if (loggedFirstDraw) {
+                            GameNative.implOnDrawFrame(f);
+                        }
+                    }
                 }
                 Runnable runnable2 = this.finishDrawingRunnable;
                 if (runnable2 != null) {
