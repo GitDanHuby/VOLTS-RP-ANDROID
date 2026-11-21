@@ -242,8 +242,10 @@ public class GameNative {
             report.append("CALLING_LIBGAME_INITIAL_SETUP\n");
             saveJniDiagnostic(report.toString());
             Log.i(tag, "Calling libGame initial setup; diagnostic exported");
-            File traceDirectory = context.getExternalFilesDir(null);
-            if (traceDirectory == null) traceDirectory = context.getFilesDir();
+            Context traceContext = GameActivityBase.getInstance();
+            File traceDirectory = traceContext == null ? null : traceContext.getExternalFilesDir(null);
+            if (traceDirectory == null && traceContext != null) traceDirectory = traceContext.getFilesDir();
+            if (traceDirectory == null) throw new IllegalStateException("No app directory available for JNI trace");
             File traceFile = new File(traceDirectory, "VOLTS-JNI-TRACE.txt");
             setJniTraceEnabled(true, traceFile.getAbsolutePath());
             try {
