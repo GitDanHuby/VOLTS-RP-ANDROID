@@ -14,6 +14,11 @@
 #include "game/CrossHair.h"
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
+#include <android/log.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <cstdarg>
+#include <cstdio>
 
 // voice
 #include "voice/Plugin.h"
@@ -32,7 +37,164 @@
 Peerapol Unarak
 */
 
+
 JavaVM* javaVM;
+
+// Temporary per-thread JNI table tracer. It records the exact class/method
+// lookup sequence made by libGame during implOnInitialSetup.
+static const JNINativeInterface* g_jniTraceOriginal = nullptr;
+static JNINativeInterface g_jniTraceTable;
+static int g_jniTraceFd = -1;
+
+static void JniTraceWrite(const char* format, ...)
+{
+    if (g_jniTraceFd < 0) return;
+    char line[1200];
+    va_list args;
+    va_start(args, format);
+    int length = vsnprintf(line, sizeof(line), format, args);
+    va_end(args);
+    if (length <= 0) return;
+    size_t count = static_cast<size_t>(length);
+    if (count >= sizeof(line)) count = sizeof(line) - 1;
+    line[count++] = '\n';
+    const char* cursor = line;
+    while (count > 0) {
+        ssize_t written = write(g_jniTraceFd, cursor, count);
+        if (written <= 0) break;
+        cursor += written;
+        count -= static_cast<size_t>(written);
+    }
+    fsync(g_jniTraceFd);
+}
+
+static jclass JNICALL TraceFindClass(JNIEnv* env, const char* name)
+{
+    JniTraceWrite("FindClass ENTER name=%s", name ? name : "<null>");
+    jclass result = g_jniTraceOriginal->FindClass(env, name);
+    jboolean pending = g_jniTraceOriginal->ExceptionCheck(env);
+    JniTraceWrite("FindClass EXIT name=%s result=%p pendingException=%d",
+                  name ? name : "<null>", result, pending);
+    return result;
+}
+
+static jclass JNICALL TraceGetObjectClass(JNIEnv* env, jobject object)
+{
+    JniTraceWrite("GetObjectClass ENTER object=%p", object);
+    jclass result = g_jniTraceOriginal->GetObjectClass(env, object);
+    jboolean pending = g_jniTraceOriginal->ExceptionCheck(env);
+    JniTraceWrite("GetObjectClass EXIT result=%p pendingException=%d", result, pending);
+    return result;
+}
+
+static jmethodID JNICALL TraceGetMethodID(
+    JNIEnv* env, jclass clazz, const char* name, const char* signature)
+{
+    JniTraceWrite("GetMethodID ENTER class=%p name=%s signature=%s",
+                  clazz, name ? name : "<null>", signature ? signature : "<null>");
+    jmethodID result = g_jniTraceOriginal->GetMethodID(env, clazz, name, signature);
+    jboolean pending = g_jniTraceOriginal->ExceptionCheck(env);
+    JniTraceWrite("GetMethodID EXIT name=%s result=%p pendingException=%d",
+                  name ? name : "<null>", result, pending);
+    return result;
+}
+
+static jfieldID JNICALL TraceGetFieldID(
+    JNIEnv* env, jclass clazz, const char* name, const char* signature)
+{
+    JniTraceWrite("GetFieldID ENTER class=%p name=%s signature=%s",
+                  clazz, name ? name : "<null>", signature ? signature : "<null>");
+    jfieldID result = g_jniTraceOriginal->GetFieldID(env, clazz, name, signature);
+    jboolean pending = g_jniTraceOriginal->ExceptionCheck(env);
+    JniTraceWrite("GetFieldID EXIT name=%s result=%p pendingException=%d",
+                  name ? name : "<null>", result, pending);
+    return result;
+}
+
+static jsize JNICALL TraceGetArrayLength(JNIEnv* env, jarray array)
+{
+    JniTraceWrite("GetArrayLength ENTER array=%p", array);
+    jsize result = g_jniTraceOriginal->GetArrayLength(env, array);
+    jboolean pending = g_jniTraceOriginal->ExceptionCheck(env);
+    JniTraceWrite("GetArrayLength EXIT length=%d pendingException=%d", result, pending);
+    return result;
+}
+
+static jobject JNICALL TraceGetObjectArrayElement(
+    JNIEnv* env, jobjectArray array, jsize index)
+{
+    JniTraceWrite("GetObjectArrayElement ENTER array=%p index=%d", array, index);
+    jobject result = g_jniTraceOriginal->GetObjectArrayElement(env, array, index);
+    jboolean pending = g_jniTraceOriginal->ExceptionCheck(env);
+    JniTraceWrite("GetObjectArrayElement EXIT index=%d result=%p pendingException=%d",
+                  index, result, pending);
+    return result;
+}
+
+static const char* JNICALL TraceGetStringUTFChars(
+    JNIEnv* env, jstring string, jboolean* isCopy)
+{
+    JniTraceWrite("GetStringUTFChars ENTER string=%p", string);
+    const char* result = g_jniTraceOriginal->GetStringUTFChars(env, string, isCopy);
+    jboolean pending = g_jniTraceOriginal->ExceptionCheck(env);
+    JniTraceWrite("GetStringUTFChars EXIT result=%p pendingException=%d", result, pending);
+    return result;
+}
+
+static void InstallJniTrace(JNIEnv* env, const char* path)
+{
+    if (env == nullptr || path == nullptr) return;
+    if (g_jniTraceFd >= 0) {
+        close(g_jniTraceFd);
+        g_jniTraceFd = -1;
+    }
+    g_jniTraceFd = open(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0600);
+    if (g_jniTraceFd < 0) return;
+
+    g_jniTraceOriginal = env->functions;
+    g_jniTraceTable = *g_jniTraceOriginal;
+    g_jniTraceTable.FindClass = TraceFindClass;
+    g_jniTraceTable.GetObjectClass = TraceGetObjectClass;
+    g_jniTraceTable.GetMethodID = TraceGetMethodID;
+    g_jniTraceTable.GetFieldID = TraceGetFieldID;
+    g_jniTraceTable.GetArrayLength = TraceGetArrayLength;
+    g_jniTraceTable.GetObjectArrayElement = TraceGetObjectArrayElement;
+    g_jniTraceTable.GetStringUTFChars = TraceGetStringUTFChars;
+    env->functions = &g_jniTraceTable;
+    JniTraceWrite("JNI_TRACE_START threadEnv=%p originalTable=%p hookedTable=%p",
+                  env, g_jniTraceOriginal, &g_jniTraceTable);
+}
+
+static void RemoveJniTrace(JNIEnv* env)
+{
+    JniTraceWrite("JNI_TRACE_END");
+    if (env != nullptr && env->functions == &g_jniTraceTable && g_jniTraceOriginal != nullptr) {
+        env->functions = g_jniTraceOriginal;
+    }
+    g_jniTraceOriginal = nullptr;
+    if (g_jniTraceFd >= 0) {
+        fsync(g_jniTraceFd);
+        close(g_jniTraceFd);
+        g_jniTraceFd = -1;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_voltsrp_mobile_oswrapper_GameNative_setJniTraceEnabled(
+    JNIEnv* env, jclass clazz, jboolean enabled, jstring path)
+{
+    if (enabled == JNI_TRUE) {
+        if (path == nullptr) return;
+        const char* nativePath = env->GetStringUTFChars(path, nullptr);
+        if (nativePath == nullptr) return;
+        InstallJniTrace(env, nativePath);
+        env->ReleaseStringUTFChars(path, nativePath);
+    } else {
+        RemoveJniTrace(env);
+    }
+}
+
 
 // Independent JNI class-lookup probe. This runs from libsamp.so on the same
 // Java-created GameThread immediately before libGame.so is entered.
