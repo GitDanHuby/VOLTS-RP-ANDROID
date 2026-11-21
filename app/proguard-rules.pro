@@ -29,3 +29,6 @@
 
 # Keep the legacy-package JNI facade and its native method names.
 -keep class com.rockstargames.oswrapper.GameNative { *; }
+
+# JNI resolves this legacy class by its exact binary name and field names.
+-keep class com.rockstargames.oswrapper.DeviceInfo { *; }
