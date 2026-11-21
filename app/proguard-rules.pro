@@ -32,3 +32,6 @@
 
 # JNI resolves this legacy class by its exact binary name and field names.
 -keep class com.rockstargames.oswrapper.DeviceInfo { *; }
+
+# Preserve the exact legacy class/method names looked up by libGame.so.
+-keep class com.rockstargames.oswrapper.GamePlatformServices { *; }
