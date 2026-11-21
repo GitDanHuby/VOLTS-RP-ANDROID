@@ -1102,12 +1102,28 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
-                // Diagnostic isolation: temporarily skip the native surface-changed callback.
-                // The latest complete trace stopped inside implOnSurfaceChanged().
+                // Diagnostic isolation remains enabled while we inspect Surface/EGL state.
                 GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED");
-                Log.i(TAG, "[JNI-TEST] Skipping native implOnSurfaceChanged; surface="
-                        + surface + " valid=" + surface.isValid()
-                        + " size=" + width + "x" + height);
+                Surface cachedSurface = null;
+                try {
+                    if (GameThread.INSTANCE.cachedSurfaceHolder != null) {
+                        cachedSurface = GameThread.INSTANCE.cachedSurfaceHolder.getSurface();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "[SURFACE-DIAG] Could not read cached holder surface", e);
+                }
+                Log.i(TAG, "[SURFACE-DIAG] queued callback executing"
+                        + " thread=" + Thread.currentThread().getName()
+                        + " surface=" + surface
+                        + " valid=" + surface.isValid()
+                        + " size=" + width + "x" + height
+                        + " cachedHolder=" + GameThread.INSTANCE.cachedSurfaceHolder
+                        + " cachedSurface=" + cachedSurface
+                        + " sameSurface=" + (surface == cachedSurface)
+                        + " eglDisplay=" + GameThread.INSTANCE.eglDisplay
+                        + " eglContext=" + GameThread.INSTANCE.eglContext
+                        + " eglSurface=" + GameThread.INSTANCE.eglSurface
+                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive);
                 GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED_DONE");
             }
         });
