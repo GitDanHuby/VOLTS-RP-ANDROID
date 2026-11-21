@@ -93,7 +93,17 @@ public class GameNative {
 
      
     public static void implOnInitialSetup(DeviceInfo deviceInfo, AssetManager assets, String[] assetPackNames, String[] assetPackPaths) {
-        com.rockstargames.oswrapper.GameNative.implOnInitialSetup(new com.rockstargames.oswrapper.DeviceInfo(deviceInfo), assets, assetPackNames, assetPackPaths);
+        // Resolve the legacy service class with the same ClassLoader used by the
+        // native GameNative declaration before libGame.so calls JNI FindClass.
+        try {
+            Class.forName("com.rockstargames.oswrapper.GamePlatformServices", true,
+                    com.rockstargames.oswrapper.GameNative.class.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Legacy GamePlatformServices class is not loadable", e);
+        }
+        com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
+                new com.rockstargames.oswrapper.DeviceInfo(deviceInfo),
+                assets, assetPackNames, assetPackPaths);
     }
 
      
