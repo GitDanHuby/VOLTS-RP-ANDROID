@@ -37,6 +37,8 @@ public class GameNative {
 
     public static native void setStoragePath(String path);
 
+    public static native void setJniTraceEnabled(boolean enabled, String path);
+
     public static native void initializeSAMP();
 
     public static native boolean implIsInitialized();
@@ -240,8 +242,16 @@ public class GameNative {
             report.append("CALLING_LIBGAME_INITIAL_SETUP\n");
             saveJniDiagnostic(report.toString());
             Log.i(tag, "Calling libGame initial setup; diagnostic exported");
-            com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
-                    legacyDevice, assets, assetPackNames, assetPackPaths);
+            File traceDirectory = context.getExternalFilesDir(null);
+            if (traceDirectory == null) traceDirectory = context.getFilesDir();
+            File traceFile = new File(traceDirectory, "VOLTS-JNI-TRACE.txt");
+            setJniTraceEnabled(true, traceFile.getAbsolutePath());
+            try {
+                com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
+                        legacyDevice, assets, assetPackNames, assetPackPaths);
+            } finally {
+                setJniTraceEnabled(false, traceFile.getAbsolutePath());
+            }
             report.append("LIBGAME_INITIAL_SETUP_RETURNED\n");
             saveJniDiagnostic(report.toString());
         } catch (Throwable error) {
