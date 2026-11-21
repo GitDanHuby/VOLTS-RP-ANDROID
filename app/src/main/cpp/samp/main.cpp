@@ -141,16 +141,15 @@ static const char* JNICALL TraceGetStringUTFChars(
     return result;
 }
 
-static void InstallJniTrace(JNIEnv* env, const char* path)
+static void InstallJniTrace(JNIEnv* env, int fileDescriptor)
 {
-    if (env == nullptr || path == nullptr) return;
+    if (env == nullptr || fileDescriptor < 0) return;
     if (g_jniTraceFd >= 0) {
         close(g_jniTraceFd);
         g_jniTraceFd = -1;
     }
-    g_jniTraceFd = open(path, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0600);
-    if (g_jniTraceFd < 0) return;
-
+    // Ownership of the detached MediaStore descriptor is transferred from Java.
+    g_jniTraceFd = fileDescriptor;
     g_jniTraceOriginal = env->functions;
     g_jniTraceTable = *g_jniTraceOriginal;
     g_jniTraceTable.FindClass = TraceFindClass;
@@ -182,14 +181,10 @@ static void RemoveJniTrace(JNIEnv* env)
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_voltsrp_mobile_oswrapper_GameNative_setJniTraceEnabled(
-    JNIEnv* env, jclass clazz, jboolean enabled, jstring path)
+    JNIEnv* env, jclass clazz, jboolean enabled, jint fileDescriptor)
 {
     if (enabled == JNI_TRUE) {
-        if (path == nullptr) return;
-        const char* nativePath = env->GetStringUTFChars(path, nullptr);
-        if (nativePath == nullptr) return;
-        InstallJniTrace(env, nativePath);
-        env->ReleaseStringUTFChars(path, nativePath);
+        InstallJniTrace(env, static_cast<int>(fileDescriptor));
     } else {
         RemoveJniTrace(env);
     }
