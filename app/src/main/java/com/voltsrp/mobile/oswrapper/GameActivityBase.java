@@ -267,6 +267,11 @@ public abstract class GameActivityBase extends AppCompatActivity {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 Log.i("GL", "Surface Created");
+                Log.i("GL", "[SURFACE-DIAG] Activity callback surfaceCreated"
+                        + " thread=" + Thread.currentThread().getName()
+                        + " holder=" + holder
+                        + " surface=" + holder.getSurface()
+                        + " valid=" + holder.getSurface().isValid());
 
                 // Update the thread's reference immediately
                 GameThread.INSTANCE.cachedSurfaceHolder = holder;
@@ -282,6 +287,13 @@ public abstract class GameActivityBase extends AppCompatActivity {
                 boolean eglReady = GameThread.INSTANCE.InitEGLAndGLES2(3);
                 GameNative.writeJniTraceMarker(eglReady
                         ? "AFTER_INIT_EGL_SUCCESS" : "AFTER_INIT_EGL_FAILURE");
+                Log.i("GL", "[SURFACE-DIAG] EGL init result=" + eglReady
+                        + " display=" + GameThread.INSTANCE.eglDisplay
+                        + " context=" + GameThread.INSTANCE.eglContext
+                        + " eglSurface=" + GameThread.INSTANCE.eglSurface
+                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive
+                        + " holderSurface=" + holder.getSurface()
+                        + " valid=" + holder.getSurface().isValid());
                 // Trigger the native engine initialization
                 // Note: Ensure ResumeEventDone logic is handled safely
             }
@@ -290,7 +302,19 @@ public abstract class GameActivityBase extends AppCompatActivity {
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
                 GameThread.INSTANCE.surfaceWidth = width;
                 GameThread.INSTANCE.surfaceHeight = height;
-                // Optionally notify native engine of resolution change
+                SurfaceHolder diagnosticHolder = holder;
+                android.view.Surface diagnosticSurface = diagnosticHolder.getSurface();
+                Log.i("GL", "[SURFACE-DIAG] Activity callback surfaceChanged"
+                        + " thread=" + Thread.currentThread().getName()
+                        + " format=" + format
+                        + " size=" + width + "x" + height
+                        + " holder=" + holder
+                        + " surface=" + diagnosticSurface
+                        + " valid=" + diagnosticSurface.isValid()
+                        + " eglDisplay=" + GameThread.INSTANCE.eglDisplay
+                        + " eglContext=" + GameThread.INSTANCE.eglContext
+                        + " eglSurface=" + GameThread.INSTANCE.eglSurface
+                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive);
             }
 
             @Override
