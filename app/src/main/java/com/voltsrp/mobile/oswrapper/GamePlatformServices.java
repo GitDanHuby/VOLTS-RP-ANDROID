@@ -13,7 +13,7 @@ import com.voltsrp.mobile.oswrapper.services.PlaylistServices;
 import com.voltsrp.mobile.oswrapper.services.RockstarServices;
 import com.voltsrp.mobile.oswrapper.services.SplashScreenServices;
 
-public final class GamePlatformServices implements
+public class GamePlatformServices implements
         ILanguageServices,
         IMovieServices,
         IPlaylistServices,
