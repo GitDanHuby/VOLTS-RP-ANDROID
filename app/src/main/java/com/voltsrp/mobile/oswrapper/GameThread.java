@@ -360,6 +360,7 @@ public final class GameThread {
 
         private final void guardedRun() {
             this.lastFrameTime = SystemClock.elapsedRealtime();
+            GameNative.writeJniTraceMarker("GAME_THREAD_LOOP_ENTER");
             while (!this.exitRequested.get()) {
                 while (true) {
                     Runnable runnable = (Runnable) GameThread.eventQueue.poll();
@@ -396,13 +397,10 @@ public final class GameThread {
                             loggedFirstInitTrue = true;
                         }
                         if (!loggedFirstDraw) {
-                            boolean traceMarkerWritten =
-                                    GameNative.writeJniTraceMarker("BEFORE_FIRST_DRAW");
+                            GameNative.writeJniTraceMarker("BEFORE_FIRST_DRAW");
                             GameNative.implOnDrawFrame(f);
-                            if (traceMarkerWritten) {
-                                GameNative.writeJniTraceMarker("AFTER_FIRST_DRAW");
-                                loggedFirstDraw = true;
-                            }
+                            GameNative.writeJniTraceMarker("AFTER_FIRST_DRAW");
+                            loggedFirstDraw = true;
                         } else {
                             GameNative.implOnDrawFrame(f);
                         }
@@ -935,8 +933,12 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
+                GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_RESUME");
                 GameNative.implOnResume();
+                GameNative.writeJniTraceMarker("AFTER_IMPL_ON_RESUME");
+                GameNative.writeJniTraceMarker("BEFORE_PROCESS_PENDING_CALLBACKS_ON_RESUME");
                 GameThread.INSTANCE.processPendingCallbacks();
+                GameNative.writeJniTraceMarker("AFTER_PROCESS_PENDING_CALLBACKS_ON_RESUME");
             }
         });
 
@@ -1100,7 +1102,9 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
+                GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_CHANGED");
                 GameNative.implOnSurfaceChanged(surface, width, height);
+                GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_CHANGED");
             }
         });
 
@@ -1118,9 +1122,9 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
+                GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_CREATED");
                 GameNative.implOnSurfaceCreated();
-
-
+                GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_CREATED");
             }
         });
 
@@ -1137,7 +1141,9 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
+                GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_DESTROYED");
                 GameNative.implOnSurfaceDestroyed();
+                GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_DESTROYED");
             }
         });
 
