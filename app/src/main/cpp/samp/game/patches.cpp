@@ -183,10 +183,10 @@ void ApplyGlobalPatches()
 {
     Log("Installing patches..");
 
-    CHook::NOP(g_libGTASA + 0x716AD0, 1);
+    // Disabled: old SocialClub patch address is not verified for GTA SA 2.10.
 
     // vehicle reflection wrong color
-    CHook::NOP(g_libGTASA + 0x5F3B14, 1);
+    // Disabled: old vehicle-reflection patch address is not verified for GTA SA 2.10.
 
     CHook::RET("_ZN17CVehicleModelInfo17SetCarCustomPlateEv"); // default plate
 
@@ -266,7 +266,7 @@ void ApplyGlobalPatches()
     CHook::RET("_ZN7CDarkel27FindTotalPedsKilledByPlayerEi"); // CDarkel__FindTotalPedsKilledByPlayer_hook
     CHook::RET("_ZN7CDarkel20RegisterKillByPlayerEPK4CPed11eWeaponTypebi"); // CDarkel__RegisterKillByPlayer_hook
 
-    CHook::NOP(g_libGTASA + 0x555A08, 1);	// CStreaming::ms_memoryAvailable = (int)v24
+    // Disabled: CStreaming::ms_memoryAvailable patch address is not verified for GTA SA 2.10.
 
     // CHook::NOP(g_libGTASA + 0x5B7C20, 1);  // CCamera::ClearPlayerWeaponMode from CPlayerPed::ClearWeaponTarget
     CHook::WriteMemory(g_libGTASA + 0x496200, "\x1F\x0D\x00\x71", 4); // RE3: Fix R* optimization that prevents peds to spawn
