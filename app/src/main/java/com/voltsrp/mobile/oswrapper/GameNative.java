@@ -24,6 +24,28 @@ import com.bytedance.shadowhook.ShadowHook;
 public class GameNative {
     public static GameNative INSTANCE = new GameNative();
 
+    // Java-owned trace URI; lifecycle markers are appended independently of native JNI tracing.
+    private static volatile Uri jniTraceUri;
+    private static final Object JNI_TRACE_LOCK = new Object();
+
+    public static void recordJavaTrace(String marker) {
+        synchronized (JNI_TRACE_LOCK) {
+            Uri uri = jniTraceUri;
+            if (uri == null || marker == null) return;
+            String line = "JAVA_TRACE timeMillis=" + System.currentTimeMillis()
+                    + " thread=" + Thread.currentThread().getName()
+                    + " marker=" + marker + "\n";
+            try (OutputStream out = GameActivityBase.getInstance()
+                    .getContentResolver().openOutputStream(uri, "wa")) {
+                if (out == null) throw new IllegalStateException("Trace output stream is null");
+                out.write(line.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+                out.flush();
+            } catch (Throwable error) {
+                Log.e("VOLTS-JNI-TRACE", "Could not append Java trace marker: " + marker, error);
+            }
+        }
+    }
+
     static {
         ShadowHook.init(new ShadowHook.ConfigBuilder()
                 .setMode(ShadowHook.Mode.UNIQUE)
@@ -59,7 +81,9 @@ public class GameNative {
 
      
     public static void implOnActivityCreated(GamePlatformServices services, boolean firstInit) {
+        recordJavaTrace("JAVA_BEFORE_IMPL_ON_ACTIVITY_CREATED firstInit=" + firstInit);
         com.rockstargames.oswrapper.GameNative.implOnActivityCreated(new com.rockstargames.oswrapper.GamePlatformServices(services.activity, services.view), firstInit);
+        recordJavaTrace("JAVA_AFTER_IMPL_ON_ACTIVITY_CREATED");
     }
 
      
@@ -230,6 +254,8 @@ public class GameNative {
             int updated = context.getContentResolver().update(fileUri, ready, null, null);
             if (updated <= 0) throw new IllegalStateException("Could not publish JNI trace in Downloads");
 
+            jniTraceUri = fileUri;
+            recordJavaTrace("JAVA_TRACE_FILE_CREATED_AND_PUBLISHED");
             int rawFd = descriptor.detachFd();
             Log.i("VOLTS-JNI-DIAG", "JNI trace opened in Downloads: " + fileName);
             return rawFd;
@@ -313,10 +339,12 @@ public class GameNative {
             // Keep the JNI table tracer installed on this GameThread. The same
             // thread processes later native callbacks and frames; disabling it
             // here would hide failures that happen after initial setup returns.
+            recordJavaTrace("BEFORE_LIBGAME_INITIAL_SETUP");
             writeJniTraceMarker("BEFORE_LIBGAME_INITIAL_SETUP");
             com.rockstargames.oswrapper.GameNative.implOnInitialSetup(
                     legacyDevice, assets, assetPackNames, assetPackPaths);
             writeJniTraceMarker("AFTER_LIBGAME_INITIAL_SETUP");
+            recordJavaTrace("AFTER_LIBGAME_INITIAL_SETUP");
             report.append("LIBGAME_INITIAL_SETUP_RETURNED\n");
             saveJniDiagnostic(report.toString());
             Log.i(tag, "JNI trace remains active for subsequent GameThread callbacks");
@@ -407,6 +435,8 @@ public class GameNative {
 
      
     public static void implOnSurfaceChanged(Surface surface, int width, int height) {
+        recordJavaTrace("JAVA_IMPL_ON_SURFACE_CHANGED_ENTER size=" + width + "x" + height
+                + " valid=" + (surface != null && surface.isValid()));
         final String diagnostic = "thread=" + Thread.currentThread().getName()
                 + " surface=" + surface
                 + " valid=" + (surface != null && surface.isValid())
@@ -419,18 +449,23 @@ public class GameNative {
 
         com.rockstargames.oswrapper.GameNative.implOnSurfaceChanged(surface, width, height);
 
+        recordJavaTrace("JAVA_IMPL_ON_SURFACE_CHANGED_RETURN");
         writeJniTraceMarker("JAVA_IMPL_ON_SURFACE_CHANGED_RETURN");
         Log.i("VOLTS-SURFACE-DIAG", "JAVA_IMPL_ON_SURFACE_CHANGED_RETURN");
     }
 
      
     public static void implOnSurfaceCreated() {
+        recordJavaTrace("JAVA_IMPL_ON_SURFACE_CREATED_ENTER");
         com.rockstargames.oswrapper.GameNative.implOnSurfaceCreated();
+        recordJavaTrace("JAVA_IMPL_ON_SURFACE_CREATED_RETURN");
     }
 
      
     public static void implOnSurfaceDestroyed() {
+        recordJavaTrace("JAVA_IMPL_ON_SURFACE_DESTROYED_ENTER");
         com.rockstargames.oswrapper.GameNative.implOnSurfaceDestroyed();
+        recordJavaTrace("JAVA_IMPL_ON_SURFACE_DESTROYED_RETURN");
     }
 
      
