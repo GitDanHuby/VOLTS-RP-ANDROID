@@ -37,7 +37,7 @@ public class GameNative {
 
     public static native void setStoragePath(String path);
 
-    public static native void setJniTraceEnabled(boolean enabled, int fileDescriptor);
+    public static native void setJniTraceEnabled(boolean enabled, int fileDescriptor);\n\n    // Installs EGL call tracing inside libGame.so using the active JNI trace descriptor.\n    public static native void startEglTrace(int fileDescriptor);
 
     public static native boolean writeJniTraceMarker(String marker);
 
@@ -305,7 +305,7 @@ public class GameNative {
             Log.i(tag, "Calling libGame initial setup; diagnostic exported");
             Context traceContext = GameActivityBase.getInstance();
             int traceFd = openJniTraceFileDescriptor(traceContext);
-            setJniTraceEnabled(true, traceFd);
+            setJniTraceEnabled(true, traceFd);\n            startEglTrace(traceFd);
             // Keep the JNI table tracer installed on this GameThread. The same
             // thread processes later native callbacks and frames; disabling it
             // here would hide failures that happen after initial setup returns.
