@@ -273,14 +273,13 @@ uint8_t CGame::GetPedSlotsUsed()
 
 void CGame::PlayAmbientSound(int iSound)
 {
-    uintptr_t pMgr = *(uintptr_t*)(g_libGTASA + 0x85AA4C);
-    if (pMgr) ((void (*)(uintptr_t, int))(g_libGTASA + 0x377558))(pMgr, iSound);
+    // The VOLTS 2.11 ambient-audio manager offsets have no verified GTA SA 2.10 equivalent.
+    // Keep this optional effect disabled until a matching 2.10 implementation is available.
 }
 
 void CGame::StopAmbientSound()
 {
-    uintptr_t pMgr = *(uintptr_t*)(g_libGTASA + 0x85AA4C);
-    if (pMgr) ((void (*)(uintptr_t))(g_libGTASA + 0x377560))(pMgr);
+    // See PlayAmbientSound(): do not call unverified 2.11 addresses on the 2.10 binary.
 }
 
 void CGame::PlaySound(int iSound, float fX, float fY, float fZ)
@@ -609,42 +608,15 @@ void CGame::DisableRaceCheckpoint()
     m_bRaceCheckpointsEnabled = false;
 }
 
-// ตัวแปรสำหรับเก็บค่าเดิมเพื่อเอาไว้คืนค่า (Restore)
-static uint8_t originalWantedCode32[4] = {0};
-static uint8_t originalWantedCode64[4] = {0};
-static bool bIsFakeWantedActive = false;
-
 void CGame::GetWantedLevel()
 {
-    if (!bIsFakeWantedActive) return;
-
-    // Address เดิม
-    uintptr_t addr = g_libGTASA + 0x3515F4;
-
-    // คืนค่าเดิมกลับไป (Restore Original Instruction)
-	CHook::WriteMemory(addr, originalWantedCode64, 4);
-
-    bIsFakeWantedActive = false;
+    // The previous implementation patched a 2.11 instruction address and used an ARM64
+    // instruction on both architectures. The 2.10 equivalent is not verified.
 }
 
 void CGame::SetWantedLevel(uint8_t level)
 {
-    if (level < 0) level = 0;
-    if (level > 6) level = 6;
-
-    // Address ของคำสั่ง LDR ที่เราจะแก้ (อ้างอิงจากไฟล์ txt ที่คุณให้มา)
-    uintptr_t addr = g_libGTASA + 0x3515F4;
-
-    // 1. ถ้ายังไม่เคยเก็บค่าเดิม ให้เก็บไว้ก่อน (Backup)
-    if (!bIsFakeWantedActive)
-    {
-        CHook::ReadMemory(addr, VER_x32 ? (void*)originalWantedCode32 : (void*)originalWantedCode64, 4);
-        bIsFakeWantedActive = true;
-    }
-
-	uint32_t movInstruction = 0x52800000 | (22 << 0) | ((uint32_t)level << 5);
-	CHook::WriteMemory(addr, &movInstruction, 4);
-
+    // Intentionally disabled until the GTA SA 2.10 wanted-level implementation is mapped.
 }
 
 void CGame::EnableStuntBonus(bool bEnable)
