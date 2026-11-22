@@ -10,7 +10,7 @@ void CPedIntelligence::Process() {
 }
 
 void CPedIntelligence::FlushIntelligence() {
-    CHook::CallFunction<void>(g_libGTASA + 0x5B2994, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x004C1508 + 1 : 0x5BE0E0), this);
 //    m_TaskMgr.Flush();
 //    m_eventHandler.m_physicalResponseTask = nullptr;
 //    m_eventHandler.m_eventResponseTask = nullptr;
