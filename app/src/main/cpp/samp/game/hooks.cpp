@@ -2162,7 +2162,8 @@ void InstallHooks()
     CHook::InlineHook("_ZN16CTaskSimpleGetUp10ProcessPedEP4CPed", &CTaskSimpleGetUp__ProcessPed_hook, &CTaskSimpleGetUp__ProcessPed); // CTaskSimpleGetUp::ProcessPed
     CHook::InlineHook("_ZN7CObject6RenderEv", &CObject_Render_hook, & CObject_Render);
 
-    CHook::InlineHook("_ZN4CCam7ProcessEv", CCam__Process_hook, &CCam__Process);
+    // Disabled: the custom first-person camera hook still relies on unverified 2.11 camera fields/offsets.
+    // Re-enable only after the GTA SA 2.10 CCam layout and globals are validated.
 
     CHook::Redirect("_Z19PlayerIsEnteringCarv", &PlayerIsEnteringCar);
     if(*(uint8_t *)(g_libGTASA + 0xD13C60))
