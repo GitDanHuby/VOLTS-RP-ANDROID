@@ -2105,7 +2105,8 @@ int CUpsideDownCarCheck__IsCarUpsideDown_hook(int thiz, uintptr_t a2)
 void InstallMiscHooks()
 {
 
-    CHook::InlineHook("_ZN15CClumpModelInfo14GetFrameFromIdEP7RpClumpi", &CClumpModelInfo__GetFrameFromId_hook, &CClumpModelInfo__GetFrameFromId);
+    // CClumpModelInfo::GetFrameFromId has an ARM32-only validated fallback below.
+    // Do not install the legacy callback here on ARM64 or install it twice on ARM32.
 
     CHook::Redirect("_Z10GetTexturePKc", &CUtil::GetTexture);
 
