@@ -1176,8 +1176,8 @@ void CPlayerPed::FireInstant()
         if(m_pPed) {
             LOGI("CPlayerPed::FireInstan91");
 
-            ((void (*)(CWeapon*, CPedGTA*, CVector*, CVector*, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t))(g_libGTASA + 0x6FA408))(
-                    pSlot, m_pPed, &vecBonePos, &vecOut, 0, 0, 0, 0, 1);
+            CWeapon__FireInstantHit(pSlot, m_pPed, &vecBonePos, &vecOut, nullptr, nullptr,
+                                    nullptr, 0, 1);
 
         }else {
             LOGI("CPlayerPed::FireInstan92");
