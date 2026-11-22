@@ -58,6 +58,10 @@ using EglCreateContextFn = EGLContext (*)(EGLDisplay, EGLConfig, EGLContext, con
 using EglMakeCurrentFn = EGLBoolean (*)(EGLDisplay, EGLSurface, EGLSurface, EGLContext);
 using EglGetErrorFn = EGLint (*)();
 using EglGetConfigAttribFn = EGLBoolean (*)(EGLDisplay, EGLConfig, EGLint, EGLint*);
+using EglCreateWindowSurfaceFn = EGLSurface (*)(EGLDisplay, EGLConfig, EGLNativeWindowType, const EGLint*);
+using EglDestroySurfaceFn = EGLBoolean (*)(EGLDisplay, EGLSurface);
+using EglSwapIntervalFn = EGLBoolean (*)(EGLDisplay, EGLint);
+using EglTerminateFn = EGLBoolean (*)(EGLDisplay);
 
 static EglGetDisplayFn g_origEglGetDisplay = nullptr;
 static EglInitializeFn g_origEglInitialize = nullptr;
@@ -66,6 +70,10 @@ static EglCreateContextFn g_origEglCreateContext = nullptr;
 static EglMakeCurrentFn g_origEglMakeCurrent = nullptr;
 static EglGetErrorFn g_origEglGetError = nullptr;
 static EglGetConfigAttribFn g_origEglGetConfigAttrib = nullptr;
+static EglCreateWindowSurfaceFn g_origEglCreateWindowSurface = nullptr;
+static EglDestroySurfaceFn g_origEglDestroySurface = nullptr;
+static EglSwapIntervalFn g_origEglSwapInterval = nullptr;
+static EglTerminateFn g_origEglTerminate = nullptr;
 
 static void LogHookResult(const char* symbol, void* stub) {
     const int error = shadowhook_get_errno();
@@ -125,6 +133,36 @@ static EGLBoolean HookEglMakeCurrent(EGLDisplay display, EGLSurface draw,
     return ok;
 }
 
+static EGLSurface HookEglCreateWindowSurface(EGLDisplay display, EGLConfig config,
+                                               EGLNativeWindowType window, const EGLint* attrs) {
+    EglTrace("EGL eglCreateWindowSurface ENTER display=%p config=%p window=%p", display, config, window);
+    TraceEglAttrs("eglCreateWindowSurface", attrs);
+    EGLSurface surface = g_origEglCreateWindowSurface(display, config, window, attrs);
+    EglTrace("EGL eglCreateWindowSurface EXIT surface=%p", surface);
+    return surface;
+}
+
+static EGLBoolean HookEglDestroySurface(EGLDisplay display, EGLSurface surface) {
+    EglTrace("EGL eglDestroySurface ENTER display=%p surface=%p", display, surface);
+    EGLBoolean ok = g_origEglDestroySurface(display, surface);
+    EglTrace("EGL eglDestroySurface EXIT result=%d", ok);
+    return ok;
+}
+
+static EGLBoolean HookEglSwapInterval(EGLDisplay display, EGLint interval) {
+    EglTrace("EGL eglSwapInterval ENTER display=%p interval=%d", display, interval);
+    EGLBoolean ok = g_origEglSwapInterval(display, interval);
+    EglTrace("EGL eglSwapInterval EXIT result=%d", ok);
+    return ok;
+}
+
+static EGLBoolean HookEglTerminate(EGLDisplay display) {
+    EglTrace("EGL eglTerminate ENTER display=%p", display);
+    EGLBoolean ok = g_origEglTerminate(display);
+    EglTrace("EGL eglTerminate EXIT result=%d", ok);
+    return ok;
+}
+
 static EGLint HookEglGetError() {
     EGLint error = g_origEglGetError();
     EglTrace("EGL eglGetError=0x%x", error);
@@ -153,8 +191,9 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_startEglTrace(
     EglTrace("EGL_TRACE_LIBRARY name=libEGL.so handle=%p", eglHandle);
     if (eglHandle) {
         const char* names[] = {"eglGetDisplay", "eglInitialize", "eglChooseConfig",
-                               "eglGetConfigAttrib", "eglCreateContext", "eglMakeCurrent",
-                               "eglGetError"};
+                               "eglGetConfigAttrib", "eglCreateContext", "eglCreateWindowSurface",
+                               "eglDestroySurface", "eglMakeCurrent", "eglSwapInterval",
+                               "eglTerminate", "eglGetError"};
         for (const char* name : names) {
             void* address = shadowhook_dlsym_dynsym(eglHandle, name);
             EglTrace("EGL_TRACE_DYNSYM library=libEGL.so symbol=%s address=%p", name, address);
@@ -191,7 +230,25 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_startEglTrace(
             reinterpret_cast<void**>(&g_origEglGetError));
     LogHookResult("eglGetError", h6);
 
+    void* h7 = shadowhook_hook_sym_name("libEGL.so", "eglCreateWindowSurface",
+            reinterpret_cast<void*>(HookEglCreateWindowSurface),
+            reinterpret_cast<void**>(&g_origEglCreateWindowSurface));
+    LogHookResult("eglCreateWindowSurface", h7);
+    void* h8 = shadowhook_hook_sym_name("libEGL.so", "eglDestroySurface",
+            reinterpret_cast<void*>(HookEglDestroySurface),
+            reinterpret_cast<void**>(&g_origEglDestroySurface));
+    LogHookResult("eglDestroySurface", h8);
+    void* h9 = shadowhook_hook_sym_name("libEGL.so", "eglSwapInterval",
+            reinterpret_cast<void*>(HookEglSwapInterval),
+            reinterpret_cast<void**>(&g_origEglSwapInterval));
+    LogHookResult("eglSwapInterval", h9);
+    void* h10 = shadowhook_hook_sym_name("libEGL.so", "eglTerminate",
+            reinterpret_cast<void*>(HookEglTerminate),
+            reinterpret_cast<void**>(&g_origEglTerminate));
+    LogHookResult("eglTerminate", h10);
+
     EglTrace("EGL_TRACE_INSTALL_RESULT getDisplay=%p initialize=%p chooseConfig=%p "
-             "getConfigAttrib=%p createContext=%p makeCurrent=%p getError=%p",
-             h0, h1, h2, h3, h4, h5, h6);
+             "getConfigAttrib=%p createContext=%p makeCurrent=%p getError=%p "
+             "createWindowSurface=%p destroySurface=%p swapInterval=%p terminate=%p",
+             h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10);
 }
