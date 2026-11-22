@@ -713,51 +713,27 @@ void AllVehicles__ProcessControl_hook(uintptr_t thiz)
 
     switch(this_vtable)
     {
-
-        // CAutomobile
-        case 0x8304C8:
-            call_addr = 0x6A77B8;
-            break;
-
-            // CBoat
-        case 0x830C78:
-            call_addr = 0x6C180C;
-            break;
-
-            // CBike
-        case 0x8307E8:
-            call_addr = 0x6B6954;
-            break;
-
-            // CPlane
-        case 0x831388:
-            call_addr = 0x6CC53C;
-            break;
-
-            // CHeli
-        case 0x830EB8:
-            call_addr = 0x6C79EC;
-            break;
-
-            // CBmx
-        case 0x830A30:
-            call_addr = 0x6BE2A8;
-            break;
-
-            // CMonsterTruck
-        case 0x831120:
-            call_addr = 0x6CB314;
-            break;
-
-            // CQuadBike
-        case 0x8315F0:
-            call_addr = 0x6D1098;
-            break;
-
-            // CTrain
-        case 0x831AC0:
-            call_addr = 0x6D4224;
-            break;
+#if VER_x32
+        case 0x0066D678: call_addr = 0x00553E44; break; // CAutomobile
+        case 0x0066DA20: call_addr = 0x0056BEC0; break; // CBoat
+        case 0x0066D7F0: call_addr = 0x00561A90; break; // CBike
+        case 0x0066DD84: call_addr = 0x00575CF8; break; // CPlane
+        case 0x0066DB34: call_addr = 0x005712A8; break; // CHeli
+        case 0x0066D908: call_addr = 0x00568B84; break; // CBmx
+        case 0x0066DC5C: call_addr = 0x00574864; break; // CMonsterTruck
+        case 0x0066DEAC: call_addr = 0x0057A2F0; break; // CQuadBike
+        case 0x0066E0FC: call_addr = 0x0057D0A0; break; // CTrain
+#else
+        case 0x83BB50: call_addr = 0x67459C; break; // CAutomobile
+        case 0x83C2A0: call_addr = 0x68DCE8; break; // CBoat
+        case 0x83BE40: call_addr = 0x682BC8; break; // CBike
+        case 0x83C968: call_addr = 0x6993B8; break; // CPlane
+        case 0x83C4C8: call_addr = 0x693978; break; // CHeli
+        case 0x83C070: call_addr = 0x693978; break; // CBmx
+        case 0x83C718: call_addr = 0x698090; break; // CMonsterTruck
+        case 0x83CBB8: call_addr = 0x69DB44; break; // CQuadBike
+        case 0x83D058: call_addr = 0x6A0A20; break; // CTrain
+#endif
     }
 
     uint8_t saved_focus =   *pbyteCurrentPlayer;
@@ -775,12 +751,12 @@ void AllVehicles__ProcessControl_hook(uintptr_t thiz)
        pVehicle->pDriver != GamePool_FindPlayerPed())
     {
         pVehicle->pDriver->m_nPedType = static_cast<ePedType>(4);
-        (( void (*)(uintptr_t))(g_libGTASA + 0x397150))(reinterpret_cast<uintptr_t>(&pVehicle->m_VehicleAudioEntity));
+        (( void (*)(uintptr_t))(g_libGTASA + (VER_x32 ? 0x003ACE04 + 1 : 0x489B78)))(reinterpret_cast<uintptr_t>(&pVehicle->m_VehicleAudioEntity));
         pVehicle->pDriver->m_nPedType = static_cast<ePedType>(0);
     }
     else
     {
-        (( void (*)(uintptr_t))(g_libGTASA + 0x397150))(reinterpret_cast<uintptr_t>(&pVehicle->m_VehicleAudioEntity));
+        (( void (*)(uintptr_t))(g_libGTASA + (VER_x32 ? 0x003ACE04 + 1 : 0x489B78)))(reinterpret_cast<uintptr_t>(&pVehicle->m_VehicleAudioEntity));
     }
 
     // Tyre burst fix
@@ -802,7 +778,7 @@ void AllVehicles__ProcessControl_hook(uintptr_t thiz)
     }
 
     // VEHTYPE::ProcessControl()
-    (( void (*)(CVehicleGTA*))(g_libGTASA + call_addr))(pVehicle);
+    (( void (*)(CVehicleGTA*))(g_libGTASA + call_addr + (VER_x32 ? 1 : 0)))(pVehicle);
 
       *pbyteCurrentPlayer = saved_focus;
     byteCurPlayer = saved_cur_player;
