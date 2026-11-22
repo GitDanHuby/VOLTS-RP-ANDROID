@@ -207,13 +207,21 @@ void ApplyGlobalPatches()
     ////CHook::WriteMemory(g_libGTASA + 0x002AB5C6, (uintptr_t)"\x00\x21", 2);
 
     // crash legend
-    CHook::NOP(g_libGTASA + 0x71DB60, 1);
+    #if !VER_x32
+    CHook::NOP(g_libGTASA + 0x36A690, 1);
+#endif
 
     CHook::RET("_ZN12CAudioEngine16StartLoadingTuneEv"); // звук загрузочного экрана
 
-    CHook::NOP(g_libGTASA + 0x498718, 1);  // CCoronas::RenderSunReflection crash
-    CHook::NOP(g_libGTASA + 0x6DC14C, 1);  // не давать ган при выходе из тачки   ( клюшка, дробовик and etc )
-    CHook::NOP(g_libGTASA + 0x6DC100, 1);  // не давать ган при выходе из тачки  ( клюшка, дробовик and etc )
+#if VER_x32
+    CHook::NOP(g_libGTASA + 0x003F61B6, 2);
+    CHook::NOP(g_libGTASA + 0x00584884, 2);
+    CHook::NOP(g_libGTASA + 0x00584850, 2);
+#else
+    CHook::NOP(g_libGTASA + 0x004D8700, 1);
+    CHook::NOP(g_libGTASA + 0x006A852C, 1);
+    CHook::NOP(g_libGTASA + 0x006A84E0, 1);
+#endif
 
 
     CHook::RET("_ZN17CVehicleRecording4LoadEP8RwStreamii"); // CVehicleRecording::Load
