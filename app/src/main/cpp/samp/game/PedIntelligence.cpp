@@ -61,7 +61,7 @@ CTaskSimpleJetPack* CPedIntelligence::GetTaskJetPack() {
 }
 
 void CPedIntelligence::FlushImmediately(bool bSetPrimaryDefaultTask) {
-    CHook::CallFunction<void>(g_libGTASA + 0x5B1B94, this, bSetPrimaryDefaultTask);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x4C0AB4 + 1 : 0x5BD2D0), this, bSetPrimaryDefaultTask);
 
 //    CTask* primaryTask = m_TaskMgr.GetTaskPrimary(TASK_PRIMARY_PRIMARY);
 //    CTaskComplex* taskBeInGroup = nullptr;
