@@ -167,8 +167,8 @@ void CPedGTA::GiveWeapon(int iWeaponID, int iAmmo)
         return;
     }
 
-    CHook::CallFunction<void>(g_libGTASA + 0x58732C, this, iWeaponID, iAmmo);
-    CHook::CallFunction<void>(g_libGTASA + 0x58DD78, this, iWeaponID);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0049F588 + 1 : 0x59525C), this, iWeaponID, iAmmo);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x004A521C + 1 : 0x59B86C), this, iWeaponID);
 }
 
 
