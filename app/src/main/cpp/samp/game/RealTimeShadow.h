@@ -33,7 +33,6 @@ public:
     void              Destroy();
     CShadowCamera*    GetShadowCamera();
     void              DrawBorderAroundTexture(const RwRGBA& color);
-    bool              SetShadowedObject(CPhysical *pPhysical);
 
     /// this creates all stuff for shadow processing (cameras, textures)
     bool Create(bool isBlurred, int32 blurPasses, bool drawMoreBlur);
