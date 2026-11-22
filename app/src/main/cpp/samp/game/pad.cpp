@@ -510,8 +510,8 @@ uint32_t CCamera_IsTargetingActive_hook(uintptr_t thiz, CPedGTA* pPed)
     else
     {
         /* CCamera::IsTargetingActive */
-        static CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0x9F86F8);
-        uint32_t bIsTargeting = CHook::CallFunction<bool>(g_libGTASA + 0x46DE58, &TheCamera);
+        static CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
+        uint32_t bIsTargeting = CCamera_IsTargetingActive(reinterpret_cast<uintptr_t>(&TheCamera), pPed);
 
         LocalPlayerKeys.bKeys[ePadKeys::KEY_HANDBRAKE] = bIsTargeting;
         return bIsTargeting;
@@ -919,32 +919,8 @@ uint32_t CPad__TaskProcess(uintptr_t thiz, uintptr_t ped, int unk, int unk1)
     *pbyteCurrentPlayer  = old;
     return result;
 }
-uint32_t (*CPed__GetWeaponSkill)(CPedGTA *ped);
-uint32_t CPed__GetWeaponSkill_hook(CPedGTA *ped)
-{
-    PED_TYPE * thiz = (PED_TYPE *)ped;
-    bool bWeaponSkillStored = false;
-
-    dwCurPlayerActor = reinterpret_cast<uintptr_t>(ped);
-    byteInternalPlayer = *pbyteCurrentPlayer;
-    byteCurPlayer = FindPlayerNumFromPedPtr(reinterpret_cast<CPedGTA *>(dwCurPlayerActor));
-
-    if(dwCurPlayerActor && byteCurPlayer != 0 && byteInternalPlayer == 0)
-    {
-        GameStoreLocalPlayerSkills();
-        GameSetRemotePlayerSkills(byteCurPlayer);
-        bWeaponSkillStored = true;
-    }
-    // CPed::GetWeaponSkill
-    uint32_t result = (( uint32_t (*)(CPedGTA *, uint32_t))(g_libGTASA+0x58E358))(ped, ped->m_aWeapons[ped->m_nActiveWeaponSlot].dwType);
-
-    if(bWeaponSkillStored)
-    {
-        GameSetLocalPlayerSkills();
-        bWeaponSkillStored = false;
-    }
-    return result;
-}
+// The VOLTS 2.11 GetWeaponSkill PLT hook has no verified GTA SA 2.10 equivalent.
+// Leave the base game's weapon-skill routine untouched until its 2.10 symbol is mapped.
 void HookCPad()
 {
     memset(&LocalPlayerKeys, 0, sizeof(PAD_KEYS));
@@ -1009,7 +985,6 @@ void HookCPad()
     //CHook::InstallPLT(g_libGTASA + 0x66F304, (uintptr_t)CPad__CycleWeaponLeftJustDown_hook, (uintptr_t*)&CPad__CycleWeaponLeftJustDown);
 
     //
-    CHook::InstallPLT(g_libGTASA + 0x83F190, &CPed__GetWeaponSkill_hook, &CPed__GetWeaponSkill);
 
 
     // nitro
