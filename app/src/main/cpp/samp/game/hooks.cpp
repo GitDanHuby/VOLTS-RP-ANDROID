@@ -2166,7 +2166,7 @@ void InstallHooks()
     // Re-enable only after the GTA SA 2.10 CCam layout and globals are validated.
 
     CHook::Redirect("_Z19PlayerIsEnteringCarv", &PlayerIsEnteringCar);
-    if(*(uint8_t *)(g_libGTASA + 0xD13C60))
+    if (*(uint8_t *)(g_libGTASA + (VER_x32 ? 0x6B8B9C : 0x896135)))
     {
         CHook::Redirect("_ZNK14TextureListing11GetMipCountEv", &getmip);
     }
