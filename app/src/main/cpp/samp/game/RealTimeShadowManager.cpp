@@ -53,16 +53,11 @@ void CRealTimeShadowManager::ReturnRealTimeShadow(CRealTimeShadow *shdw) {
 
 CRealTimeShadow* CRealTimeShadowManager::GetRealTimeShadow(CPhysical* physical)
 {
-    for(auto shadow : m_apShadows) {
-        if(!shadow->m_pOwner) {
-            physical->m_pShadowData = shadow;
-            shadow->m_bKeepAlive = true;
-
-            shadow->SetShadowedObject(physical);
-            return shadow;
-        }
-    }
-    return nullptr;
+    return CHook::CallFunction<CRealTimeShadow*>(
+        g_libGTASA + (VER_x32 ? 0x5B87AC + 1 : 0x6DD0C4),
+        this,
+        physical
+    );
 }
 
 void CRealTimeShadowManager::DoShadowThisFrame(CPhysical* physical) {
