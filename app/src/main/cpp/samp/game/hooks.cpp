@@ -2021,7 +2021,7 @@ void InstallSpecialHooks()
 
     CHook::InlineHook("_Z27AtomicDefaultRenderCallBackP8RpAtomic", &AtomicDefaultRenderCallBack_hook, &AtomicDefaultRenderCallBack_orig);
     CHook::InlineHook("_ZN18CVisibilityPlugins12RenderEntityEPvf", &CVisibilityPlugins_RenderEntity_hook, &CVisibilityPlugins_RenderEntity_orig);
-    CHook::InstallPLT(g_libGTASA+0x846B00, &CPlaceable_InitMatrixArray_hook, &CPlaceable_InitMatrixArray);
+    // Disabled: legacy 2.11 PLT slot 0x846B00 has no verified GTA SA 2.10 equivalent.
 
 }
 RwFrame * (*CClumpModelInfo__GetFrameFromId)(RpClump * a1, int32 a2);
