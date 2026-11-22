@@ -45,33 +45,37 @@ void ApplySAMPPatchesInGame()
     Log("Installing patches (ingame)..");
 
     // CTheZones::ZonesVisited[100]
-    memset((void*)(g_libGTASA + 0xA59D7A), 1, 100);
+    memset((void*)(g_libGTASA + (VER_x32 ? 0x0098D252 : 0xC1BF92)), 1, 100);
     // CTheZones::ZonesRevealed
-    *(uint32_t*)(g_libGTASA + 0xA59DE0) = 100;
+    *(uint32_t*)(g_libGTASA + (VER_x32 ? 0x0098D2B8 : 0xC1BFF8)) = 100;
 
     // CPlayerPed::CPlayerPed task fix
-    CHook::WriteMemory(g_libGTASA + 0x5B5510, (uintptr_t)"\x34\x00\x80\x52", 4);
+    #if VER_x32
+    CHook::WriteMemory(g_libGTASA + 0x004C36E2, (uintptr_t)"\xE0", 1);
+#else
+    CHook::WriteMemory(g_libGTASA + 0x5C0BC4, (uintptr_t)"\x34\x00\x80\x52", 4);
+#endif
 
     // radar draw blips
-    CHook::NOP(g_libGTASA + (VER_x32 ? 0x0043FE5A : 0x51A314), 2);
-    CHook::NOP(g_libGTASA + (VER_x32 ? 0x004409AE : 0x51B11C), 2);
+    CHook::NOP(g_libGTASA + (VER_x32 ? 0x0043FE5A : 0x52522C), 2);
+    CHook::NOP(g_libGTASA + (VER_x32 ? 0x004409AE : 0x525E14), 2);
 
     CHook::RET("_ZN4CPed31RemoveWeaponWhenEnteringVehicleEi"); // CPed::RemoveWeaponWhenEnteringVehicle
 
 //	CHook::WriteMemory(g_libGTASA + 0x00341F84, (uintptr_t)"\x00\xF0\x21\xBE", 4);
 
     // no vehicle audio processing
-    CHook::NOP(g_libGTASA + 0x6A7834, 2);
-    CHook::NOP(g_libGTASA + 0x6B69B8, 2);
-    CHook::NOP(g_libGTASA + 0x6C183C, 2);
+    CHook::NOP(g_libGTASA + (VER_x32 ? 0x00553E96 : 0x674610), 2);
+    CHook::NOP(g_libGTASA + (VER_x32 ? 0x00561AC2 : 0x682C1C), 2);
+    CHook::NOP(g_libGTASA + (VER_x32 ? 0x0056BED4 : 0x68DD0C), 2);
 
     // Disable in-game radio
     CHook::RET("_ZN20CAERadioTrackManager7ServiceEi");
 
     // карта в меню
-    CHook::NOP(g_libGTASA + 0x71DBB8, 2); // текст легенды карты
-    CHook::NOP(g_libGTASA + 0x71DBC8, 2); // значки легенды
-     CHook::NOP(g_libGTASA + 0x71D59C, 2); // название местности
+    CHook::NOP(g_libGTASA + (VER_x32 ? 0x2ABA08 : 0x36A6E8), 2); // текст легенды карты
+    CHook::NOP(g_libGTASA + (VER_x32 ? 0x2ABA14 : 0x36A6F8), 2); // значки легенды
+     CHook::NOP(g_libGTASA + (VER_x32 ? 0x2AB4A6 : 0x36A190), 2); // название местности
 }
 
 int32_t CWorld__FindPlayerSlotWithPedPointer(CPedGTA* pPlayersPed)
@@ -109,13 +113,17 @@ void ApplyPatches_level0()
 {
     Log("ApplyPatches_level0");
 
-    CHook::Write(g_libGTASA + 0x837358, &CWorld::Players);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x006783C0 : 0x84E7A8), &CWorld::Players);
 
     CHook::Redirect("_ZN6CWorld28FindPlayerSlotWithPedPointerEPv", &CWorld__FindPlayerSlotWithPedPointer);
     CHook::Redirect("_ZN10CPlayerPed29GetPlayerInfoForThisPlayerPedEv", &GetPlayerInfoForThisPlayerPed);
 
 
-    CHook::WriteMemory(g_libGTASA + 0x77584C, (uintptr_t)"\x22\x00\x80\x52", 4);
+    #if VER_x32
+    CHook::WriteMemory(g_libGTASA + 0x001AE8DE, (uintptr_t)"\x01\x22", 2);
+#else
+    CHook::WriteMemory(g_libGTASA + 0x23FDE0, (uintptr_t)"\x22\x00\x80\x52", 4);
+#endif
 
 
 /*
