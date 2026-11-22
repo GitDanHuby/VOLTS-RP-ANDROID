@@ -49,7 +49,7 @@ bool CStreaming::TryLoadModel(int modelId) {
 // Blocking. (Calls `CdStreamSync`)
 void CStreaming::FlushChannels()
 {
-    CHook::CallFunction<void>(g_libGTASA + 0x3B3014);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x2D4878 + 1 : 0x396D1C));
 }
 
 void CStreaming::ClearFlagForAll(uint32 streamingFlag) {
@@ -342,17 +342,99 @@ void CStreaming::RequestModel(int32 modelId, int32 streamingFlags) {
 }
 
 void CStreaming::AddLodsToRequestList(const CVector* point, int32 streamingFlags) {
-    CHook::CallFunction<void>(g_libGTASA + 0x3AF024, point, streamingFlags);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x2D0C00 + 1 : 0x392B6C), point, streamingFlags);
 }
 
 void CStreaming::AddModelsToRequestList(const CVector* point, int32 streamingFlags) {
-    CHook::CallFunction<void>(g_libGTASA + 0x3AED04, point, streamingFlags);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x2D0900 + 1 : 0x392874), point, streamingFlags);
 }
 
 #include "Textures/TextureDatabaseRuntime.h"
 extern CNetGame *pNetGame;
 void CStreaming::Update() {
-    CHook::CallFunction<void>(g_libGTASA + 0x3AE8EC);
+
+    if (CTimer::GetIsPaused())
+        return;
+
+    if(!CStreaming::GetInfo(MODEL_MALE01).IsLoaded()) {
+        RequestModel(MODEL_MALE01, STREAMING_KEEP_IN_MEMORY);
+        CStreaming::LoadAllRequestedModels(false);
+    }
+    CModelInfo::GetModelInfo(MODEL_MALE01)->m_nRefCount = 999;
+
+    if(CTimer::m_snTimeInMillisecondsNonClipped % 100 == 0)
+        RemoveLeastUsedModel(STREAMING_KEEP_IN_MEMORY);
+
+
+    static double previousTime{};
+    const double currentTimeInSeconds = CTimer::m_snTimeInMillisecondsNonClipped / 1000.0;
+    const double deltaTime = currentTimeInSeconds - previousTime;
+    previousTime = currentTimeInSeconds;
+    const double clampedDeltaTime = std::min(0.1, deltaTime);
+    TextureDatabaseRuntime::UpdateStreaming(clampedDeltaTime, true);
+
+    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
+
+    const auto& camPos = TheCamera.GetPosition();
+    const float fCamDistanceToGroundZ = camPos.z - TheCamera.CalculateGroundHeight(eGroundHeightType::ENTITY_BB_BOTTOM);
+    if (!ms_disableStreaming && !CRenderer::m_loadingPriority) {
+        if (fCamDistanceToGroundZ >= 50.0f) {
+            if (CGame::CanSeeOutSideFromCurrArea()) {
+                AddLodsToRequestList(&camPos, 0);
+            }
+        }
+        else if (CRenderer::ms_bRenderOutsideTunnels) {
+            AddModelsToRequestList(&camPos, 0);
+        }
+    }
+
+//    if (CTimer::GetFrameCounter() % 128 == 106) {
+//        m_bBoatsNeeded = false;
+//        if (camPos.z < 500.0f) {
+//            m_bBoatsNeeded = ThePaths.IsWaterNodeNearby(camPos, 80.0f);
+//        }
+//    }
+    if(!pNetGame || !pNetGame->GetPlayerPool()->GetLocalPlayer())
+        return;
+
+    auto pLocalPed = pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed;
+    const CVector& playerPos = pLocalPed->GetPosition();
+//    if (!ms_disableStreaming
+//        && !CCutsceneMgr::IsCutsceneProcessing()
+//        && CGame::CanSeeOutSideFromCurrArea()
+//        && CReplay::Mode != MODE_PLAYBACK
+//        && fCamDistanceToGroundZ < 50.0f
+//            ) {
+//        StreamVehiclesAndPeds_Always(playerPos);
+//        if (!IsVeryBusy()) {
+//            StreamVehiclesAndPeds();
+//            StreamZoneModels(playerPos);
+//        }
+//    }
+    LoadRequestedModels();
+
+    if (pLocalPed->IsInVehicle()) {
+        CVehicleGTA* remoteVehicle = pLocalPed->pVehicle;
+
+        CColStore::AddCollisionNeededAtPosn(&playerPos);
+        CIplStore::AddIplsNeededAtPosn(&playerPos);
+
+        const auto& removeVehiclePos = remoteVehicle->GetPosition();
+        CColStore::LoadCollision(removeVehiclePos, false);
+        CColStore::EnsureCollisionIsInMemory(&removeVehiclePos);
+        CIplStore::LoadIpls(removeVehiclePos, false);
+        CIplStore::EnsureIplsAreInMemory(&removeVehiclePos);
+    }
+    else {
+        CColStore::LoadCollision(playerPos, false);
+        CColStore::EnsureCollisionIsInMemory(&playerPos);
+        CIplStore::LoadIpls(playerPos, false);
+        CIplStore::EnsureIplsAreInMemory(&playerPos);
+    }
+
+    if (ms_bEnableRequestListPurge) {
+        PurgeRequestList();
+    }
 }
 
 // Call `RemoveModel` on all models in the request list except
@@ -369,7 +451,7 @@ void CStreaming::PurgeRequestList() {
 }
 
 void CStreaming::LoadRequestedModels() {
-    CHook::CallFunction<void>(g_libGTASA + 0x3B03AC);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x2D2104 + 1 : 0x394008));
 }
 
 // There are only 2 streaming channels within CStreaming::ms_channel. In this function,
