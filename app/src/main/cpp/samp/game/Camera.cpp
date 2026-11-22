@@ -11,7 +11,7 @@ void CCamera::InjectHooks() {
 }
 
 CCam& CCamera::GetActiveCamera() {
-    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0x9F86F8);
+    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
 
     return TheCamera.m_aCams[TheCamera.m_nActiveCam];
 }
@@ -21,15 +21,15 @@ void CCamera::Init() {
 }
 
 void CCamera::SetRwCamera(RwCamera *pCamera) {
-    CHook::CallFunction<void>(g_libGTASA + 0x47567C, this, pCamera);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x003E161C + 1 : 0x4BF318), this, pCamera);
 }
 
 void CCamera::TakeControl(CEntityGTA *target, eCamMode modeToGoTo, eSwitchType switchType, int32 whoIsInControlOfTheCamera) {
-    CHook::CallFunction<void>(g_libGTASA + 0x4757D4, this, target, modeToGoTo, switchType, whoIsInControlOfTheCamera);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x003E1714 + 1 : 0x4BF474), this, target, modeToGoTo, switchType, whoIsInControlOfTheCamera);
 }
 
 float CCamera::CalculateGroundHeight(eGroundHeightType type) {
-    return CHook::CallFunction<float>(g_libGTASA + 0x470C64, this, type);
+    return CHook::CallFunction<float>(g_libGTASA + (VER_x32 ? 0x3DC5C8 + 1 : 0x4BA958), this, type);
 }
 
 void CCamera::RestoreWithJumpCut() {
@@ -62,7 +62,7 @@ void CCamera::LookAtPoint(float fX, float fY, float fZ, int iType)
 
 void CCamera::InterpolateCameraPos(CVector *posFrom, CVector *posTo, int time, uint8_t mode)
 {
-    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0x9F86F8);
+    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
 
     ScriptCommand(&restore_camera_to_user);
     ScriptCommand(&lock_camera_position1, 1);
