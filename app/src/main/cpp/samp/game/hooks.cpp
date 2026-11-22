@@ -1944,17 +1944,21 @@ int CTextureDatabaseRuntime__GetEntry_hook(TextureDatabaseRuntime *a1, const cha
 }
 void InstallCrashFixHooks()
 {
-    // some crashfixes
-    CHook::InstallPLT(g_libGTASA + 0x845C20, &CCustomRoadsignMgr_RenderRoadsignAtomic_hook, &CCustomRoadsignMgr_RenderRoadsignAtomic);
-    CHook::InstallPLT(g_libGTASA + 0x83F7F0, &_RwTextureDestroy_hook, &_RwTextureDestroy);
-    //CHook::InlineHook("ZN4CPed14UpdatePositionEv", (uintptr_t)CPed_UpdatePosition_hook, (uintptr_t*)&CPed_UpdatePosition);
-    CHook::InstallPLT(g_libGTASA + 0x845D08, &RwFrameAddChild_hook, &RwFrameAddChild);
+    // Crash-fix PLT offsets from the GTA SA 2.10 reference (ARM64).
+    // No verified ARM32 equivalents are available in the reference branch, so
+    // these hooks are deliberately skipped on 32-bit instead of using 2.11 offsets.
+#if !VER_x32
+    CHook::InstallPLT(g_libGTASA + 0x66F5AC, &CCustomRoadsignMgr_RenderRoadsignAtomic_hook, &CCustomRoadsignMgr_RenderRoadsignAtomic);
+    CHook::InstallPLT(g_libGTASA + 0x67332C, &_RwTextureDestroy_hook, &_RwTextureDestroy);
+    CHook::InstallPLT(g_libGTASA + 0x675490, &RwFrameAddChild_hook, &RwFrameAddChild);
+    CHook::InstallPLT(g_libGTASA + 0x6730F0, &rpMaterialListDeinitialize_hook, &rpMaterialListDeinitialize);
+#endif
+    // The old 2.11 CPed_UpdatePosition PLT hook is intentionally not installed.
+    // The 2.10 reference exposes a different slot, but its callback contract
+    // has not been validated against this VOLTS hook.
+
     //GlossPltHook(g_libGTASA,"_Z20RpClumpForAllAtomicsP7RpClumpPFP8RpAtomicS2_PvES3__ptr", &CTextureDatabaseRuntime__GetEntry_hook, &CTextureDatabaseRuntime__GetEntry,NULL);
-
-
     //CHook::InlineHook(g_libGTASA + 0x38BCF8, (uintptr_t)CustomPipeRenderCB_hook, (uintptr_t*)&CustomPipeRenderCB);
-
-    CHook::InstallPLT(g_libGTASA + 0x848CD0, &rpMaterialListDeinitialize_hook, &rpMaterialListDeinitialize);
     //CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6778A8:0x84D188), (uintptr_t)rxOpenGLDefaultAllInOneRenderCB_hook, (uintptr_t*)&rxOpenGLDefaultAllInOneRenderCB);
     //CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x677CAC:0x84D988), (uintptr_t)CustomPipeRenderCB_hook, (uintptr_t*)&CustomPipeRenderCB);
     CHook::InlineHook("_ZN9EmuShader6SelectEb", &EmuShader_Select_hook, &EmuShader_Select);
@@ -1962,7 +1966,7 @@ void InstallCrashFixHooks()
     CHook::InlineHook("_ZN12CAnimManager19UncompressAnimationEP19CAnimBlendHierarchy", &CAnimManager_UncompressAnimation_hook,&CAnimManager_UncompressAnimation);
 
     //more crashfix
-    CHook::InlineHook(g_libGTASA + 0x496798, &TidyUpModelInfo2_hook, &TidyUpModelInfo2_orig);
+    // Disabled: 0x496798 belongs to the previous game binary; no verified GTA SA 2.10 address.
 
 
 }
