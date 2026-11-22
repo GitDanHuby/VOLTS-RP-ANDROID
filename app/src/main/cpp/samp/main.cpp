@@ -553,7 +553,7 @@ void DoInitStuff()
 
 		if (bDebug)
 		{
-            CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0x9F86F8);
+            CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
             //TheCamera.Restore();
             CCamera::SetBehindPlayer();
 			pGame->DisplayHUD(true);
