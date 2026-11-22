@@ -246,7 +246,7 @@ public class GameNative {
 
         android.os.ParcelFileDescriptor descriptor = null;
         try {
-            descriptor = context.getContentResolver().openFileDescriptor(fileUri, "w");
+            descriptor = context.getContentResolver().openFileDescriptor(fileUri, "wa");
             if (descriptor == null) throw new IllegalStateException("Could not open JNI trace descriptor");
 
             ContentValues ready = new ContentValues();
