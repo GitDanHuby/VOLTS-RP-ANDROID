@@ -256,7 +256,7 @@ void CObject::ApplyMoveSpeed()
 {
 	if (m_pEntity)
 	{
-		float fTimeStep = *(float*)(g_libGTASA + 0xA1A364);
+		float fTimeStep = *(float*)(g_libGTASA + 0x96B504);
 
 		RwMatrix mat;
         mat = m_pEntity->GetMatrix().ToRwMatrix();
