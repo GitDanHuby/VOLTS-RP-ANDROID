@@ -1842,9 +1842,9 @@ void CWidgetButtonSprint_Update_hook(void* thiz)
 float (*CDraw__SetFOV)(float thiz, float a2);
 float CDraw__SetFOV_hook(float thiz, float a2)
 {
-    float tmp = (float)((float)((float)(*(float *)&*(float *)(g_libGTASA + 0xC6DC70) - 1.3333) * 11.0) / 0.44444) + thiz;
+    float tmp = (float)((float)((float)(*(float *)&*(float *)(g_libGTASA + (VER_x32 ? 0x00A26A90 : 0xCC7F00)) - 1.3333) * 11.0) / 0.44444) + thiz;
     if(tmp > 100) tmp = 100.0;
-    *(float *)(g_libGTASA + 0x88309C) = tmp;
+    *(float *)(g_libGTASA + (VER_x32 ? 0x006B1CB8 : 0x88E6BC)) = tmp;
     return thiz;
 }
 
@@ -1983,15 +1983,19 @@ bool CGame__InitialiseRenderWare_hook() {
 }
 void InstallUrezHooks()
 {
-    CHook::UnFuck(g_libGTASA + 0x24E4C4);
-    *(char*)(g_libGTASA + 0x24E4C4 + 12) = 'd';
-    *(char*)(g_libGTASA + 0x24E4C4 + 13) = 'x';
-    *(char*)(g_libGTASA + 0x24E4C4 + 14) = 't';
+    // GTA SA 2.10 texture-extension locations from the reference branch.
+    const uintptr_t texturePathA = g_libGTASA + (VER_x32 ? 0x1E87A0 : 0x714003);
+    const uintptr_t texturePathB = g_libGTASA + (VER_x32 ? 0x1E8C04 : 0x71406F);
 
-    CHook::UnFuck(g_libGTASA + 0x246D17);
-    *(char*)(g_libGTASA + 0x246D17 + 12) = 'd';
-    *(char*)(g_libGTASA + 0x246D17+ 13) = 'x';
-    *(char*)(g_libGTASA + 0x246D17 + 14) = 't';
+    CHook::UnFuck(texturePathA);
+    *(char*)(texturePathA + 12) = 'd';
+    *(char*)(texturePathA + 13) = 'x';
+    *(char*)(texturePathA + 14) = 't';
+
+    CHook::UnFuck(texturePathB);
+    *(char*)(texturePathB + 12) = 'd';
+    *(char*)(texturePathB + 13) = 'x';
+    *(char*)(texturePathB + 14) = 't';
 }
 void InstallSpecialHooks()
 {
@@ -2133,11 +2137,7 @@ void InstallHooks()
                       &CRadar__SetCoordBlip_hook, &CRadar__SetCoordBlip);
     CHook::InlineHook("_ZN6CRadar20DrawRadarGangOverlayEb", &CRadar_DrawRadarGangOverlay_hook, &CRadar_DrawRadarGangOverlay);
 
-#if  0
-    CHook::InlineHook(g_libGTASA + 0x005AA200 + 1, &CFont_PrintString_hook, &CFont_PrintString);
-#else
-    CHook::InlineHook(g_libGTASA + 0x5D6EC4, &CFont_PrintString_hook, &CFont_PrintString);
-#endif
+// Disabled: the legacy CFont_PrintString inline-hook address has no verified 2.10 mapping.
 
     //?they removef the exit button
     //CHook::InlineHook("_ZN14MainMenuScreen6OnExitEv", &MainMenuScreen__OnExit_hook, &MainMenuScreen__OnExit);
