@@ -269,7 +269,7 @@ void ApplyGlobalPatches()
     // Disabled: CStreaming::ms_memoryAvailable patch address is not verified for GTA SA 2.10.
 
     // CHook::NOP(g_libGTASA + 0x5B7C20, 1);  // CCamera::ClearPlayerWeaponMode from CPlayerPed::ClearWeaponTarget
-    CHook::WriteMemory(g_libGTASA + 0x496200, "\x1F\x0D\x00\x71", 4); // RE3: Fix R* optimization that prevents peds to spawn
+    // Disabled: RE3 instruction patch address/opcode was not validated for GTA SA 2.10.
 
     CHook::RET("_ZN10CPlayerPed14AnnoyPlayerPedEb"); // CPedSamp::AnnoyPlayerPed
     CHook::RET("_ZN11CPopulation15AddToPopulationEffff");    // CPopulation::AddToPopulation
