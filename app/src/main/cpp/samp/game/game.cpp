@@ -186,8 +186,8 @@ void CGame::SetWorldWeather(int byteWeatherID)
 
     if(!m_bClockEnabled)
     {
-        *(uint16_t*)(g_libGTASA + 0xCC7452) = byteWeatherID;
-        *(uint16_t*)(g_libGTASA + 0xCC7450) = byteWeatherID;
+        *(uint16_t*)(g_libGTASA + (VER_x32 ? 0x00A7D136 : 0xD216F2)) = byteWeatherID;
+        *(uint16_t*)(g_libGTASA + (VER_x32 ? 0x00A7D134 : 0xD216F0)) = byteWeatherID;
     }
 }
 // 0.3.7
@@ -195,13 +195,13 @@ void CGame::DisplayHUD(bool bDisp)
 {
 	if (bDisp)
 	{
-		*(uint8_t*)(g_libGTASA + 0x9F13E8) = 1;
-		*(uint8_t*)(g_libGTASA + 0xA65E5C) = 0;
+		*(uint8_t*)(g_libGTASA + (VER_x32 ? 0x819D88 : 0x9FF3A8)) = 1;
+		*(uint8_t*)(g_libGTASA + (VER_x32 ? 0x991FD8 : 0xC20DFC)) = 0;
 	}
 	else
 	{
-		*(uint8_t*)(g_libGTASA +  0x9F13E8) = 0;
-		*(uint8_t*)(g_libGTASA + 0xA65E5C) = 1;
+		*(uint8_t*)(g_libGTASA + (VER_x32 ? 0x819D88 : 0x9FF3A8)) = 0;
+		*(uint8_t*)(g_libGTASA + (VER_x32 ? 0x991FD8 : 0xC20DFC)) = 1;
 	}
 }
 // 0.3.7
