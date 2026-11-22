@@ -1124,6 +1124,39 @@ public final class GameThread {
                         + " eglSurface=" + GameThread.INSTANCE.eglSurface
                         + " viewIsActive=" + GameThread.INSTANCE.viewIsActive;
                 GameNative.writeJniTraceMarker("SURFACE_DIAG_QUEUED " + surfaceDiag);
+                String eglThreadDiag = "thread=" + Thread.currentThread().getName();
+                try {
+                    EGLContext currentContext = GameThread.INSTANCE.egl.eglGetCurrentContext();
+                    EGLSurface currentDraw = GameThread.INSTANCE.egl.eglGetCurrentSurface(EGL10.EGL_DRAW);
+                    EGLSurface currentRead = GameThread.INSTANCE.egl.eglGetCurrentSurface(EGL10.EGL_READ);
+                    EGLDisplay currentDisplay = GameThread.INSTANCE.egl.eglGetCurrentDisplay();
+                    int currentError = GameThread.INSTANCE.egl.eglGetError();
+                    eglThreadDiag += " currentDisplay=" + currentDisplay
+                            + " currentContext=" + currentContext
+                            + " currentDraw=" + currentDraw
+                            + " currentRead=" + currentRead
+                            + " eglError=" + currentError;
+                    if (GameThread.INSTANCE.eglDisplay != null && GameThread.INSTANCE.eglSurface != null) {
+                        int[] queriedSize = new int[1];
+                        boolean queryWidth = GameThread.INSTANCE.egl.eglQuerySurface(
+                                GameThread.INSTANCE.eglDisplay, GameThread.INSTANCE.eglSurface, 12375, queriedSize);
+                        int queryWidthError = GameThread.INSTANCE.egl.eglGetError();
+                        int queriedWidth = queriedSize[0];
+                        boolean queryHeight = GameThread.INSTANCE.egl.eglQuerySurface(
+                                GameThread.INSTANCE.eglDisplay, GameThread.INSTANCE.eglSurface, 12374, queriedSize);
+                        int queryHeightError = GameThread.INSTANCE.egl.eglGetError();
+                        eglThreadDiag += " queryWidth=" + queryWidth
+                                + " width=" + queriedWidth
+                                + " queryWidthError=" + queryWidthError
+                                + " queryHeight=" + queryHeight
+                                + " height=" + queriedSize[0]
+                                + " queryHeightError=" + queryHeightError;
+                    }
+                } catch (Exception e) {
+                    eglThreadDiag += " exception=" + e.getClass().getSimpleName() + ":" + e.getMessage();
+                }
+                GameNative.writeJniTraceMarker("SURFACE_DIAG_EGL_THREAD " + eglThreadDiag);
+                Log.i(TAG, "[SURFACE-DIAG] EGL state on GameThread " + eglThreadDiag);
                 Log.i(TAG, "[SURFACE-DIAG] queued callback executing " + surfaceDiag);
                 GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED_DONE");
             }
