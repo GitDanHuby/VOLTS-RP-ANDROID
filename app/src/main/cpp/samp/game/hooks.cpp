@@ -2196,12 +2196,13 @@ void InstallHooks()
     CHook::InlineHook("_Z23RwResourcesFreeResEntryP10RwResEntry", &RwResourcesFreeResEntry_hook,
                       &RwResourcesFreeResEntry);
 
-    ms_fAspectRatio = (float *) (g_libGTASA + 0xC6DC70);
+    // GTA SA 2.10 global from the reference branch.
+    ms_fAspectRatio = (float *)(g_libGTASA + (VER_x32 ? 0x00A26A90 : 0xCC7F00));
     CHook::InlineHook("_ZN4CHud14DrawCrossHairsEv", &DrawCrosshair_hook, &DrawCrosshair);
 
     // retexture
     //CHook::InlineHook("_ZN7CEntity6RenderEv", &CEntity_Render_hook, &CEntity_Render);
-    CHook::InstallPLT(g_libGTASA + 0x841A88, &CEntity_Render_hook, &CEntity_Render);
+    // Disabled: 0x841A88 is a legacy PLT slot with no verified GTA SA 2.10 equivalent.
 
     //CHook::InlineHook("_ZN26CAEGlobalWeaponAudioEntity21ServiceAmbientGunFireEv", &TaskEnterVehicleHook, &TaskEnterVehicle);
     //idk what uses of this but skip for now
