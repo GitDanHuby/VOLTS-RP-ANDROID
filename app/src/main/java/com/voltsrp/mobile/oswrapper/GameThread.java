@@ -397,9 +397,11 @@ public final class GameThread {
                             loggedFirstInitTrue = true;
                         }
                         if (!loggedFirstDraw) {
+                            GameNative.recordJavaTrace("BEFORE_FIRST_DRAW");
                             GameNative.writeJniTraceMarker("BEFORE_FIRST_DRAW");
                             GameNative.implOnDrawFrame(f);
                             GameNative.writeJniTraceMarker("AFTER_FIRST_DRAW");
+                            GameNative.recordJavaTrace("AFTER_FIRST_DRAW");
                             loggedFirstDraw = true;
                         } else {
                             GameNative.implOnDrawFrame(f);
@@ -618,13 +620,16 @@ public final class GameThread {
             public final void invoke2() {
                 // Pinpoint the native lifecycle callback: the previous trace ended
                 // after initial setup, before the first render-loop marker.
+                GameNative.recordJavaTrace("BEFORE_CREATE_GAME_PLATFORM_SERVICES");
                 GameNative.writeJniTraceMarker("BEFORE_CREATE_GAME_PLATFORM_SERVICES");
                 GamePlatformServices platformServices = new GamePlatformServices(activity, view);
                 GameNative.writeJniTraceMarker("AFTER_CREATE_GAME_PLATFORM_SERVICES");
 
+                GameNative.recordJavaTrace("BEFORE_IMPL_ON_ACTIVITY_CREATED");
                 GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_ACTIVITY_CREATED");
                 GameNative.implOnActivityCreated(platformServices, firstInit);
                 GameNative.writeJniTraceMarker("AFTER_IMPL_ON_ACTIVITY_CREATED");
+                GameNative.recordJavaTrace("AFTER_IMPL_ON_ACTIVITY_CREATED");
 
                 // The first frame may run only after the native ActivityCreated callback completes.
                 GameNative.setFrameLoopReady(true);
@@ -1158,9 +1163,11 @@ public final class GameThread {
                 GameNative.writeJniTraceMarker("SURFACE_DIAG_EGL_THREAD " + eglThreadDiag);
                 Log.i(TAG, "[SURFACE-DIAG] EGL state on GameThread " + eglThreadDiag);
                 Log.i(TAG, "[SURFACE-DIAG] queued callback executing " + surfaceDiag);
+                GameNative.recordJavaTrace("BEFORE_IMPL_ON_SURFACE_CHANGED size=" + width + "x" + height);
                 GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_CHANGED");
                 GameNative.implOnSurfaceChanged(surface, width, height);
                 GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_CHANGED");
+                GameNative.recordJavaTrace("AFTER_IMPL_ON_SURFACE_CHANGED");
             }
         });
 
@@ -1178,9 +1185,11 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
+                GameNative.recordJavaTrace("BEFORE_IMPL_ON_SURFACE_CREATED");
                 GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_CREATED");
                 GameNative.implOnSurfaceCreated();
                 GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_CREATED");
+                GameNative.recordJavaTrace("AFTER_IMPL_ON_SURFACE_CREATED");
             }
         });
 
@@ -1197,9 +1206,11 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
+                GameNative.recordJavaTrace("BEFORE_IMPL_ON_SURFACE_DESTROYED");
                 GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_DESTROYED");
                 GameNative.implOnSurfaceDestroyed();
                 GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_DESTROYED");
+                GameNative.recordJavaTrace("AFTER_IMPL_ON_SURFACE_DESTROYED");
             }
         });
 
