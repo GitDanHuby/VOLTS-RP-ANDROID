@@ -92,7 +92,7 @@ void CStreaming::RemoveModelIfNoRefs(int32 modelId) {
 }
 
 void CStreaming::SetModelIsDeletable(int32 modelId) {
-    CHook::CallFunction<void>(g_libGTASA + 0x3B52E8, modelId);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x2D6788 + 1 : 0x399090), modelId);
 }
 
 void CStreaming::RemoveModel(int32 modelId) {
@@ -195,34 +195,34 @@ void CStreaming::RemoveBigBuildings() {
 }
 
 void CStreaming::RemoveBuildingsNotInArea(eAreaCodes areaCode) {
-    CHook::CallFunction<void>(g_libGTASA + 0x3B3C5C, areaCode);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x002D5328 + 1 : 0x3979AC), areaCode);
 
 }
 
 void CStreaming::InjectHooks() {
 
-    CHook::Write(g_libGTASA + 0x8382D0, &ms_pEndRequestedList);
-    CHook::Write(g_libGTASA + 0x8382C8, &ms_pStartRequestedList);
-    CHook::Write(g_libGTASA + 0x8384B8, &ms_pEndLoadedList);
-    CHook::Write(g_libGTASA + 0x8382D8, &ms_startLoadedList);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x677D04 : 0x84DA38), &ms_pEndRequestedList);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x6766C0 : 0x84ADF0), &ms_pStartRequestedList);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x678458 : 0x84E8D8), &ms_pEndLoadedList);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x677238 : 0x84C4B8), &ms_startLoadedList);
 
-    CHook::Write(g_libGTASA + 0x838340, &ms_bEnableRequestListPurge);
-    CHook::Write(g_libGTASA + 0x838258, &ms_disableStreaming);
-    CHook::Write(g_libGTASA + 0x838320, &ms_channel);
-    CHook::Write(g_libGTASA + 0x837D60, &ms_numModelsRequested);
-    CHook::Write(g_libGTASA + 0x838318, &ms_numPriorityRequests);
-    CHook::Write(g_libGTASA + 0x838400, &ms_bLoadingBigModel);
-    CHook::Write(g_libGTASA + 0x838408, &ms_channelError);
-    CHook::Write(g_libGTASA + 0x8382A8, &ms_pStreamingBuffer);
-    CHook::Write(g_libGTASA + 0x8382B8, &ms_streamingBufferSize);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x676464 : 0x84A938), &ms_bEnableRequestListPurge);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x6767DC : 0x84B028), &ms_disableStreaming);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x67832C : 0x84E680), &ms_channel);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x676280 : 0x84A580), &ms_numModelsRequested);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x678E40 : 0x84FCB0), &ms_numPriorityRequests);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x677D50 : 0x84DAD0), &ms_bLoadingBigModel);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x676CE0 : 0x84BA20), &ms_channelError);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x676214 : 0x84A4A8), &ms_pStreamingBuffer);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x67962C : 0x850C78), &ms_streamingBufferSize);
 
-    CHook::Write(g_libGTASA + 0x838310, &CStreaming::ms_memoryUsed);
-    CHook::Write(g_libGTASA + 0x838410, &CStreaming::ms_memoryAvailable);
-    CHook::Write(g_libGTASA + 0x8383A0, &CStreaming::desiredNumVehiclesLoaded);
-    CHook::Write(g_libGTASA + 0x838298, &CStreaming::ms_files);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x00679EB4 : 0x851D80), &CStreaming::ms_memoryUsed);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x006791EC : 0x850408), &CStreaming::ms_memoryAvailable);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x006795A4 : 0x850B68), &CStreaming::desiredNumVehiclesLoaded);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x00676AB8 : 0x84B5D0), &CStreaming::ms_files);
 
-    CHook::Write(g_libGTASA + 0x8384C0, &CStreaming::ms_rwObjectInstances);
-    CHook::Write(g_libGTASA + 0x837B40, &CStreaming::ms_aInfoForModel);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x00677564 : 0x84CB10), &CStreaming::ms_rwObjectInstances);
+    CHook::Write(g_libGTASA + (VER_x32 ? 0x00677DD0 : 0x84DBD0), &CStreaming::ms_aInfoForModel);
 
     CHook::Redirect("_ZN10CStreaming13InitImageListEv", &CStreaming::InitImageList);
     CHook::Redirect("_ZN10CStreaming12MakeSpaceForEi", &CStreaming::MakeSpaceFor);
@@ -677,7 +677,7 @@ void CStreaming::RequestModelStream(int32 chIdx) {
     ch.offsetAndHandle = posn;       // And from where to read
     ch.totalTries = 0;
 
-    bool& m_bModelStreamNotLoaded = *reinterpret_cast<bool*>(g_libGTASA + 0x964FD0);
+    bool& m_bModelStreamNotLoaded = *reinterpret_cast<bool*>(g_libGTASA + (VER_x32 ? 0x792FBC : 0x972E80));
     if (m_bModelStreamNotLoaded)
         m_bModelStreamNotLoaded = false;
 }
@@ -785,17 +785,17 @@ bool CStreaming::ProcessLoadingChannel(int32 chIdx) {
 }
 
 bool CStreaming::ConvertBufferToObject(uint8* fileBuffer, int32 modelId) {
-    return CHook::CallFunction<bool>(g_libGTASA + 0x3B14EC, fileBuffer, modelId);
+    return CHook::CallFunction<bool>(g_libGTASA + (VER_x32 ? 0x2D2FD0 + 1 : 0x395114), fileBuffer, modelId);
 }
 
 // Finishes loading a big model by loading the second half of the file
 // residing at `pFileBuffer`.
 void CStreaming::FinishLoadingLargeFile(uint8* pFileBuffer, int32 modelId) {
-    CHook::CallFunction<void>(g_libGTASA + 0x3B1CEC, pFileBuffer, modelId);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x2D36B0 + 1 : 0x395948), pFileBuffer, modelId);
 }
 
 void CStreaming::RetryLoadFile(int32 chIdx) {
-    CHook::CallFunction<void>(g_libGTASA + 0x3B0674, chIdx);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x2D2314 + 1 : 0x394220), chIdx);
 }
 
 void CStreaming::MakeSpaceFor(size_t memoryToCleanInBytes) {
@@ -811,12 +811,12 @@ void CStreaming::MakeSpaceFor(size_t memoryToCleanInBytes) {
 
 //
 void CStreaming::DeleteRwObjectsBehindCamera(size_t memoryToCleanInBytes) {
-    CHook::CallFunction<void>(g_libGTASA + 0x3B4714, memoryToCleanInBytes);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x002D5CD8 + 1 : 0x3984F0), memoryToCleanInBytes);
 }
 
 // Function name is a little misleading, as it deletes the first entity it can.
 bool CStreaming::DeleteLeastUsedEntityRwObject(bool bNotOnScreen, int32 streamingFlags) {
-    return CHook::CallFunction<bool>(g_libGTASA + 0x3B4490, bNotOnScreen, streamingFlags);
+    return CHook::CallFunction<bool>(g_libGTASA + (VER_x32 ? 0x2D5A80 + 1 : 0x39825C), bNotOnScreen, streamingFlags);
 }
 
 // The name is misleading: It just removes the first model with no references.
@@ -862,7 +862,7 @@ bool CStreaming::RemoveLeastUsedModel(int32 streamingFlags) {
         }
     }
 
-    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0x9F86F8);
+    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
     if (TheCamera.GetPosition().z - TheCamera.CalculateGroundHeight(eGroundHeightType::ENTITY_BB_BOTTOM) <= 50.0f){
         return DeleteLeastUsedEntityRwObject(false, streamingFlags);
     }
@@ -870,7 +870,7 @@ bool CStreaming::RemoveLeastUsedModel(int32 streamingFlags) {
 }
 
 bool CStreaming::HasVehicleUpgradeLoaded(int32 modelId) {
-    return CHook::CallFunction<bool>(g_libGTASA + 0x3B1470, modelId);
+    return CHook::CallFunction<bool>(g_libGTASA + (VER_x32 ? 0x002D2F74 + 1 : 0x395098), modelId);
 //    if (!GetInfo(modelId).IsLoaded())
 //        return false;
 //
@@ -906,5 +906,5 @@ CLink<CEntityGTA*>* CStreaming::AddEntity(CEntityGTA* entity) {
 
 
 char *CStreaming::GetModelCDName(int32 index) {
-    return CHook::CallFunction<char*>(g_libGTASA + 0x3AD8E4, index);
+    return CHook::CallFunction<char*>(g_libGTASA + (VER_x32 ? 0x2CF5D0 + 1 : 0x391320), index);
 }
