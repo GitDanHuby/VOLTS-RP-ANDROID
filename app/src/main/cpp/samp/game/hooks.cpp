@@ -1506,7 +1506,7 @@ void MainMenu_OnStartSAMP()
     //InitInMenu();
     pGame->StartGame();
 
-    CHook::CallFunction<void>(g_libGTASA + 0x718FCC); //  Menu_NewGame();
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x002A7270 + 1 : 0x365EA0)); // StartGameScreen::OnNewGameCheck()
 
 
 
@@ -1996,7 +1996,7 @@ void InstallSpecialHooks()
    InstallUrezHooks();
 
     CHook::InlineHook("_ZN5CGame20InitialiseRenderWareEv", &CGame__InitialiseRenderWare_hook, &CGame__InitialiseRenderWare);
-    CHook::InstallPLT(g_libGTASA + 0x83DE90, &StartGameScreen__OnNewGameCheck_hook, &StartGameScreen__OnNewGameCheck);
+    CHook::InstallPLT(g_libGTASA + (VER_x32 ? 0x6785FC : 0x84EC20), &StartGameScreen__OnNewGameCheck_hook, &StartGameScreen__OnNewGameCheck);
     CHook::InlineHook("_Z10NvUtilInitv", &NvUtilInit_hook, &NvUtilInit);
 
     CHook::RET("_ZN12CCutsceneMgr16LoadCutsceneDataEPKc"); // LoadCutsceneData
