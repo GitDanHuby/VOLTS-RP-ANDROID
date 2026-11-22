@@ -62,6 +62,7 @@ using EglCreateWindowSurfaceFn = EGLSurface (*)(EGLDisplay, EGLConfig, EGLNative
 using EglDestroySurfaceFn = EGLBoolean (*)(EGLDisplay, EGLSurface);
 using EglSwapIntervalFn = EGLBoolean (*)(EGLDisplay, EGLint);
 using EglTerminateFn = EGLBoolean (*)(EGLDisplay);
+using EglSwapBuffersFn = EGLBoolean (*)(EGLDisplay, EGLSurface);
 
 static EglGetDisplayFn g_origEglGetDisplay = nullptr;
 static EglInitializeFn g_origEglInitialize = nullptr;
@@ -74,6 +75,8 @@ static EglCreateWindowSurfaceFn g_origEglCreateWindowSurface = nullptr;
 static EglDestroySurfaceFn g_origEglDestroySurface = nullptr;
 static EglSwapIntervalFn g_origEglSwapInterval = nullptr;
 static EglTerminateFn g_origEglTerminate = nullptr;
+static EglSwapBuffersFn g_origEglSwapBuffers = nullptr;
+static std::atomic<unsigned long long> g_swapCount{0};
 
 static void LogHookResult(const char* symbol, void* stub) {
     const int error = shadowhook_get_errno();
@@ -156,6 +159,19 @@ static EGLBoolean HookEglSwapInterval(EGLDisplay display, EGLint interval) {
     return ok;
 }
 
+static EGLBoolean HookEglSwapBuffers(EGLDisplay display, EGLSurface surface) {
+    const unsigned long long frame = g_swapCount.fetch_add(1, std::memory_order_relaxed) + 1;
+    if (frame <= 8 || frame % 120 == 0) {
+        EglTrace("EGL eglSwapBuffers ENTER frame=%llu display=%p surface=%p", frame, display, surface);
+    }
+    EGLBoolean ok = g_origEglSwapBuffers(display, surface);
+    if (frame <= 8 || frame % 120 == 0) {
+        EGLint error = g_origEglGetError ? g_origEglGetError() : EGL_SUCCESS;
+        EglTrace("EGL eglSwapBuffers EXIT frame=%llu result=%d error=0x%x", frame, ok, error);
+    }
+    return ok;
+}
+
 static EGLBoolean HookEglTerminate(EGLDisplay display) {
     EglTrace("EGL eglTerminate ENTER display=%p", display);
     EGLBoolean ok = g_origEglTerminate(display);
@@ -193,7 +209,7 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_startEglTrace(
         const char* names[] = {"eglGetDisplay", "eglInitialize", "eglChooseConfig",
                                "eglGetConfigAttrib", "eglCreateContext", "eglCreateWindowSurface",
                                "eglDestroySurface", "eglMakeCurrent", "eglSwapInterval",
-                               "eglTerminate", "eglGetError"};
+                               "eglTerminate", "eglGetError", "eglSwapBuffers"};
         for (const char* name : names) {
             void* address = shadowhook_dlsym_dynsym(eglHandle, name);
             EglTrace("EGL_TRACE_DYNSYM library=libEGL.so symbol=%s address=%p", name, address);
@@ -247,8 +263,13 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_startEglTrace(
             reinterpret_cast<void**>(&g_origEglTerminate));
     LogHookResult("eglTerminate", h10);
 
+    void* h11 = shadowhook_hook_sym_name("libEGL.so", "eglSwapBuffers",
+            reinterpret_cast<void*>(HookEglSwapBuffers),
+            reinterpret_cast<void**>(&g_origEglSwapBuffers));
+    LogHookResult("eglSwapBuffers", h11);
+
     EglTrace("EGL_TRACE_INSTALL_RESULT getDisplay=%p initialize=%p chooseConfig=%p "
              "getConfigAttrib=%p createContext=%p makeCurrent=%p getError=%p "
-             "createWindowSurface=%p destroySurface=%p swapInterval=%p terminate=%p",
-             h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10);
+             "createWindowSurface=%p destroySurface=%p swapInterval=%p terminate=%p swapBuffers=%p",
+             h0, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11);
 }
