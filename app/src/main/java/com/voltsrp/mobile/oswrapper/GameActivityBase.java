@@ -287,13 +287,15 @@ public abstract class GameActivityBase extends AppCompatActivity {
                 boolean eglReady = GameThread.INSTANCE.InitEGLAndGLES2(3);
                 GameNative.writeJniTraceMarker(eglReady
                         ? "AFTER_INIT_EGL_SUCCESS" : "AFTER_INIT_EGL_FAILURE");
-                Log.i("GL", "[SURFACE-DIAG] EGL init result=" + eglReady
+                String eglDiag = "result=" + eglReady
                         + " display=" + GameThread.INSTANCE.eglDisplay
                         + " context=" + GameThread.INSTANCE.eglContext
                         + " eglSurface=" + GameThread.INSTANCE.eglSurface
                         + " viewIsActive=" + GameThread.INSTANCE.viewIsActive
                         + " holderSurface=" + holder.getSurface()
-                        + " valid=" + holder.getSurface().isValid());
+                        + " valid=" + holder.getSurface().isValid();
+                GameNative.writeJniTraceMarker("SURFACE_DIAG_EGL_INIT " + eglDiag);
+                Log.i("GL", "[SURFACE-DIAG] EGL init " + eglDiag);
                 // Trigger the native engine initialization
                 // Note: Ensure ResumeEventDone logic is handled safely
             }
@@ -304,8 +306,7 @@ public abstract class GameActivityBase extends AppCompatActivity {
                 GameThread.INSTANCE.surfaceHeight = height;
                 SurfaceHolder diagnosticHolder = holder;
                 android.view.Surface diagnosticSurface = diagnosticHolder.getSurface();
-                Log.i("GL", "[SURFACE-DIAG] Activity callback surfaceChanged"
-                        + " thread=" + Thread.currentThread().getName()
+                String surfaceDiag = "thread=" + Thread.currentThread().getName()
                         + " format=" + format
                         + " size=" + width + "x" + height
                         + " holder=" + holder
@@ -314,7 +315,9 @@ public abstract class GameActivityBase extends AppCompatActivity {
                         + " eglDisplay=" + GameThread.INSTANCE.eglDisplay
                         + " eglContext=" + GameThread.INSTANCE.eglContext
                         + " eglSurface=" + GameThread.INSTANCE.eglSurface
-                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive);
+                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive;
+                GameNative.writeJniTraceMarker("SURFACE_DIAG_ACTIVITY_CHANGED " + surfaceDiag);
+                Log.i("GL", "[SURFACE-DIAG] Activity callback surfaceChanged " + surfaceDiag);
             }
 
             @Override
