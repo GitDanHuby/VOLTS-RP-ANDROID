@@ -12,7 +12,7 @@
 
 // Delete pickup's object (CObject)
 void CPickup::GetRidOfObjects() {
-    CHook::CallFunction<void>(g_libGTASA + 0x4035DC, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0031D790 + 1 : 0x3E4A20), this);
 
     // Need destructor :c
 //    if (m_pObject) {
@@ -71,5 +71,5 @@ bool CPickup::Update() {
 
 
 void CPickup::Remove() {
-    CHook::CallFunction<void>(g_libGTASA + 0x402E34, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x002D7DC8 + 1 : 0x3E427C), this);
 }
