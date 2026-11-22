@@ -17,7 +17,7 @@ CCam& CCamera::GetActiveCamera() {
 }
 
 void CCamera::Init() {
-    CHook::CallFunction<void>(g_libGTASA + 0x55B6D0, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0046F8C0 + 1 : 0x55BA30), this);
 }
 
 void CCamera::SetRwCamera(RwCamera *pCamera) {
@@ -33,7 +33,7 @@ float CCamera::CalculateGroundHeight(eGroundHeightType type) {
 }
 
 void CCamera::RestoreWithJumpCut() {
-    CHook::CallFunction<void>(g_libGTASA + 0x46F750, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x3DB154 + 1 : 0x4B94B4), this);
 }
 
 void CCamera::SetBehindPlayer()
