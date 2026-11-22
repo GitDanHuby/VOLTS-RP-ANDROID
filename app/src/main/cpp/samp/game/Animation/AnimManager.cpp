@@ -45,7 +45,7 @@ void CAnimManager::Initialise() {
 
 // 0x5BC910
 void CAnimManager::ReadAnimAssociationDefinitions() {
-    return CHook::CallFunction<void>(g_libGTASA + 0x560804);
+    return CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0047459C + 1 : 0x560CC4));
     // return plugin::Call<0x5BC910>();
 
 //    char name[32], block[32], type[32];
@@ -354,7 +354,7 @@ int32 CAnimManager::RegisterAnimBlock(const char* name) {
 
 // 0x4D3ED0
 void CAnimManager::RemoveLastAnimFile() {
-    return CHook::CallFunction<void>(g_libGTASA + 0x374078);
+    return CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0038F774 + 1 : 0x468710));
 
     ms_numAnimBlocks--;
     ms_numAnimations = ms_aAnimBlocks[ms_numAnimBlocks].startAnimation;
@@ -411,12 +411,12 @@ int32 CAnimManager::GetNumRefsToAnimBlock(int32 index) {
 
 // 0x4D41C0
 void CAnimManager::UncompressAnimation(CAnimBlendHierarchy* hier) {
-    return CHook::CallFunction<void>(g_libGTASA + 0x372158, hier);
+    return CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0038DD54 + 1 : 0x466740), hier);
 }
 
 // 0x4D42A0
 void CAnimManager::RemoveFromUncompressedCache(CAnimBlendHierarchy* hier) {
-    return CHook::CallFunction<void>(g_libGTASA + 0x3722A0, hier);
+    return CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0038DE60 + 1 : 0x4668AC), hier);
 }
 
 // 0x4D4410
