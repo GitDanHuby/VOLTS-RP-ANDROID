@@ -80,7 +80,7 @@ void CEntityGTA::SetInterior(int interiorId, bool needRefresh)
         CColStore::RequestCollision(&pos, m_nAreaCode);
 
         if(interiorId == 0) {
-            CHook::CallFunction<void>(g_libGTASA + 0x4C4600, false);
+            CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x00420898 + 1 : 0x504194), false);
         }
 
     }
@@ -99,7 +99,7 @@ float CEntityGTA::GetDistanceFromCamera()
     if(!this)
         return 0;
 
-    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0x9F86F8);
+    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
     return DistanceBetweenPoints(GetPosition(), TheCamera.GetPosition());
 }
 
@@ -162,7 +162,7 @@ CBaseModelInfo* CEntityGTA::GetModelInfo() const {
 }
 
 void CEntityGTA::Add(const CRect* rect) {
-    CHook::CallFunction<void>(g_libGTASA + 0x48DD4C, this, rect);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x3ED8FC + 1 : 0x4CD5C0), this, rect);
 }
 
 void CEntityGTA::Remove() {
