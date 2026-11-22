@@ -21,18 +21,22 @@ void ApplyFPSPatch(uint8_t fps)
         targetFPS = 144;
     }
 
+#if VER_x32
+    CHook::WriteMemory(g_libGTASA + 0x005E49E0, (uintptr_t)&targetFPS, 1);
+    CHook::WriteMemory(g_libGTASA + 0x005E492E, (uintptr_t)&targetFPS, 1);
+#else
     // MOVZ W8, #targetFPS
     uint32_t encoded = 0x52800008 | (targetFPS << 5);
-    CHook::WriteMemory(g_libGTASA + 0x3683D0, &encoded, 4);
-    CHook::WriteMemory(g_libGTASA + 0x368644, &encoded, 4);
+    CHook::WriteMemory(g_libGTASA + 0x70A38C, &encoded, 4);
+    CHook::WriteMemory(g_libGTASA + 0x70A43C, &encoded, 4);
 
     // MOVZ W9, #targetFPS
     uint32_t encoded9 = 0x52800009 | (targetFPS << 5);
-    CHook::WriteMemory(g_libGTASA + 0x3685B8, &encoded9, 4);
+    CHook::WriteMemory(g_libGTASA + 0x70A458, &encoded9, 4);
+#endif
 
     Log("New fps limit = %d", targetFPS);
 }
-
 void DisableAutoAim()
 {
     CHook::RET("_ZN10CPlayerPed22FindWeaponLockOnTargetEv"); // CPed::FindWeaponLockOnTarget
