@@ -6,6 +6,10 @@ on:
     branches:
       - teste-samp-2.10
 
+concurrency:
+  group: gta-210-validation-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-debug:
     runs-on: ubuntu-latest
