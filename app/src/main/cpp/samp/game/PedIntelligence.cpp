@@ -210,5 +210,5 @@ void CPedIntelligence::InjectHooks() {
 }
 
 void CPedIntelligence::ProcessAfterPreRender() {
-    CHook::CallFunction<void>(g_libGTASA + 0x5B24AC, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x4C11BC + 1 : 0x5BDC18), this);
 }
