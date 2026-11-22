@@ -2220,7 +2220,7 @@ void InstallHooks()
     //CHook::InlineHook("_ZN4CCam7ProcessEv", CCam__Process_hook, &CCam__Process);
 
 
-    CHook::NOP(g_libGTASA + 0x716AD0, 1); // Game - SocialClub
+    // Disabled: this SocialClub patch address has not been mapped to GTA SA 2.10.
 
     //CHook::InlineHook("_ZN6CRadar9ClearBlipEi", CRadar__ClearBlip_hook, &CRadar__ClearBlip);
     CHook::InlineHook("_ZN6CRadar13DrawRadarMaskEv", &DrawRadarMask_hook, &DrawRadarMask);
