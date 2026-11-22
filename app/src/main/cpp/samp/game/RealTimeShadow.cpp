@@ -74,6 +74,3 @@ RwTexture* CRealTimeShadow::GetShadowRwTexture() {
     return GetCurrentCamera().GetRwRenderTexture();
 }
 
-bool CRealTimeShadow::SetShadowedObject(CPhysical *physical) {
-    return CHook::CallFunction<bool>(g_libGTASA + 0x5E53B8, this, physical);
-}
