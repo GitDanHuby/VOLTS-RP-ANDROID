@@ -275,29 +275,26 @@ public abstract class GameActivityBase extends AppCompatActivity {
 
                 // Update the thread's reference immediately
                 GameThread.INSTANCE.cachedSurfaceHolder = holder;
-                // InitEGLAndGLES2 creates the EGL surface while viewIsActive is false.
-                // Do not mark it active before that initialization has completed.
-
-                // Dynamic Resolution Scaling for Speed
+                // libGame.so owns the render EGL lifecycle. Creating a second Java
+                // EGL window surface for this same SurfaceView connects the same
+                // ANativeWindow twice; the native eglCreateWindowSurface then fails
+                // with EGL_BAD_ALLOC on devices that reject the duplicate producer.
+                // Keep the holder for the native Surface callback, but do not create
+                // a Java EGLDisplay/EGLContext/EGLSurface here.
                 if (GameThread.INSTANCE.fixedWidth > 0) {
                     holder.setFixedSize(GameThread.INSTANCE.fixedWidth, GameThread.INSTANCE.fixedHeight);
                 }
                 GameNative.writeJniTraceMarker("GAME_SURFACE_CREATED_ENTER");
-                GameNative.writeJniTraceMarker("BEFORE_INIT_EGL");
-                boolean eglReady = GameThread.INSTANCE.InitEGLAndGLES2(3);
-                GameNative.writeJniTraceMarker(eglReady
-                        ? "AFTER_INIT_EGL_SUCCESS" : "AFTER_INIT_EGL_FAILURE");
-                String eglDiag = "result=" + eglReady
-                        + " display=" + GameThread.INSTANCE.eglDisplay
-                        + " context=" + GameThread.INSTANCE.eglContext
-                        + " eglSurface=" + GameThread.INSTANCE.eglSurface
-                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive
+                GameNative.writeJniTraceMarker("JAVA_EGL_INIT_SKIPPED_NATIVE_OWNS_SURFACE");
+                String eglDiag = "javaEglSkipped=true"
+                        + " nativeOwnsSurface=true"
+                        + " javaEglDisplay=" + GameThread.INSTANCE.eglDisplay
+                        + " javaEglContext=" + GameThread.INSTANCE.eglContext
+                        + " javaEglSurface=" + GameThread.INSTANCE.eglSurface
                         + " holderSurface=" + holder.getSurface()
                         + " valid=" + holder.getSurface().isValid();
                 GameNative.writeJniTraceMarker("SURFACE_DIAG_EGL_INIT " + eglDiag);
-                Log.i("GL", "[SURFACE-DIAG] EGL init " + eglDiag);
-                // Trigger the native engine initialization
-                // Note: Ensure ResumeEventDone logic is handled safely
+                Log.i("GL", "[SURFACE-DIAG] " + eglDiag);
             }
 
             @Override
