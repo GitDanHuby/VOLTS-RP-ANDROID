@@ -95,22 +95,22 @@ PLAYERID FindActorIDFromGtaPtr(CPedGTA* pPed)
 
 void RenderEffects() {
 //	RenderEffects();
-    CHook::CallFunction<void>(g_libGTASA + 0x5C9E04);
-    CHook::CallFunction<void>(g_libGTASA + 0x5EC7BC);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0059DA40 + 1 : 0x6C1D6C));
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005BE914 + 1 : 0x6E2FB4));
 //    CRopes::Render();
 //    CGlass::Render();
-    CHook::CallFunction<void>(g_libGTASA + 0x5D32E4);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005A6BC8 + 1 : 0x6CA5D0));
     CVisibilityPlugins::RenderReallyDrawLastObjects();
     CCoronas::Render();
 
     // FIXME
-    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0x9F86F8);
-    auto g_fx = *(uintptr_t *) (g_libGTASA + 0xA5BC20);
-    CHook::CallFunction<void>(g_libGTASA + 0x4D5020, &g_fx, TheCamera.m_pRwCamera, false);
+    CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
+    auto g_fx = *(uintptr_t *) (g_libGTASA + (VER_x32 ? 0x00820520 : 0xA062A8));
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x00363DF0 + 1 : 0x433F54), &g_fx, TheCamera.m_pRwCamera, false);
 
-    CHook::CallFunction<void>(g_libGTASA + 0x5FA3B8);
-    CHook::CallFunction<void>(g_libGTASA + 0x6F4AA0);
-    CHook::CallFunction<void>(g_libGTASA + 0x5CD7EC);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005CBBAC + 1 : 0x6F054C));
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0059BF84 + 1 : 0x6C0268));
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005A1C38 + 1 : 0x6C552C));
     //   CClouds::VolumetricCloudsRender();
 ////    if (CHeli::NumberOfSearchLights || CTheScripts::NumberOfScriptSearchLights) {
 ////        CHeli::Pre_SearchLightCone();
@@ -118,15 +118,15 @@ void RenderEffects() {
 ////        CTheScripts::RenderAllSearchLights();
 ////        CHeli::Post_SearchLightCone();
 ////    }
-    CHook::CallFunction<void>(g_libGTASA + 0x702670);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005E3390 + 1 : 0x708DF0));
 ////    if (CReplay::Mode != MODE_PLAYBACK && !CPad::GetPad(0)->DisablePlayerControls) {
 ////        FindPlayerPed()->DrawTriangleForMouseRecruitPed();
 ////    }
-    CHook::CallFunction<void>(g_libGTASA + 0x5EEFA8);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005C0B14 + 1 : 0x6E50CC));
 //    //CVehicleRecording::Render();
-    CHook::CallFunction<void>(g_libGTASA + 0x5DE58C);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005B19D0 + 1 : 0x6D6068));
 //    //CRenderer::RenderFirstPersonVehicle();
-    CHook::CallFunction<void>(g_libGTASA + 0x5E2C9C);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x005B5F78 + 1 : 0x6DA2B8));
 
     //DebugModules::Render3D();
 }
