@@ -734,25 +734,25 @@ bool CGame::InitialiseRenderWare() {
         CameraDestroy(camera);
         return false;
     }
-	Scences.m_pRwCamera = camera;
+	Scene.m_pRwCamera = camera;
     TheCamera.Init();
-    TheCamera.SetRwCamera(Scences.m_pRwCamera);
-    RwCameraSetFarClipPlane(Scences.m_pRwCamera, 2000.0f);
-    RwCameraSetNearClipPlane(Scences.m_pRwCamera, 0.9f);
-    CameraSize(Scences.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
+    TheCamera.SetRwCamera(Scene.m_pRwCamera);
+    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 2000.0f);
+    RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
+    CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
 
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
     bb.inf = {-10'000.0f, -10'000.0f, -10'000.0f};
 
-    if (Scences.m_pRpWorld = RpWorldCreate(&bb); !Scences.m_pRpWorld) {
-        CameraDestroy(Scences.m_pRwCamera);
-		Scences.m_pRwCamera = nullptr;
+    if (Scene.m_pRpWorld = RpWorldCreate(&bb); !Scene.m_pRpWorld) {
+        CameraDestroy(Scene.m_pRwCamera);
+		Scene.m_pRwCamera = nullptr;
 
         return false;
     }
-    RpWorldAddCamera(Scences.m_pRpWorld, Scences.m_pRwCamera);
-    LightsCreate(Scences.m_pRpWorld);
+    RpWorldAddCamera(Scene.m_pRpWorld, Scene.m_pRwCamera);
+    LightsCreate(Scene.m_pRpWorld);
 //	CreateDebugFont();
     CFont::Initialise();
     CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x0046FF38 + 1 : 0x55C1C8)); // CHud::Initialise();
