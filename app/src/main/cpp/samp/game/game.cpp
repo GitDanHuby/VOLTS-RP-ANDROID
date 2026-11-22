@@ -705,7 +705,7 @@ void InitGui();
 
 bool CGame::InitialiseRenderWare() {
     Log("InitialiseRenderWare ..");
-	CScene& Scences = *reinterpret_cast<CScene*>(g_libGTASA + 0xCD0868);
+	// GTA SA 2.10 exposes the active scene through the shared Scene global.
 
     CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + (VER_x32 ? 0x00951FA8 : 0xBBA8D0));
 
