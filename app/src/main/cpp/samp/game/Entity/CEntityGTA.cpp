@@ -65,7 +65,7 @@ void CEntityGTA::ResolveReferences()
 
 void CEntityGTA::Add()
 {
-    CHook::CallFunction<void>(g_libGTASA + 0x48DCE0, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x3ED8D8 + 1 : 0x4CD574), this);
 }
 
 void CEntityGTA::SetInterior(int interiorId, bool needRefresh)
@@ -166,7 +166,7 @@ void CEntityGTA::Add(const CRect* rect) {
 }
 
 void CEntityGTA::Remove() {
-    CHook::CallFunction<void>(g_libGTASA + 0x48E024, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x3EDBE8 + 1 : 0x4CD888), this);
 }
 
 void CEntityGTA::SetModelIndex(uint32_t index) {
