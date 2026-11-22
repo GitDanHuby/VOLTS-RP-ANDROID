@@ -61,7 +61,7 @@ bool CPhysical::IsAdded()
 {
     if(this)
     {
-        if(*(uintptr*)this == g_libGTASA + 0x81E628)
+        if(*(uintptr*)this == g_libGTASA + (VER_x32 ? 0x00667D14 : 0x830098))
             return false;
 
         if(*(uintptr_t*)m_pMovingList)
@@ -147,11 +147,11 @@ void CPhysical::ApplyTurnSpeed()
 }
 
 void CPhysical::Add() {
-    CHook::CallFunction<void>(g_libGTASA + 0x4A09B0, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x3FCE3C + 1 : 0x4E0608), this);
 }
 
 void CPhysical::Remove() {
-    CHook::CallFunction<void>(g_libGTASA + 0x4A0B88, this);
+    CHook::CallFunction<void>(g_libGTASA + (VER_x32 ? 0x3FD02C + 1 : 0x4E07EC), this);
 }
 
 CRect CPhysical::GetBoundRect()
