@@ -2006,7 +2006,7 @@ void InstallSpecialHooks()
     CHook::RET("_ZN12CCutsceneMgr16LoadCutsceneDataEPKc"); // LoadCutsceneData
     CHook::RET("_ZN12CCutsceneMgr10InitialiseEv");			// CCutsceneMgr::Initialise
 
-    CHook::Redirect(g_libGTASA+0x7D624C, &NvFOpen);
+    CHook::Redirect("_Z7NvFOpenPKcS0_bb", &NvFOpen); // GTA SA 2.10 symbol redirect
 
     CHook::InlineHook("_ZN14MainMenuScreen6UpdateEf", &MainMenuScreen__Update_hook, &MainMenuScreen__Update);
 
