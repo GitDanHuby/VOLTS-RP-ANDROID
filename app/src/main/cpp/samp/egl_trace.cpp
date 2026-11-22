@@ -137,8 +137,8 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_startEglTrace(
     int previous = g_eglTraceFd.exchange(duplicate);
     if (previous >= 0) close(previous);
 
-    EglTrace("EGL_TRACE_INSTALL_BEGIN target=libGame.so version=%s init_errno=%d",
-             shadowhook_get_version(), shadowhook_get_init_errno());
+    EglTrace("EGL_TRACE_INSTALL_BEGIN target=libGame.so version=%s",
+             shadowhook_get_version());
 
     void* gameHandle = shadowhook_dlopen("libGame.so");
     EglTrace("EGL_TRACE_LIBRARY handle=%p", gameHandle);
