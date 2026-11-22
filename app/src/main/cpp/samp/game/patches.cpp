@@ -242,7 +242,7 @@ void ApplyGlobalPatches()
     CHook::RET("_ZN7CEntity23PreRenderForGlassWindowEv"); // CEntity::PreRenderForGlassWindow
     CHook::RET("_ZN8CMirrors16RenderReflBufferEb"); // CMirrors::RenderReflBuffer
     CHook::RET("_ZN4CHud23DrawBustedWastedMessageEv"); // CHud::DrawBustedWastedMessage // ПОТРАЧЕНО
-    CHook::RET(g_libGTASA+0x510A94); // CHud::SetHelpMessage
+    // Disabled: direct CHud::SetHelpMessage address has no verified GTA SA 2.10 mapping.
     CHook::RET("_ZN4CHud24SetHelpMessageStatUpdateEhtff"); // CHud::SetHelpMessageStatUpdate
     CHook::RET("_ZN6CCheat16ProcessCheatMenuEv"); // CCheat::ProcessCheatMenu
     CHook::RET("_ZN6CCheat13ProcessCheatsEv"); // CCheat::ProcessCheats
