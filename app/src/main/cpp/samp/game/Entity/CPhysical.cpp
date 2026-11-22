@@ -156,21 +156,10 @@ void CPhysical::Remove() {
 
 CRect CPhysical::GetBoundRect()
 {
-    CRect rect;
-    if (!this || !m_pRwObject || m_nModelIndex == 0xFFFF) {
-        rect.left = 0.0f;
-        rect.right = 0.0f;
-        rect.top = 0.0f;
-        rect.bottom = 0.0f;
-        return rect;
-    }
-    return CHook::CallFunction<CRect>(g_libGTASA + 0x4A0940, this);
+    return CEntityGTA::GetBoundRect();
 }
 
 CVector CPhysical::GetBoundCentre()
 {
-    if (!this || !m_pRwObject || m_nModelIndex == 0xFFFF) {
-        return CVector(0.0f, 0.0f, 0.0f);
-    }
-    return CHook::CallFunction<CVector>(g_libGTASA + 0x4A0978, this);
+    return CEntityGTA::GetBoundCentre();
 }
