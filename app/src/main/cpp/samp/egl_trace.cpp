@@ -65,6 +65,13 @@ static EglMakeCurrentFn g_origEglMakeCurrent = nullptr;
 static EglGetErrorFn g_origEglGetError = nullptr;
 static EglGetConfigAttribFn g_origEglGetConfigAttrib = nullptr;
 
+static void LogHookResult(const char* symbol, void* stub) {
+    const int error = shadowhook_get_errno();
+    const char* message = shadowhook_to_errmsg(error);
+    EglTrace("EGL_HOOK symbol=%s stub=%p errno=%d message=%s",
+             symbol, stub, error, message ? message : "null");
+}
+
 static EGLBoolean HookEglInitialize(EGLDisplay display, EGLint* major, EGLint* minor) {
     EglTrace("EGL eglInitialize ENTER display=%p", display);
     EGLBoolean ok = g_origEglInitialize(display, major, minor);
@@ -130,25 +137,45 @@ Java_com_voltsrp_mobile_oswrapper_GameNative_startEglTrace(
     int previous = g_eglTraceFd.exchange(duplicate);
     if (previous >= 0) close(previous);
 
-    EglTrace("EGL_TRACE_INSTALL_BEGIN target=libGame.so");
+    EglTrace("EGL_TRACE_INSTALL_BEGIN target=libGame.so version=%s init_errno=%d",
+             shadowhook_get_version(), shadowhook_get_init_errno());
+
+    void* gameHandle = shadowhook_dlopen("libGame.so");
+    EglTrace("EGL_TRACE_LIBRARY handle=%p", gameHandle);
+    if (gameHandle) {
+        const char* names[] = {"eglInitialize", "eglChooseConfig", "eglGetConfigAttrib",
+                               "eglCreateContext", "eglMakeCurrent", "eglGetError"};
+        for (const char* name : names) {
+            void* address = shadowhook_dlsym_dynsym(gameHandle, name);
+            EglTrace("EGL_TRACE_DYNSYM symbol=%s address=%p", name, address);
+        }
+        shadowhook_dlclose(gameHandle);
+    }
+
     void* h1 = shadowhook_hook_sym_name("libGame.so", "eglInitialize",
             reinterpret_cast<void*>(HookEglInitialize),
             reinterpret_cast<void**>(&g_origEglInitialize));
+    LogHookResult("eglInitialize", h1);
     void* h2 = shadowhook_hook_sym_name("libGame.so", "eglChooseConfig",
             reinterpret_cast<void*>(HookEglChooseConfig),
             reinterpret_cast<void**>(&g_origEglChooseConfig));
+    LogHookResult("eglChooseConfig", h2);
     void* h3 = shadowhook_hook_sym_name("libGame.so", "eglGetConfigAttrib",
             reinterpret_cast<void*>(HookEglGetConfigAttrib),
             reinterpret_cast<void**>(&g_origEglGetConfigAttrib));
+    LogHookResult("eglGetConfigAttrib", h3);
     void* h4 = shadowhook_hook_sym_name("libGame.so", "eglCreateContext",
             reinterpret_cast<void*>(HookEglCreateContext),
             reinterpret_cast<void**>(&g_origEglCreateContext));
+    LogHookResult("eglCreateContext", h4);
     void* h5 = shadowhook_hook_sym_name("libGame.so", "eglMakeCurrent",
             reinterpret_cast<void*>(HookEglMakeCurrent),
             reinterpret_cast<void**>(&g_origEglMakeCurrent));
+    LogHookResult("eglMakeCurrent", h5);
     void* h6 = shadowhook_hook_sym_name("libGame.so", "eglGetError",
             reinterpret_cast<void*>(HookEglGetError),
             reinterpret_cast<void**>(&g_origEglGetError));
+    LogHookResult("eglGetError", h6);
 
     EglTrace("EGL_TRACE_INSTALL_RESULT initialize=%p chooseConfig=%p getConfigAttrib=%p "
              "createContext=%p makeCurrent=%p getError=%p",
