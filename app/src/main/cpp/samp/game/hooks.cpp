@@ -580,8 +580,13 @@ uint32_t CWeapon__ProcessLineOfSight_hook(CVector *vecOrigin, CVector *vecEnd, C
 
     Log("dwRetAddr CWeapon__ProcessLineOfSight_hook 0x%llx", dwRetAddr);
 
-    if(dwRetAddr >= 0x6FA408 && dwRetAddr <= 0x6FAE44)
+#if VER_x32
+    if (dwRetAddr >= 0x005DC178 && dwRetAddr <= 0x005DD684)
         g_bForceWorldProcessLineOfSight = true;
+#else
+    if (dwRetAddr >= 0x701494 && dwRetAddr <= 0x702B18)
+        g_bForceWorldProcessLineOfSight = true;
+#endif
 
 
     return CWeapon__ProcessLineOfSight(vecOrigin, vecEnd, vecPos, ppEntity, pWeaponSlot, ppEntity2, b1, b2, b3, b4, b5, b6, b7);
@@ -594,7 +599,7 @@ uint32_t CWorld__ProcessLineOfSight_hook(CVector* vecOrigin, CVector* vecEnd, CC
     uintptr_t dwRetAddr = 0;
     GET_LR(dwRetAddr);
 
-    if(dwRetAddr == 0x6FB42C || g_bForceWorldProcessLineOfSight)
+    if(dwRetAddr == (VER_x32 ? 0x005DD0B0 + 1 : 0x70253C) || g_bForceWorldProcessLineOfSight)
     {
         g_bForceWorldProcessLineOfSight = false;
         //LOGI("CWorld_ProcessLineOfSight iLagCompensationMode: %d", g_iLagCompensationMode);
@@ -606,7 +611,7 @@ uint32_t CWorld__ProcessLineOfSight_hook(CVector* vecOrigin, CVector* vecEnd, CC
             {
                 if (g_pCurrentBulletData && g_pCurrentBulletData->pEntity)
                 {
-                    if (*(uintptr_t*)(g_pCurrentBulletData->pEntity) != g_libGTASA+0x81E628) // CPlaceable
+                    if (*(uintptr_t*)(g_pCurrentBulletData->pEntity) != g_libGTASA+(VER_x32 ? 0x667D18 : 0x8300A0)) // CPlaceable
                     {
                         if (g_iLagCompensationMode)
                         {
