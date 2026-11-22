@@ -407,7 +407,20 @@ public class GameNative {
 
      
     public static void implOnSurfaceChanged(Surface surface, int width, int height) {
+        final String diagnostic = "thread=" + Thread.currentThread().getName()
+                + " surface=" + surface
+                + " valid=" + (surface != null && surface.isValid())
+                + " size=" + width + "x" + height
+                + " nativeDelegate=" + com.rockstargames.oswrapper.GameNative.class.getName()
+                + " delegateLoader=" + com.rockstargames.oswrapper.GameNative.class.getClassLoader();
+
+        Log.i("VOLTS-SURFACE-DIAG", "JAVA_IMPL_ON_SURFACE_CHANGED_ENTER " + diagnostic);
+        writeJniTraceMarker("JAVA_IMPL_ON_SURFACE_CHANGED_ENTER " + diagnostic);
+
         com.rockstargames.oswrapper.GameNative.implOnSurfaceChanged(surface, width, height);
+
+        writeJniTraceMarker("JAVA_IMPL_ON_SURFACE_CHANGED_RETURN");
+        Log.i("VOLTS-SURFACE-DIAG", "JAVA_IMPL_ON_SURFACE_CHANGED_RETURN");
     }
 
      
