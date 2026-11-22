@@ -178,33 +178,98 @@ void CEntityGTA::SetModelIndexNoCreate(uint32_t index) {
 void CEntityGTA::SetIsStatic(bool isStatic) {
 }
 
+namespace
+{
+    CColModel* GetEntityCollisionModel(const CEntityGTA* entity)
+    {
+        if (!entity || entity->m_nModelIndex == 0xFFFF ||
+            entity->m_nModelIndex >= CModelInfo::NUM_MODEL_INFOS)
+            return nullptr;
+
+        CBaseModelInfo* modelInfo = CModelInfo::GetModelInfo(entity->m_nModelIndex);
+        return modelInfo ? modelInfo->GetColModel() : nullptr;
+    }
+
+    CVector TransformEntityLocalPoint(const CEntityGTA* entity, const CVector& point)
+    {
+        const CVector position = entity->GetPosition();
+        const CVector right = const_cast<CEntityGTA*>(entity)->GetRightVector();
+        const CVector forward = const_cast<CEntityGTA*>(entity)->GetForwardVector();
+        const CVector up = const_cast<CEntityGTA*>(entity)->GetUpVector();
+        return position + right * point.x + forward * point.y + up * point.z;
+    }
+}
+
 CRect CEntityGTA::GetBoundRect()
 {
-    CRect rect;
-    if (!this || !m_pRwObject) {
-        rect.left = 0.0f;
-        rect.right = 0.0f;
-        rect.top = 0.0f;
-        rect.bottom = 0.0f;
-        return rect;
+    const CColModel* colModel = GetEntityCollisionModel(this);
+    if (!colModel)
+    {
+        const CVector pos = GetPosition();
+        return CRect(pos.x, pos.y, pos.x, pos.y);
     }
-    return CHook::CallFunction<CRect>(g_libGTASA + 0x48DD00, this);
+
+    const CVector& minimum = colModel->m_boundBox.m_vecMin;
+    const CVector& maximum = colModel->m_boundBox.m_vecMax;
+    bool first = true;
+    CRect rect{};
+
+    for (int x = 0; x < 2; ++x)
+    {
+        for (int y = 0; y < 2; ++y)
+        {
+            for (int z = 0; z < 2; ++z)
+            {
+                const CVector local(
+                    x ? maximum.x : minimum.x,
+                    y ? maximum.y : minimum.y,
+                    z ? maximum.z : minimum.z
+                );
+                const CVector world = TransformEntityLocalPoint(this, local);
+
+                if (first)
+                {
+                    rect.left = rect.right = world.x;
+                    rect.top = rect.bottom = world.y;
+                    first = false;
+                }
+                else
+                {
+                    rect.left = std::min(rect.left, world.x);
+                    rect.right = std::max(rect.right, world.x);
+                    rect.top = std::max(rect.top, world.y);
+                    rect.bottom = std::min(rect.bottom, world.y);
+                }
+            }
+        }
+    }
+
+    return rect;
 }
 
 CVector CEntityGTA::GetBoundCentre()
 {
-    if (!this || !m_pRwObject) {
-        return CVector(0.0f, 0.0f, 0.0f);
-    }
-    return CHook::CallFunction<CVector>(g_libGTASA + 0x48DD30, this);
+    const CColModel* colModel = GetEntityCollisionModel(this);
+    if (!colModel)
+        return GetPosition();
+
+    return TransformEntityLocalPoint(this, colModel->m_boundSphere.m_vecCenter);
 }
 
 float CEntityGTA::GetBoundRadius()
 {
-    if (!this || !m_pRwObject) {
+    const CColModel* colModel = GetEntityCollisionModel(this);
+    if (!colModel)
         return 1.0f;
-    }
-    return CHook::CallFunction<float>(g_libGTASA + 0x48DD60, this);
+
+    const CVector right = GetRightVector();
+    const CVector forward = GetForwardVector();
+    const CVector up = GetUpVector();
+    const auto magnitude = [](const CVector& v) {
+        return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+    };
+    const float scale = std::max({ magnitude(right), magnitude(forward), magnitude(up) });
+    return colModel->m_boundSphere.m_fRadius * scale;
 }
 
 void CEntityGTA::RegisterReference(CEntityGTA** entity)
