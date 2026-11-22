@@ -1112,8 +1112,7 @@ public final class GameThread {
                 } catch (Exception e) {
                     Log.e(TAG, "[SURFACE-DIAG] Could not read cached holder surface", e);
                 }
-                Log.i(TAG, "[SURFACE-DIAG] queued callback executing"
-                        + " thread=" + Thread.currentThread().getName()
+                String surfaceDiag = "thread=" + Thread.currentThread().getName()
                         + " surface=" + surface
                         + " valid=" + surface.isValid()
                         + " size=" + width + "x" + height
@@ -1123,7 +1122,9 @@ public final class GameThread {
                         + " eglDisplay=" + GameThread.INSTANCE.eglDisplay
                         + " eglContext=" + GameThread.INSTANCE.eglContext
                         + " eglSurface=" + GameThread.INSTANCE.eglSurface
-                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive);
+                        + " viewIsActive=" + GameThread.INSTANCE.viewIsActive;
+                GameNative.writeJniTraceMarker("SURFACE_DIAG_QUEUED " + surfaceDiag);
+                Log.i(TAG, "[SURFACE-DIAG] queued callback executing " + surfaceDiag);
                 GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED_DONE");
             }
         });
