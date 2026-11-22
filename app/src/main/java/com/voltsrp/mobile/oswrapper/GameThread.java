@@ -1102,8 +1102,8 @@ public final class GameThread {
 
             /* JADX INFO: renamed from: invoke, reason: avoid collision after fix types in other method */
             public final void invoke2() {
-                // Diagnostic isolation remains enabled while we inspect Surface/EGL state.
-                GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED");
+                // Keep the Surface/EGL snapshot, then execute the real native callback.
+                GameNative.writeJniTraceMarker("SURFACE_DIAGNOSTIC_BEGIN");
                 Surface cachedSurface = null;
                 try {
                     if (GameThread.INSTANCE.cachedSurfaceHolder != null) {
@@ -1158,7 +1158,9 @@ public final class GameThread {
                 GameNative.writeJniTraceMarker("SURFACE_DIAG_EGL_THREAD " + eglThreadDiag);
                 Log.i(TAG, "[SURFACE-DIAG] EGL state on GameThread " + eglThreadDiag);
                 Log.i(TAG, "[SURFACE-DIAG] queued callback executing " + surfaceDiag);
-                GameNative.writeJniTraceMarker("TEST_SKIP_IMPL_ON_SURFACE_CHANGED_DONE");
+                GameNative.writeJniTraceMarker("BEFORE_IMPL_ON_SURFACE_CHANGED");
+                GameNative.implOnSurfaceChanged(surface, width, height);
+                GameNative.writeJniTraceMarker("AFTER_IMPL_ON_SURFACE_CHANGED");
             }
         });
 
