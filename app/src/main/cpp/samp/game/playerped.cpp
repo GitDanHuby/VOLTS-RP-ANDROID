@@ -559,7 +559,7 @@ void CPlayerPed::SetArmedWeapon(uint8_t weapon, bool unk)
         if (unk)
         {
             // CPed::SetCurrentWeapon
-            ((void (*)(CPedGTA *, int))(g_libGTASA + 0x58DD78))(m_pPed, weapon);
+            ((void (*)(CPedGTA *, int))(g_libGTASA + (VER_x32 ? 0x004A521C + 1 : 0x59B86C)))(m_pPed, weapon);
             // sub_1009C4B0
         }
         else
